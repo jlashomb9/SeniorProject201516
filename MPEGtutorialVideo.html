@@ -1,30 +1,93 @@
-<div id="grid">
-  <div id="col1">
-  <label>Enter .mpd file: 
-      <input type="text" id="filename" value="sample_dash.xml" />
-    </label> <button id="load">Play</button><br />
-         
-    <!-- Some areas to display info and content -->
-    <div id="mydiv">
-      <span id="myspan"><br />This demo requires Internet Explorer 11</span>
-    </div>
-    <div id="videoInfo"></div>
-    <div>&nbsp;</div>
-    <div id="curInfo"> 
-      <h3>Current values:</h3>
-      <ul>
-        <li>Index: <span id="curIndex"></span> of <span id="numIndexes"></span></li>
-        <li>Segment length: <span id="segLength"></span></li>
-        <li>Video time: <span id="curTime"></span></li>
-      </ul>
-    </div> 
-  </div>
-  <div id="col2">
-    <!-- Video element -->
-    <video id="myVideo" autoplay="autoplay" >No video available</video>
-          <div id="description">
-            This example uses HTML5 video, Media Source Extensions, and MPEG-DASH files.<br /> 
-            For more info see <a href="http://go.microsoft.com/fwlink/p/?LinkID=390962">Building a simple MPEG-DASH streaming player</a>. 
-          </div>
-  </div>
+<!DOCTYPE html> 
+<html> 
+<body>
+
+<div id="col2">
+  <!-- Video element -->
+  <button id="toggleRunning">play</button>
+  <video id="myVideo" autoplay>
+  </video>
 </div>
+
+<script>
+ 
+  // = new window.MediaSource();
+  // vid.src = URL.createObjectURL(mse);
+
+  function parseVideo(url) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.responseType = "text"
+
+    xhr.send();
+
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState == xhr.DONE) {
+        var response = xhr.response;
+        var parser = new DOMParser();
+
+        var xmlData = parser.parseFromString(response, "text/xml", 0);
+      }
+    }
+    setupVideo();
+
+  }
+  function setupVideo(){
+    var vid = document.getElementById("myVideo");
+    var mse;
+    //create media source
+    if(window.MediaSource){
+      mse = new window.MediaSource();
+    }  else {
+      log("mediasource or syntax not supported");
+      return;
+    }
+    vid.pause();
+    vid.src = URL.createObjectURL(mse);
+    vid.width = 600;
+    vid.height = 600;
+
+
+    mediaSource.addEventListener('sourceopen', function (e) {
+      try {
+        videoSource = mediaSource.addSourceBuffer('video/mp4');
+        initVideo(initialization, file);           
+      } catch (e) {
+        log('Exception calling addSourceBuffer for video', e);
+        return;
+      }
+    },false);
+
+  }
+ // parseVideo("video.mp4");
+  
+  function initVideo(range, url){
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('GET', url);
+    xhr.setRequestHeader("Range", "bytes=" + range);
+    segCheck (timeToDownload(range) * .8).toFixed(3);
+    xhr.send();
+    xhr.responseType = 'arraybuffer';
+
+    try {
+      xhr.addEventListener("readystatechange", function () {
+         if (xhr.readyState == xhr.DONE) { // wait for video to load
+          // Add response to buffer
+          try {
+            videoSource.appendBuffer(new Uint8Array(xhr.response));
+            // Wait for the update complete event before continuing
+            videoSource.addEventListener("update",updateFunct, false);
+
+          } catch (e) {
+            log('Exception while appending initialization content', e);
+          }
+        }
+      }, false);
+    } catch (e) {
+      log(e);
+    }
+  }
+ </script>
+</body>
+</html>
