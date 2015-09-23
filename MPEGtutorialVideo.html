@@ -11,8 +11,7 @@
 
 <script>
  
-  // = new window.MediaSource();
-  // vid.src = URL.createObjectURL(mse);
+  
 
   function parseVideo(url) {
     var xhr = new XMLHttpRequest();
@@ -45,7 +44,8 @@
     vid.pause();
     vid.src = URL.createObjectURL(mse);
     vid.width = 600;
-    vid.height = 600;
+    vid.play;
+    
 
 
     mediaSource.addEventListener('sourceopen', function (e) {
@@ -59,8 +59,8 @@
     },false);
 
   }
- // parseVideo("video.mp4");
-  
+ parseVideo("http://127.0.0.1:8000/Hercules_dash.mpd");
+ //home/lashomjt/SeniorProject/SeniorProject201516/
   function initVideo(range, url){
     var xhr = new XMLHttpRequest();
 

@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Dash.js Rocks</title>
+    </head>
+    <body>
+        <div>
+            <video id="videoPlayer" autoplay controls="true"></video>
+        </div>
+        <script src="http://cdn.dashjs.org/latest/dash.all.js"></script>
+        <script>
+            (function(){
+                var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
+                var context = new Dash.di.DashContext();
+                var player = new MediaPlayer(context);
+                player.startup();
+                player.attachView(document.querySelector("#videoPlayer"));
+                player.attachSource(url);
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name" : "MPEG DASH",
+  "version" : "0.0.1",
+  "description" : "MPEG DASH Player",
+  "dependencies" : {
+    "mime" : "~1.2.7"
+  }
+}
