@@ -5,10 +5,49 @@
     </head>
     <body>
         <div>
-            <video id="videoPlayer" autoplay controls="true"></video>
+            <video id="videoPlayer" width="520" height="400" controls></video>
+        </div>
+        <div>
+            <button id="rewind" onclick="rewindFunction();"> << </button>
+            <button id="toggleRunning" onclick="playFunction();">Pause</button>
+            <button id="fastForward" onclick="fastForwardFunction();"> >> </button>
         </div>
         <script src="http://cdn.dashjs.org/latest/dash.all.js"></script>
         <script>
+            var video = document.getElementById('videoPlayer').pause();
+            var playFunction = function(){
+                console.log("hello");
+                 var video = document.getElementById('videoPlayer');
+                if(document.getElementById('toggleRunning').innerHTML == "Pause"){
+                    document.getElementById('toggleRunning').innerHTML = "Play";
+                    video.pause();
+                }else if(document.getElementById('toggleRunning').innerHTML == "Play"){
+                    document.getElementById('toggleRunning').innerHTML = "Pause";
+                    video.play();
+                }
+               
+            };
+            var fastForwardFunction = function(){
+                var video = document.getElementById('videoPlayer');
+                // if(video.playbackRate == 20.0){
+                //     video.playbackRate = 1.0;
+                // }else{
+                //      video.playbackRate = 20.0;
+                // }
+                video.currentTime = video.currentTime + 10;
+            };
+            var rewindFunction = function(){
+                console.log(window.event);
+                 var video = document.getElementById('videoPlayer');
+                //  if(video.playbackRate == -20.0){
+                //     video.playbackRate = 1.0;
+                // }else{
+                //      video.playbackRate = -20.0;
+                // }
+                // document.getElementById("rewind").
+                video.currentTime = video.currentTime - 10;
+
+            };
             (function(){
                 var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
                 var context = new Dash.di.DashContext();
