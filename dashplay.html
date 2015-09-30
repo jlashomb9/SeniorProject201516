@@ -2,22 +2,24 @@
 <html>
     <head>
         <title>Senior Project 2015 MPEG DASH Project</title>
+        <script src="http://cdn.dashjs.org/latest/dash.all.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     </head>
     <body>
         <div>
-            <video id="videoPlayer" width="520" height="400" controls></video>
+            <video id="videoPlayer" width="520" height="400"></video>
         </div>
         <div>
+             <button id="skipBack" onclick="skipBackwardsFunction();"> |< </button>
             <button id="rewind" onclick="rewindFunction();"> << </button>
             <button id="toggleRunning" onclick="playFunction();">Pause</button>
             <button id="fastForward" onclick="fastForwardFunction();"> >> </button>
-        </div>
-        <script src="http://cdn.dashjs.org/latest/dash.all.js"></script>
+            <button id="skipForward" onclick="skipFowardFunction();"> >| </button>
+            <button id="expand" onclick="expand();">Expand</button>
         <script>
-            var video = document.getElementById('videoPlayer').pause();
+        var intervalRewind;
             var playFunction = function(){
-                console.log("hello");
-                 var video = document.getElementById('videoPlayer');
+                var video = document.getElementById('videoPlayer');
                 if(document.getElementById('toggleRunning').innerHTML == "Pause"){
                     document.getElementById('toggleRunning').innerHTML = "Play";
                     video.pause();
@@ -27,27 +29,65 @@
                 }
                
             };
+            var skipFowardFunction = function(){
+                 var video = document.getElementById('videoPlayer');
+                 video.currentTime += 10;
+            };
+            var skipBackwardsFunction = function(){
+                var video = document.getElementById('videoPlayer');
+                video.currentTime -= 10;
+            };
             var fastForwardFunction = function(){
                 var video = document.getElementById('videoPlayer');
-                // if(video.playbackRate == 20.0){
-                //     video.playbackRate = 1.0;
-                // }else{
-                //      video.playbackRate = 20.0;
-                // }
-                video.currentTime = video.currentTime + 10;
+                if(video.playbackRate == 20.0){
+                    video.playbackRate = 1.0;
+                }else{
+                     video.playbackRate = 20.0;
+                }
             };
             var rewindFunction = function(){
-                console.log(window.event);
-                 var video = document.getElementById('videoPlayer');
-                //  if(video.playbackRate == -20.0){
-                //     video.playbackRate = 1.0;
-                // }else{
-                //      video.playbackRate = -20.0;
-                // }
-                // document.getElementById("rewind").
-                video.currentTime = video.currentTime - 10;
-
+                var video = document.getElementById('videoPlayer');
+                if(video.playbackRate == -20.0){
+                    video.playbackRate = 1.0;
+                    rewind(0);
+                }else{
+                     video.playbackRate = -20.0;
+                     rewind(20);
+                }
+                console.log(video.playbackRate);
+                
             };
+
+            var expand = function(){
+                var video = document.getElementById('videoPlayer');
+                if(document.getElementById("expand").innerHTML == "Expand"){
+                    video.height = 1000;
+                    video.width = 1200;
+                    document.getElementById("expand").innerHTML = "Skrink";
+                }else{
+                    video.height = 400
+                    video.width = 520;
+                    document.getElementById("expand").innerHTML = "Expand";
+                }
+            };
+
+            function rewind(rewindSpeed) { 
+                var video = document.getElementById('videoPlayer');   
+               clearInterval(intervalRewind);
+               var startSystemTime = new Date().getTime();
+               var startVideoTime = video.currentTime;
+               
+               intervalRewind = setInterval(function(){
+                   video.playbackRate = 1.0;
+                   if(video.currentTime == 0){
+                       clearInterval(intervalRewind);
+                       video.pause();
+                   } else {
+                       var elapsed = new Date().getTime()-startSystemTime;
+                       video.currentTime = Math.max(startVideoTime - elapsed*rewindSpeed/1000.0, 0);
+                   }
+               }, 30);
+            }
             (function(){
                 var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
                 var context = new Dash.di.DashContext();
