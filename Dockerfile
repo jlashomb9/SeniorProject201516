@@ -18,6 +18,11 @@ RUN sudo apt-get -y install build-essential
 
 RUN sudo apt-get -y install make pkg-config g++ zlib1g-dev firefox-dev libfreetype6-dev libjpeg62-dev libpng12-dev libopenjpeg-dev libmad0-dev libfaad-dev libogg-dev libvorbis-dev libtheora-dev liba52-0.7.4-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavresample-dev libxv-dev x11proto-video-dev libgl1-mesa-dev x11proto-gl-dev linux-sound-base libxvidcore-dev libssl-dev libjack-dev libasound2-dev libpulse-dev libsdl1.2-dev dvb-apps libavcodec-extra-54 libavdevice-dev libmozjs185-dev
 
+RUN cd gpac ; ./configure
+RUN cd gpac ; make
+RUN cd gpac ; make install
+RUN cd gpac ; make install-lib
+
 RUN sudo apt-get -y upgrade
 
 RUN cd home ; git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
@@ -29,10 +34,8 @@ RUN echo "/usr/lib/local" >> /etc/ld.so.conf
 
 RUN ldconfig
 
-RUN cd home/gpac ; ./configure
-RUN cd home/gpac ; makedo
-RUN cd home/gpac ; make install
-RUN cd home/gpac ; make install-lib
+
+
 
 RUN which DashCast
 RUN which MP4Box
