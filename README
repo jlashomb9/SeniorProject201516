@@ -35,12 +35,14 @@ STEPS to repeat where I was:
 	apt-get -y install nodejs
 
 	Add these two lines in the node-gpac-dash directory in the gpac-dash.js file
-	look for a if statement towards the bottom that "== 'mpd'"
-	res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
+	look for a if statement towards the bottom that "== 'mpd'" (NOTE DO THIS FOR ALL OUTGOING MESSAGES like .m4s)
+	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Credentials', true);
 
 	transcodes the file
-	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
+	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 1
 
 	Need to be in the node gpac dash directory
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
+	
+	error working on chrome. will work on internet explorer though.
