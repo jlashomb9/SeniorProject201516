@@ -1,41 +1,74 @@
 FROM ubuntu:latest
 MAINTAINER MPEG-DASH Rose-SR-Project-Team <rose-sr-project@lists.scientiallc.com>
 
-RUN apt-get -y update
-RUN apt-get -y install wget
-#RUN cd home ; mkdir Downloads ; cd Downloads ; wget http://download.tsi.telecom-paristech.fr/gpac/latest_builds/linux64/libgpac-dev/libgpac-dev_0.5.2-DEV-rev705-gab2043f-master_amd64.deb
+#get packages
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get install -y \
+dvb-apps \
+g++ \
+git \
+firefox-dev \
+liba52-0.7.4-dev \
+libasound2-dev \
+libav-tools \
+libavcodec-dev \
+libavcodec-extra \
+libavdevice-dev \
+libavformat-dev \
+libavresample-dev \
+libavutil-dev \
+libdirectfb-dev \
+libdirectfb-extra \
+libfaad-dev \
+libfreetype6-dev \
+libgl1-mesa-dev \
+libjack-dev \
+libjpeg-dev \
+libmad0-dev \
+libmozjs185-dev \
+libogg-dev \
+libopenjpeg-dev \
+libpng12-dev \
+libpulse-dev \
+libsdl1.2-dev \
+libswscale-dev \
+libssl-dev \
+libtheora-dev \
+libupnp-dev \
+libvorbis-dev \
+libx264-dev \
+libxv-dev \
+libxvidcore-dev \
+linux-sound-base \
+make \
+nodejs \
+npm \
+pkg-config \
+x11proto-gl-dev \
+x11proto-video-dev \
+x264 \
+yasm \
+zlib1g-dev
 
-#RUN apt-get -y install gdebi-core
-#RUN cd home/Downloads ; gdebi --option=APT::Get::force-yes=1,APT::Get::Assume-Yes=1 -n libgpac-dev_0.5.2-DEV-rev705-gab2043f-master_amd64.deb
-#ADD /SampleMP4s/SampleVideo_720x480_50mb.mp4 /
+#adding files
+Add /SampleMP4s/SampleVideo_720x480_50mb.mp4 /
+ADD /convertingHostingMedia.sh /
+ADD /dashcast.conf /
 
-RUN apt-get -y install libx264-dev
-RUN apt-get -y install yasm
-RUN apt-get -y install git
-RUN git clone https://github.com/gpac/gpac.git gpac
-RUN sudo apt-get -y update
-RUN sudo apt-get -y install build-essential
+#get GPAC
 
-RUN sudo apt-get -y install make pkg-config g++ zlib1g-dev firefox-dev libfreetype6-dev libjpeg62-dev libpng12-dev libopenjpeg-dev libmad0-dev libfaad-dev libogg-dev libvorbis-dev libtheora-dev liba52-0.7.4-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavresample-dev libxv-dev x11proto-video-dev libgl1-mesa-dev x11proto-gl-dev linux-sound-base libxvidcore-dev libssl-dev libjack-dev libasound2-dev libpulse-dev libsdl1.2-dev dvb-apps libavcodec-extra-54 libavdevice-dev libmozjs185-dev
+RUN git clone https://github.com/gpac/gpac.git /root/gpac
+RUN cd /root/gpac && \
+./configure && \
+make -j5 && \
+make install && \
+make install-lib
 
-RUN cd gpac ; ./configure
-RUN cd gpac ; make
-RUN cd gpac ; make install
-RUN cd gpac ; make install-lib
+#check out Gpac repo
 
-RUN sudo apt-get -y upgrade
+RUN git clone https://github.com/gpac/node-gpac-dash.git /root/node-gpac-dash
+COPY dashcast.conf /root/dashcast.conf
+VOLUME /data
 
-RUN cd home ; git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
-RUN cd home/ffmpeg ; ./configure --enable-gpl --enable-shared --enable-libx264
-RUN cd home/ffmpeg ; make
-RUN cd home/ffmpeg ; make install
-
-RUN echo "/usr/lib/local" >> /etc/ld.so.conf
-
-RUN ldconfig
-
-
-
-
-RUN which DashCast
-RUN which MP4Box
+CMD sh /etc/postfix/setup.sh; 'bash'

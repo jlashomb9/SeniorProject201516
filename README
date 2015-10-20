@@ -1,0 +1,27 @@
+Running the web client
+
+	From the terminal go to the git rep folder.
+	Change directory to MPEGDashPlayer.
+	To deploy locally type "meteor".
+
+Building and Running the docker image
+
+	Right now we are hosting locally, so you need to modify the dockerfile to add your media file
+
+	sudo docker build -t mpegDashServer .
+	sudo docker run -p 80:5000 mpegDashServer 
+
+	There is a script at the end of the Dockerfile that will convert the video file and then host it for the player to run.  
+
+
+Converting and Hosting a media file with DASHCAST
+
+
+
+
+DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
+nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
+MP4Client http://127.0.0.1:5000/output/dashcast.mpd -opt Network:BufferLength=200 -opt DASH:LowLatency=chunk -opt DASH:UseServerUTC=no
+
+res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
+res.setHeader('Access-Control-Allow-Credentials', true);

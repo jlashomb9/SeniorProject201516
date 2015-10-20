@@ -1,5 +1,6 @@
 
   Template.dashplayer.helpers({
+    
     startVideo: function () {
       var video = document.createElement('video');
       video.id = "videoPlayer";
@@ -23,6 +24,23 @@
           bar.style.width= time  + "%";
           bar.innerText = time.toFixed(2) + " seconds";
        }
+    },
+    rewindBack: function(rewindSpeed) { 
+      var video = document.getElementById('videoPlayer');   
+      clearInterval(intervalRewind);
+      var startSystemTime = new Date().getTime();
+      var startVideoTime = video.currentTime;
+       
+      var intervalRewind = setInterval(function(){
+        video.playbackRate = 1.0;
+        if(video.currentTime == 0){
+          clearInterval(intervalRewind);
+          video.pause();
+        } else {
+          var elapsed = new Date().getTime()-startSystemTime;
+          video.currentTime = Math.max(startVideoTime - elapsed*rewindSpeed/1000.0, 0);
+        }
+      }, 30);
     }
   });
 
@@ -35,10 +53,10 @@
       var video = document.getElementById('videoPlayer');
         if(video.playbackRate == -20.0){
             video.playbackRate = 1.0;
-            rewind(0);
+            Template.dashplayer.rewindBack(0);
         }else{
              video.playbackRate = -20.0;
-             rewind(20);
+             Template.dashplayer.rewindBack(20);
         }
         
     },
