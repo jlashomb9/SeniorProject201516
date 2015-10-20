@@ -41,6 +41,7 @@ STEPS to repeat where I was:
 
 	transcodes the file
 	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 1
+	(NOTE had problem with audio encoding. changed to -v and it will work but needs fix later).
 
 	Need to be in the node gpac dash directory
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
