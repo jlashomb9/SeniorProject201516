@@ -9,15 +9,29 @@ Building and Running the docker image
 	Right now we are hosting locally, so you need to modify the dockerfile to add your media file
 
 	sudo docker build -t mpegDashServer .
-	sudo docker run -p -it 3000:8000 mpegdash
+	sudo docker run -p -it 80:8000 mpegdash
 
 	There is a script at the end of the Dockerfile that will convert the video file and then host it for the player to run.  
 
 
 Converting and Hosting a media file with DASHCAST
 
-DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
-nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
+	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
+	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
 
-res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
-res.setHeader('Access-Control-Allow-Credentials', true);
+	res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
+	res.setHeader('Access-Control-Allow-Credentials', true);
+
+
+
+
+STEPS to repeat where I was:
+
+
+	sudo docker run -p -it 80:8000 mpegdash
+	
+	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
+	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
+
+	res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
+	res.setHeader('Access-Control-Allow-Credentials', true);
