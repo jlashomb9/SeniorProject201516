@@ -27,11 +27,20 @@ Converting and Hosting a media file with DASHCAST
 
 STEPS to repeat where I was:
 
-
+	Starting up the docker file.
 	sudo docker run -p -it 80:8000 mpegdash
 	
-	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
-	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
+	Installing packages need to host.
+	git clone https://github.com/gpac/node-gpac-dash.git
+	apt-get -y install nodejs
 
+	Add these two lines in the node-gpac-dash directory in the gpac-dash.js file
+	look for a if statement towards the bottom that "== 'mpd'"
 	res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
 	res.setHeader('Access-Control-Allow-Credentials', true);
+
+	transcodes the file
+	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
+
+	Need to be in the node gpac dash directory
+	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
