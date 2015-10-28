@@ -1,31 +1,5 @@
-
-  Template.dashplayer.helpers({
-    
-    startVideo: function () {
-      var video = document.createElement('video');
-      video.id = "videoPlayer";
-      video.width = 520;
-      video.height = 400;
-      var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
-      // var url = "http://137.112.104.147:8000/SampleVideo_720x480_50mb_dash.mpd";
-      var context = new Dash.di.DashContext();
-      var player = new MediaPlayer(context);
-      player.startup();
-      player.attachView(video);
-      player.attachSource(url);
-      document.body.appendChild(video); 
-    },
-    updateBar: function(){
-      var video = document.getElementById('videoPlayer');
-      console.log("hello");
-      var bar = document.getElementsByClassName('progress-bar')[0];
-       if(document.getElementById('toggleRunning').innerHTML == 'Pause'){
-          var time = video.currentTime;
-          bar.style.width= time  + "%";
-          bar.innerText = time.toFixed(2) + " seconds";
-       }
-    },
-    rewindBack: function(rewindSpeed) { 
+DashPlayerHelpers = {
+  skipTotheBegining: function(rewindSpeed) { 
       var video = document.getElementById('videoPlayer');   
       clearInterval(intervalRewind);
       var startSystemTime = new Date().getTime();
@@ -42,6 +16,38 @@
         }
       }, 30);
     }
+}
+  Template.dashplayer.helpers({
+    startVideo: function () {
+      var video = document.createElement('video');
+      video.id = "videoPlayer";
+      video.width = 520; 
+      video.height = 400;
+      var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
+      // var url = "http://172.17.0.5:7997/output/dashcast.mpd";
+      var context = new Dash.di.DashContext();
+      var player = new MediaPlayer(context);
+      player.startup();
+      player.attachView(video);
+      player.attachSource(url);
+      document.body.appendChild(video); 
+    },
+    updateBar: function(){
+      var video = document.getElementById('videoPlayer');
+      var outer = document.createElement("div");
+      outer.class = "progress";
+      var bar = document.createElement("div");
+      bar.class = "progress-bar progress-bar-striped active";
+      bar.id = "progressBar";
+      bar.style = "color:black"
+      var time = video.currentTime;
+      bar.text = time + "seconds";      
+      outer.appendChild(bar); 
+      document.body.appendChild(outer);
+    },
+    isRunning: function(){
+      return document.getElementById("toggleRunning") === "Play";
+    }
   });
 
   Template.dashplayer.events({
@@ -49,14 +55,12 @@
       var video = document.getElementById('videoPlayer');
                 video.currentTime -= 10;
     },
-    'click #rewind': function () {
+    'click #skipTotheBegining': function () {
       var video = document.getElementById('videoPlayer');
         if(video.playbackRate == -20.0){
-            video.playbackRate = 1.0;
-            Template.dashplayer.rewindBack(0);
+           DashPlayerHelpers.skipTotheBegining(0);
         }else{
-             video.playbackRate = -20.0;
-             Template.dashplayer.rewindBack(20);
+            DashPlayerHelpers.skipTotheBegining(20);
         }
         
     },
@@ -77,9 +81,11 @@
         if(document.getElementById('toggleRunning').innerHTML == "Pause"){
             document.getElementById('toggleRunning').innerHTML = "Play";
             video.pause();
+            Session.set('isRunning', 'false');
         }else if(document.getElementById('toggleRunning').innerHTML == "Play"){
             document.getElementById('toggleRunning').innerHTML = "Pause";
             video.play();
+            Session.set('isRunning', 'true');
         }
       },
       'click #fastForward':function(){
