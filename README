@@ -19,7 +19,7 @@ Converting and Hosting a media file with DASHCAST
 	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
 
-	res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
+	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Credentials', true);
 
 
