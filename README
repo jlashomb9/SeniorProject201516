@@ -14,14 +14,18 @@ Building and Running the docker image
 	There is a script at the end of the Dockerfile that will convert the video file and then host it for the player to run.  
 
 
-Converting and Hosting a media file with DASHCAST
+Converting and Hosting a local media file with DASHCAST
 
 	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
 
+
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Credentials', true);
 
+
+Converting and Hosting a live stream with DASHCAST
+ DashCast -vf video4linux2 -v4l2f mjpeg -vfr 30 -vres 1280x720 -v http://192.168.1.7:1720 -live
 
 
 
@@ -42,14 +46,17 @@ STEPS to repeat where I was:
 	transcodes the file
 	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 1
 	(NOTE had problem with audio encoding. changed to -v and it will work but needs fix later).
+	DashCast -v SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 1
 
 	Need to be in the node gpac dash directory
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
 	
 	error working on chrome. will work on internet explorer though.
 
+
 DashCast -v SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -seg-marker eods -ast-offset -800 -min-buffer 0.2 -pixf yuv420p -insert-utc
 nodejs gpac-dash.js -segment-marker eods -chunk-media-segments -ip 172.17.0.33 -port 8008
 
 
 I ALSO CHANGED MPD-REFRESH TO 5MIN in the MPD manually. This should be fixed by changing the duration of video to what the duration actually is.
+

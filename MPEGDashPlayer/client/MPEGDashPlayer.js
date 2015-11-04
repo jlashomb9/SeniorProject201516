@@ -23,8 +23,8 @@ DashPlayerHelpers = {
       video.id = "videoPlayer";
       video.width = 520; 
       video.height = 400;
-      var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
-      // var url = "http://172.17.0.5:7997/output/dashcast.mpd";
+      // var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
+      var url = "http://137.112.104.147:8008/output/dashcast.mpd";
       var context = new Dash.di.DashContext();
       var player = new MediaPlayer(context);
       player.startup();
@@ -53,16 +53,13 @@ DashPlayerHelpers = {
   Template.dashplayer.events({
     'click #skipBack': function () {
       var video = document.getElementById('videoPlayer');
-                video.currentTime -= 10;
+      video.currentTime -= 10;
     },
-    'click #skipTotheBegining': function () {
-      var video = document.getElementById('videoPlayer');
-        if(video.playbackRate == -20.0){
-           DashPlayerHelpers.skipTotheBegining(0);
-        }else{
-            DashPlayerHelpers.skipTotheBegining(20);
-        }
-        
+    'click #rewind': function (event) {
+        $("#rewind").mousehold(300, function(){
+          var video = document.getElementById('videoPlayer');
+          video.currentTime -= .5;
+        });   
     },
     'click #expand': function(){
         var video = document.getElementById('videoPlayer');
