@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Servers>
+  <Server>
+    <IP>123.456.678.901</IP>
+    <Port>8050</Port>
+    <DashcastParameters>
+      <Parameter>-seg-dur 1000</Parameter>
+      <Parameter>-frag-dur 200</Parameter>
+    </DashcastParameters>
+  </Server>
+  <Server>
+    <IP>128.432.654.123</IP>
+    <Port>1234</Port>
+    <DashcastParameters>
+      <Parameter>-seg-dur 500</Parameter>
+      <Parameter>-frag-dur 100</Parameter>
+      <Parameter>-mpd-refresh 1</Parameter>
+    </DashcastParameters>
+  </Server>
+</Servers>
