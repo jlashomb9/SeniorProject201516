@@ -19,7 +19,7 @@ Converting and Hosting a media file with DASHCAST
 	DashCast -av SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
 
-	res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.7:3000');
+	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Credentials', true);
 
 
@@ -47,3 +47,9 @@ STEPS to repeat where I was:
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
 	
 	error working on chrome. will work on internet explorer though.
+
+DashCast -v SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -seg-marker eods -ast-offset -800 -min-buffer 0.2 -pixf yuv420p -insert-utc
+nodejs gpac-dash.js -segment-marker eods -chunk-media-segments -ip 172.17.0.33 -port 8008
+
+
+I ALSO CHANGED MPD-REFRESH TO 5MIN in the MPD manually. This should be fixed by changing the duration of video to what the duration actually is.
