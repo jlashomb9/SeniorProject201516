@@ -47,3 +47,6 @@ STEPS to repeat where I was:
 	nodejs gpac-dash.js -segment-marker eods -chunk-media-segments
 	
 	error working on chrome. will work on internet explorer though.
+
+DashCast -v SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -seg-marker eods -ast-offset -800 -min-buffer 0.2 -pixf yuv420p -insert-utc
+nodejs gpac-dash.js -segment-marker eods -chunk-media-segments -ip 172.17.0.33 -port 8008
