@@ -71,3 +71,21 @@ DashCast -v SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refres
 -no-loop means don't repeat the video after fully encoded
 
 FOR LIVE VLC STREAMING: (TODO)
+DashCast -v "http://137.112.249.2:8080/" -seg-dur 2000 -frag-dur 400 -mpd-refresh 2 -ast-offset -800 -time-shift -1 -seg-marker eods -pixf yuv420p -insert-utc -live
+
+Big problem with the processing power of our vm. I changed the dashcast.conf to:
+type=video
+bitrate=200000
+framerate=25
+width=320
+height=240
+
+From :
+type=video
+bitrate=1000000
+framerate=25
+width=640
+height=480
+
+And it STILL ran into problems. No errors are thrown and the video is being transferred over.
+But lots of pauses and video still looks bad.
