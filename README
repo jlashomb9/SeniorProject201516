@@ -62,3 +62,12 @@ I ALSO CHANGED MPD-REFRESH TO 5MIN in the MPD manually. This should be fixed by 
 
 
 mp4 is able to be encoded and transferred live. Docker image currently too slow to do both at same time.
+
+FOR LIVE MP4 STREAMING:
+DashCast -v SampleVideo_720x480_50mb.mp4 -seg-dur 1000 -frag-dur 200 -mpd-refresh 10000 -time-shift -1 -seg-marker eods -min-buffer 0.2 -pixf yuv420p -insert-utc -low-delay -no-loop
+
+-time-shift to -1 means that save old segments
+-mpd-refresh to 10000 really just means never reset mpd-refresh cause it will always be the same.
+-no-loop means don't repeat the video after fully encoded
+
+FOR LIVE VLC STREAMING: (TODO)
