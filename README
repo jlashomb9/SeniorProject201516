@@ -60,3 +60,5 @@ nodejs gpac-dash.js -segment-marker eods -chunk-media-segments -ip 172.17.0.33 -
 
 I ALSO CHANGED MPD-REFRESH TO 5MIN in the MPD manually. This should be fixed by changing the duration of video to what the duration actually is.
 
+
+mp4 is able to be encoded and transferred live. Docker image currently too slow to do both at same time.
