@@ -36,9 +36,10 @@ public class ServerLauncher {
 //        }
         /////////////////////////////////////
         //temporary, proof of concept
-        addServer("sudo docker run -it mpegdash /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8080");
-        addServer("sudo docker run -it mpegdash /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8081");
-        addServer("sudo docker run -it mpegdash /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8082");
+        addServer("sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8080");
+        addServer("sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8081");
+        addServer("sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8082");
+        System.out.println("3 servers added");
         /////////////////////////////////////
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();

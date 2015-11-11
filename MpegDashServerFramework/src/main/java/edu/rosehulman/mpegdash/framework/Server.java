@@ -40,7 +40,7 @@ public class Server {
     public Server launch() {
         parseXML();
         try {
-			Runtime.getRuntime().exec(this.launchCommand);
+			Process p = Runtime.getRuntime().exec(this.launchCommand);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
