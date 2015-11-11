@@ -1,5 +1,6 @@
 package edu.rosehulman.mpegdash.framework;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.LogManager;
@@ -15,6 +16,7 @@ import edu.rosehulman.mpegdash.constants.Constants;
 public class Server {
 
     private static final Logger LOGGER = LogManager.getLogger(Server.class);
+    private String launchCommand;
     enum Status
     {
       DISABLED,
@@ -26,11 +28,22 @@ public class Server {
 
     public Server() {
         status = Status.DISABLED;
+        this.launchCommand = "";
+    }
+    
+    public Server(String launchCommand) {
+    	status = Status.DISABLED;
+    	this.launchCommand = launchCommand;
     }
 
     // will return true on successful launch, false on failed launch.
     public Server launch() {
         parseXML();
+        try {
+			Runtime.getRuntime().exec(this.launchCommand);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         status = Status.ENCRYPTING;
         //start encrypting
         //then start launching server

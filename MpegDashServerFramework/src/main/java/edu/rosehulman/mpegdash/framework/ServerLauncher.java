@@ -27,13 +27,19 @@ public class ServerLauncher {
 
         this.directoryMonitor = new DirectoryMonitor(this);
 
-        final File folder = new File(Constants.PATH_TO_SERVER_CONFIGURATIONS);
-        for (final File fileEntry : folder.listFiles())
-
-        {
-            System.out.println(fileEntry.getName());
-            addServer(fileEntry.getName());
-        }
+//        final File folder = new File(Constants.PATH_TO_SERVER_CONFIGURATIONS);
+//        for (final File fileEntry : folder.listFiles())
+//
+//        {
+//            System.out.println(fileEntry.getName());
+//            addServer(fileEntry.getName());
+//        }
+        /////////////////////////////////////
+        //temporary, proof of concept
+        addServer("sudo docker run -it mpegdash /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8080");
+        addServer("sudo docker run -it mpegdash /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8081");
+        addServer("sudo docker run -it mpegdash /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8082");
+        /////////////////////////////////////
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();
     }
@@ -68,6 +74,31 @@ public class ServerLauncher {
                 }
             }
         }));
+    }
+    protected Server addServer(String name, String command) {
+    	if (servers.containsKey(name)) {
+            LOGGER.info("Server with that name already exists... Updating server configuration");
+            final Server server = servers.get(name);
+            return Server.runWithBackoff(3, new Callable<Server>() {
+                public Server call() {
+                    return server.update();
+                }
+            });
+        }
+    	final Server server = new Server(command);
+        Server result = Server.runWithBackoff(3, new Callable<Server>() {
+
+            public Server call() {
+                return server.shutdown();
+            }
+
+        });
+        if (result == null) {
+            LOGGER.error("server failed to launch");
+            return result;
+        }
+        LOGGER.info("server successfully launched");
+        return servers.put(name, server);
     }
 
     protected Server addServer(String filename) {

@@ -9,7 +9,7 @@ Building and Running the docker image
 	Right now we are hosting locally, so you need to modify the dockerfile to add your media file
 
 	sudo docker build -t mpegDashServer .
-	sudo docker run -p -it 80:8000 mpegdash
+	sudo docker run -it -p 80:8000 mpegdash
 
 	There is a script at the end of the Dockerfile that will convert the video file and then host it for the player to run.  
 
@@ -89,3 +89,10 @@ height=480
 
 And it STILL ran into problems. No errors are thrown and the video is being transferred over.
 But lots of pauses and video still looks bad.
+
+
+Launch a container with the sample video at the specified port
+sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8080
+
+java -cp makeServers.jar edu.rosehulman.mpegdash.framework.CommandLineInterface
+
