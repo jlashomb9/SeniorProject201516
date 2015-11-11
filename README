@@ -91,8 +91,9 @@ And it STILL ran into problems. No errors are thrown and the video is being tran
 But lots of pauses and video still looks bad.
 
 
-Launch a container with the sample video at the specified port
+Launch a container with the sample video at the specified port (WORK-IN-PROGRESS)
 sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8080
 
+Runs java framework that is hardcoded temporarily to create 3 video server containers (WORK-IN-PROGRESS)
 java -cp makeServers.jar edu.rosehulman.mpegdash.framework.CommandLineInterface
 
