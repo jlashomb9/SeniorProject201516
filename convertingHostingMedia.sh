@@ -1,1 +1,0 @@
-DashCast -v /etc/SampleMP4/SampleVideo_720x480_50mb.mp4 -seg-dur 2000 -frag-dur 200 -gdr -live -conf /root/dashcast.conf -ast-offset -1800 -vres 800x600 -vfr 25 -seg-marker eods
