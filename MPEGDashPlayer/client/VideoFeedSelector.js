@@ -33,18 +33,20 @@ Template.videoFeedSelector.events({
 		
 		var newVideo = video;
 
-		//remove new video
+		//remove old video
 		video.remove();
 
-		// console.log(newVideo);
 		//reset buttons
 		ButtonHelper.resetButton();
 
 		//create new video
 		VideoPlayBackHelper.createVideo(newVideo, hostName);
+		player.appendChild(newVideo);
+		VideoPlayBackHelper.videoStartup(newVideo);
+		//get playback buttons 
 		var playerButtons = document.getElementById("playerButtons");
-	    player.appendChild(newVideo);
 	    player.appendChild(playerButtons);
+	   
 	    
     }
 });

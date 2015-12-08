@@ -19,5 +19,14 @@ VideoPlayBackHelper = {
    		player.startup();
 	   	player.attachView(video);
 	   	player.attachSource(hostName);
+	}, 
+	videoStartup: function(video){
+		//Used as a sleep for the video starting up
+		//the playback rate is originally set at 0, which is paused.
+		window.setTimeout(function(){
+			video.playbackRate = 1;
+			video.play();
+		}, 500 );
+		
 	}
 }
