@@ -3,6 +3,7 @@
 	<script src="dash.webm.debug.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="http://download.remysharp.com/mousehold.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
 	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -11,22 +12,58 @@
 	<link rel="stylesheet" type="text/css" href="bootstrap.css" /> -->
 </head>
 <body>
-  {{> dashplayer}}
+	<table width="100%" border="0">
+  		<td width="60%"> 
+  			{{> dashplayer}}
+  		</td>
+  		<td width="40%"> 
+  			{{> videoFeedSelector}}
+ 		</td>
+ 	</table>
 </body>
 
 <template name="dashplayer">
-	<div>
+	<div id="mpegdashplayer">
 	   	{{startVideo}}
+		<div>
+		    <button id="skipBack"> Skip Back </button>
+	        <button id="rewind"> Rewind </button>
+	        <button id="toggleRunning">Pause</button>
+	        <button id="fastForward"> Fast Forward </button>
+	        <button id="skipForward"> Skip Forward </button>
+	        <button id="expand">Expand</button>
+		</div>
 	</div>
-	<div>
-	    <button id="skipBack"> skip back </button>
-        <button id="rewind"> rewind </button>
-        <button id="toggleRunning">Pause</button>
-        <button id="fastForward"> fast forward </button>
-        <button id="skipForward"> skip forward </button>
-        <button id="expand">Expand</button>
-	</div>
+</template>
+
+<template name="videoFeedSelector">
+	<div id="videoFeed">
+ 		<button id="newFeed">Add New Feed</button>
+ 		<h3> List Of Active Feeds</h3>
+ 	</div>
+</template>
 
 
+<template name="videoFeedModal">
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
+                <div class="modal-header">
+                    <h4 class="modal-title">Add a New Feed</h4>
+                </div>
+                <div class="modal-body">
+                   <form>
+					  Feed Name: <input type="text" id="feedName" name="feedName"><br>
+					  Feed Host: <input type="text" id="hostName" name="hostName"><br>
+					</form>
+				</div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="addingFeed" data-dismiss="modal">Add</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </template>
