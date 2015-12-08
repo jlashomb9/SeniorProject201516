@@ -12,35 +12,42 @@
 	<link rel="stylesheet" type="text/css" href="bootstrap.css" /> -->
 </head>
 <body>
-	<table width="100%" border="0">
-  		<td width="60%"> 
-  			{{> dashplayer}}
-  		</td>
-  		<td width="40%"> 
-  			{{> videoFeedSelector}}
- 		</td>
- 	</table>
+	<div class="comtainer-fluid">
+	<h1>MPEG Dash Video Player</h1>
+		<div class="row">
+			<div class="col-md-5">
+				{{> dashplayer}}
+			</div>
+			<div class=".col-md-3">
+				{{> videoFeedSelector}}
+			</div>
+		</div> 
+	</div>
 </body>
 
 <template name="dashplayer">
 	<div id="mpegdashplayer">
-	   	{{startVideo}}
-		<div>
-		    <button id="skipBack"> Skip Back </button>
-	        <button id="rewind"> Rewind </button>
-	        <button id="toggleRunning">Pause</button>
-	        <button id="fastForward"> Fast Forward </button>
-	        <button id="skipForward"> Skip Forward </button>
-	        <button id="expand">Expand</button>
+		<video id="videoPlayer" width="520" height="400"></video>
+		<div id="playerButtons">
+		    <button class="btn btn-default" id="skipBack"> Skip Back </button>
+	        <button class="btn btn-default" id="rewind"> Rewind </button>
+	        <button class="btn btn-default" id="toggleRunning">Pause</button>
+	        <button class="btn btn-default" id="fastForward"> Fast Forward </button>
+	        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
+	        <button class="btn btn-default" id="expand">Expand</button>
 		</div>
+		{{startVideo}}
 	</div>
+
 </template>
 
 <template name="videoFeedSelector">
-	<div id="videoFeed">
- 		<button id="newFeed">Add New Feed</button>
- 		<h3> List Of Active Feeds</h3>
- 	</div>
+		<div class="col-xs-2">
+			<div id="videoFeed"><h3>Active Feeds</h3></div>
+		</div>
+        <div class="col-xs-2">
+       		<button class="btn btn-default" id="newFeed">Add New Feed</button>
+        </div>
 </template>
 
 
@@ -48,7 +55,6 @@
     <div class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h4 class="modal-title">Add a New Feed</h4>
                 </div>

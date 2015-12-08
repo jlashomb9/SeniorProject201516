@@ -5,6 +5,16 @@ VideoFeedHelper = {
 	},
 	getFeed: function(feedName){
 		return mapOfFeeds[feedName];
+	},
+	createtButton: function(feedName, hostName){
+		VideoFeedHelper.addFeed(feedName,hostName);
+		var button = document.createElement('button');
+		var buttonText = document.createTextNode(feedName);
+     	button.appendChild(buttonText);
+     	button.id = "feedButton";
+     	button.class = "btn btn-default"; 
+     	return button;
+
 	}
 }
 
@@ -18,37 +28,43 @@ Template.videoFeedSelector.events({
 
 		var player = document.getElementById("mpegdashplayer");
 		var video = document.getElementById("videoPlayer");
+
+		video.pause();
+		
 		var newVideo = video;
+
 		//remove new video
-		//player.removeChild(video);
+		video.remove();
+
+		// console.log(newVideo);
+		//reset buttons
+		ButtonHelper.resetButton();
 
 		//create new video
-		
-		var context = new Dash.di.DashContext();
-   	   	var player = new MediaPlayer(context);
-   		player.startup();
-	   	player.attachView(newVideo);
-	   	player.attachSource(hostName);
-	    player.appendChild(newVideo); 
-	    ButtonHelper.resetButton();
+		VideoPlayBackHelper.createVideo(newVideo, hostName);
+		var playerButtons = document.getElementById("playerButtons");
+	    player.appendChild(newVideo);
+	    player.appendChild(playerButtons);
+	    
     }
 });
 
 
 Template.videoFeedModal.events({
 	'click #addingFeed': function () {
-		var feedName = document.getElementById("feedName").value;
-		var hostname = document.getElementById("hostName").value;
-		//adding feednames and hostname to a map
-
-		VideoFeedHelper.addFeed(feedName,hostname);
-     	
-     	// create button
-
-     	var button = document.createElement('button');
-     	var newContent = document.createTextNode(feedName);
-     	button.appendChild(newContent);
-     	button.id = "feedButton";
+		var feedName;
+		var hostName;
+		//create default buttons
+		if(VideoFeedHelper.getFeed("Default") != "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd"){
+			feedName = "Default";
+			hostName = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
+			var button = VideoFeedHelper.createtButton(feedName,hostName);
+     		document.getElementById("videoFeed").appendChild(button);
+     	}
+     	// create button new feed button
+     	feedName = document.getElementById("feedName").value;
+		hostName = document.getElementById("hostName").value;
+     	var button = VideoFeedHelper.createtButton(feedName,hostName);
      	document.getElementById("videoFeed").appendChild(button); 
 
     }

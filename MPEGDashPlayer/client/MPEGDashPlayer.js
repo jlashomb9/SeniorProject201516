@@ -19,18 +19,13 @@ DashPlayerHelpers = {
 }
   Template.dashplayer.helpers({
     startVideo: function () {
-      var video = document.createElement('video');
-      video.id = "videoPlayer";
-      video.width = 520; 
-      video.height = 400;
-      // var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
-      var url = "http://137.112.104.147:8008/output/dashcast.mpd";
-      var context = new Dash.di.DashContext();
-      var player = new MediaPlayer(context);
-      player.startup();
-      player.attachView(video);
-      player.attachSource(url);
-      document.body.appendChild(video); 
+      $('#videoPlayer').ready(function() {
+        var video = document.getElementById("videoPlayer");
+        var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
+        // var url = "http://137.112.104.147:8008/output/dashcast.mpd";
+        VideoPlayBackHelper.createVideo(video, url);
+      });
+     
     },
     updateBar: function(){
       var video = document.getElementById('videoPlayer');
@@ -66,7 +61,7 @@ DashPlayerHelpers = {
           if(document.getElementById("expand").innerHTML == "Expand"){
               video.height = 1000;
               video.width = 1200;
-              document.getElementById("expand").innerHTML = "Skrink";
+              document.getElementById("expand").innerHTML = "Shrink";
           }else{
               video.height = 400
               video.width = 520;
@@ -102,7 +97,7 @@ DashPlayerHelpers = {
           if(document.getElementById("expand").innerHTML == "Expand"){
               video.height = 1000;
               video.width = 1200;
-              document.getElementById("expand").innerHTML = "Skrink";
+              document.getElementById("expand").innerHTML = "Shrink";
           }else{
               video.height = 400
               video.width = 520;
