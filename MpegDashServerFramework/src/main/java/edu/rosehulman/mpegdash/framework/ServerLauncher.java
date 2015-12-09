@@ -30,7 +30,7 @@ public class ServerLauncher {
 
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getParentFile().getAbsolutePath();
-        
+        System.out.println(srProjRoot);
         addServer("new name of video", Constants.getDashcastLaunchVideoCommand(8090, srProjRoot));
 //        directoryThread = new Thread(this.directoryMonitor);
 //        directoryThread.start();
