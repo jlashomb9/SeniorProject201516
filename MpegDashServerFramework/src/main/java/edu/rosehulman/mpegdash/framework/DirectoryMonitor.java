@@ -35,7 +35,6 @@ public class DirectoryMonitor implements Runnable {
     }
 
     public void run() {
-        long lastModified = 0;
         while (!Thread.interrupted()) {
             try {
                 WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE,
@@ -51,15 +50,6 @@ public class DirectoryMonitor implements Runnable {
                         continue;
                     } else if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
                         serverLauncher.addServer(filename.toString());
-                    } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-                        File tempFile = new File(dir.toFile().getAbsolutePath() + "\\" + filename);
-                        long tempLastModified = tempFile.lastModified();
-                        // necessary because modified once for timestamp, once
-                        // for content so must remove duplicate modification
-                        if (tempLastModified != lastModified) {
-                            serverLauncher.addServer(filename.toString());
-                            lastModified = tempLastModified;
-                        }
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
                         serverLauncher.removeServer(filename.toString());
                     }

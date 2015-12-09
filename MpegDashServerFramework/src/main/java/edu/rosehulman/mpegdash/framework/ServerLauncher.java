@@ -1,6 +1,7 @@
 package edu.rosehulman.mpegdash.framework;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -27,20 +28,10 @@ public class ServerLauncher {
 
         this.directoryMonitor = new DirectoryMonitor(this);
 
-//        final File folder = new File(Constants.PATH_TO_SERVER_CONFIGURATIONS);
-//        for (final File fileEntry : folder.listFiles())
-//
-//        {
-//            System.out.println(fileEntry.getName());
-//            addServer(fileEntry.getName());
-//        }
-        /////////////////////////////////////
-        //temporary, proof of concept
-        addServer("sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8080");
-        addServer("sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8081");
-        addServer("sudo docker run -it mpegserver /bin/bash encode.sh /SampleVideo_720x480_50mb.mp4 8082");
-        System.out.println("3 servers added");
-        /////////////////////////////////////
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getParentFile().getAbsolutePath();
+        
+        addServer("new name of video", Constants.getDashcastLaunchVideoCommand(8090, srProjRoot));
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();
     }
@@ -90,7 +81,7 @@ public class ServerLauncher {
         Server result = Server.runWithBackoff(3, new Callable<Server>() {
 
             public Server call() {
-                return server.shutdown();
+                return server.launch();
             }
 
         });
@@ -102,6 +93,7 @@ public class ServerLauncher {
         return servers.put(name, server);
     }
 
+    //NOT UP TO-DATE
     protected Server addServer(String filename) {
         if (servers.containsKey(filename)) {
             LOGGER.info("Server with that name already exists... Updating server configuration");
@@ -116,7 +108,7 @@ public class ServerLauncher {
         Server result = Server.runWithBackoff(3, new Callable<Server>() {
 
             public Server call() {
-                return server.shutdown();
+                return server.launch();
             }
 
         });

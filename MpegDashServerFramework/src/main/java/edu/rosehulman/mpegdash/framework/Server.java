@@ -44,6 +44,7 @@ public class Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
         status = Status.ENCRYPTING;
         //start encrypting
         //then start launching server

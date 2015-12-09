@@ -1,0 +1,6 @@
+edu\rosehulman\mpegdash\framework\DirectoryMonitor.class
+edu\rosehulman\mpegdash\framework\ServerLauncher.class
+edu\rosehulman\mpegdash\framework\Server.class
+edu\rosehulman\mpegdash\framework\CommandLineInterface.class
+edu\rosehulman\mpegdash\constants\Constants.class
+edu\rosehulman\mpegdash\framework\CommandLineArgs.class
