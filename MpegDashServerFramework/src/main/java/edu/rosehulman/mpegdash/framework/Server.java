@@ -56,7 +56,6 @@ public class Server {
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             try {
                 while(p.waitFor() == 1){
-                    System.out.println(input.readLine());
                 }
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
