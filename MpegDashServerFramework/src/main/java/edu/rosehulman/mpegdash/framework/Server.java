@@ -54,10 +54,18 @@ public class Server {
             String[] cmd = both.toArray(new String[both.size()]);
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while ((line = input.readLine()) != null) {
-                System.out.println(line);
+            while(true){
+                System.out.println("hi");
+                try {
+                    System.out.println("=>" + p.waitFor());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            input.close();
+//            while ((line = input.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//            input.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
