@@ -43,17 +43,22 @@ public class Server {
         Process ls = null;
         BufferedReader input = null;
         String line = null;
+        BufferedReader error = null;
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
 
         try {
             ls = Runtime.getRuntime().exec(cmd);
             input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
+            error = new BufferedReader(new InputStreamReader(ls.getErrorStream()));
         } catch (IOException e1) {
             e1.printStackTrace();
             System.exit(1);
         }
         try {
             while ((line = input.readLine()) != null)
+                System.out.println(line);
+
+            while ((line = error.readLine()) != null)
                 System.out.println(line);
 
         } catch (IOException e1) {
