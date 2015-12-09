@@ -1,6 +1,8 @@
 package edu.rosehulman.mpegdash.framework;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.concurrent.Callable;
 
@@ -18,46 +20,48 @@ public class Server {
 
     private static final Logger LOGGER = LogManager.getLogger(Server.class);
     private String launchCommand;
-    enum Status
-    {
-      DISABLED,
-      ENCRYPTING,
-      ENABLED,
-      LAUNCHING,
+
+    enum Status {
+        DISABLED, ENCRYPTING, ENABLED, LAUNCHING,
     };
+
     private Status status;
 
     public Server() {
         status = Status.DISABLED;
         this.launchCommand = "";
     }
-    
+
     public Server(String launchCommand) {
-    	status = Status.DISABLED;
-    	this.launchCommand = launchCommand;
+        status = Status.DISABLED;
+        this.launchCommand = launchCommand;
     }
 
     // will return true on successful launch, false on failed launch.
     public Server launch() {
         parseXML();
         try {
-            ProcessBuilder pb = new ProcessBuilder(this.launchCommand);
-            pb.redirectOutput(Redirect.INHERIT);
-            pb.redirectError(Redirect.INHERIT);
-            Process p = pb.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+            String line;
+            String[] cmd = { "/bin/bash", "-c", this.launchCommand };
+            Process p = Runtime.getRuntime().exec(cmd);
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((line = input.readLine()) != null) {
+                System.out.println(line);
+            }
+            input.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         status = Status.ENCRYPTING;
-        //start encrypting
-        //then start launching server
-        //then change to enabled
+        // start encrypting
+        // then start launching server
+        // then change to enabled
         return this;
     }
 
     private void parseXML() {
-        
+
     }
 
     // will return true on successful shutdown, false on failed shutdown.
