@@ -23,17 +23,17 @@ public class ServerLauncher {
     private Thread directoryThread;
 
     public ServerLauncher() {
-        addShutdownHook();
+//        addShutdownHook();
         servers = new HashMap<String, Server>();
 
-        this.directoryMonitor = new DirectoryMonitor(this);
+//        this.directoryMonitor = new DirectoryMonitor(this);
 
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getParentFile().getAbsolutePath();
         
         addServer("new name of video", Constants.getDashcastLaunchVideoCommand(8090, srProjRoot));
-        directoryThread = new Thread(this.directoryMonitor);
-        directoryThread.start();
+//        directoryThread = new Thread(this.directoryMonitor);
+//        directoryThread.start();
     }
 
     private void addShutdownHook() {
