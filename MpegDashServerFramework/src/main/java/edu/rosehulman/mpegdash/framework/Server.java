@@ -1,6 +1,8 @@
 package edu.rosehulman.mpegdash.framework;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.concurrent.Callable;
 
@@ -40,14 +42,31 @@ public class Server {
     // will return true on successful launch, false on failed launch.
     public Server launch() {
         parseXML();
-        try {
-            ProcessBuilder pb = new ProcessBuilder(this.launchCommand);
-            pb.redirectOutput(Redirect.INHERIT);
-            pb.redirectError(Redirect.INHERIT);
-            Process p = pb.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        Process ls=null;
+        BufferedReader input=null;
+        String line=null;
+        String[] cmd = {this.launchCommand};
+
+
+            try {
+
+                   ls= Runtime.getRuntime().exec(cmd);
+                   input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
+
+                } catch (IOException e1) {
+                    e1.printStackTrace();  
+                    System.exit(1);
+                }
+
+
+               try {
+                       while( (line=input.readLine())!=null)
+                        System.out.println(line);
+
+                } catch (IOException e1) {
+                    e1.printStackTrace();  
+                    System.exit(0);
+                }   
 
         status = Status.ENCRYPTING;
         //start encrypting
