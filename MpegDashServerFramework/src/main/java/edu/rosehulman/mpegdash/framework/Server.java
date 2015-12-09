@@ -62,7 +62,8 @@ public class Server {
         }
         try {
             while(ls.waitFor() == 1){
-                System.out.println(line);
+                ls.wait(10000);
+                System.out.println("ha");
             }
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
