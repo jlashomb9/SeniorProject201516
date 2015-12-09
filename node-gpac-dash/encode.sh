@@ -4,8 +4,8 @@ DashCast -v $1 -seg-dur 1000 -frag-dur 200 -mpd-refresh 10000 -time-shift -1 -se
 
 IPvar=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
-cd node-gpac-dash/
+cd /home/SeniorProject201516/node-gpac-dash/
 
 echo $IPvar
 
-nodejs gpac-dash.js -segment-marker eods -chunk-media-segments -ip $IPvar -port $2
+nodejs gpac-dash.js -cors -segment-marker eods -chunk-media-segments -ip $IPvar -port $2
