@@ -1,6 +1,7 @@
 package edu.rosehulman.mpegdash.framework;
 
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.LogManager;
@@ -40,7 +41,10 @@ public class Server {
     public Server launch() {
         parseXML();
         try {
-			Process p = Runtime.getRuntime().exec(this.launchCommand);
+            ProcessBuilder pb = new ProcessBuilder(this.launchCommand);
+            pb.redirectOutput(Redirect.INHERIT);
+            pb.redirectError(Redirect.INHERIT);
+            Process p = pb.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
