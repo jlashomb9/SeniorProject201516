@@ -55,15 +55,13 @@ public class Server {
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             try {
-                while(p.waitFor() == 1){
+                while(p.waitFor() == 1 && (line = input.readLine()) != null) {
+                    System.out.println(line);
                 }
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-//            while ((line = input.readLine()) != null) {
-//                System.out.println(line);
-//            }
             input.close();
         } catch (IOException e) {
             e.printStackTrace();
