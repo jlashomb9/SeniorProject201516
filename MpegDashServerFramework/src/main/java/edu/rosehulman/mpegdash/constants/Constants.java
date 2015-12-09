@@ -16,7 +16,7 @@ public class Constants {
     public static final int WAITING_PERIOD_FOR_THREAD_TERMINATION_SECONDS = 10;
 
     public static String getDashcastLaunchVideoCommand(int port, String srProjRoot) {
-        return "ls -l";
+        return "ls -l | echo hi | echo hi | echo hi";
 //        return "sudo docker run -p " + port + ":" + port
 //                + " -v " + srProjRoot + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh /home/SeniorProject201516/node-gpac-dash/SampleVideo_720x480_50mb.mp4 "
 //                + port + "'";
