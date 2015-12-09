@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.LogManager;
@@ -42,7 +46,12 @@ public class Server {
         parseXML();
         try {
             String line;
-            String[] cmd = { "/bin/bash", "-c", this.launchCommand };
+            String[] first = { "/bin/bash", "-c" };
+            String[] second = this.launchCommand.split(" ");
+            List<String> both = new ArrayList<String>(first.length + second.length);
+            Collections.addAll(both, first);
+            Collections.addAll(both, second);
+            String[] cmd = both.toArray(new String[both.size()]);
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((line = input.readLine()) != null) {
