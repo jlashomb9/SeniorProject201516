@@ -19,6 +19,6 @@ public class Constants {
 //        return "echo hi";
         return "sudo docker run -p " + port + ":" + port
                 + " -v " + srProjRoot + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh /home/SeniorProject201516/node-gpac-dash/SampleVideo_720x480_50mb.mp4 "
-                + port + "' &";
+                + port + "'";
     }
 }
