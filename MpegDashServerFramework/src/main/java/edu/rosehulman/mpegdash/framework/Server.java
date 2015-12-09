@@ -45,7 +45,7 @@ public class Server {
         Process ls=null;
         BufferedReader input=null;
         String line=null;
-        String[] cmd = {"bin/bash", "-c", this.launchCommand};
+        String[] cmd = {"/bin/bash", "-c", this.launchCommand};
 
 
             try {
