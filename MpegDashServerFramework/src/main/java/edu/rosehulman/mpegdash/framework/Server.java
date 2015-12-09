@@ -20,63 +20,67 @@ public class Server {
 
     private static final Logger LOGGER = LogManager.getLogger(Server.class);
     private String launchCommand;
-    enum Status
-    {
-      DISABLED,
-      ENCRYPTING,
-      ENABLED,
-      LAUNCHING,
+
+    enum Status {
+        DISABLED, ENCRYPTING, ENABLED, LAUNCHING,
     };
+
     private Status status;
 
     public Server() {
         status = Status.DISABLED;
         this.launchCommand = "";
     }
-    
+
     public Server(String launchCommand) {
-    	status = Status.DISABLED;
-    	this.launchCommand = launchCommand;
+        status = Status.DISABLED;
+        this.launchCommand = launchCommand;
     }
 
     // will return true on successful launch, false on failed launch.
     public Server launch() {
         parseXML();
-        Process ls=null;
-        BufferedReader input=null;
-        String line=null;
-        String[] cmd = {"/bin/bash", "-c", this.launchCommand};
+        Process ls = null;
+        BufferedReader input = null;
+        String line = null;
+        String[] cmd = { "/bin/bash", "-c", this.launchCommand };
 
+        try {
 
-            try {
+            ls = Runtime.getRuntime().exec(cmd);
+            input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
 
-                   ls= Runtime.getRuntime().exec(cmd);
-                   input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            System.exit(1);
+        }
 
-                } catch (IOException e1) {
-                    e1.printStackTrace();  
-                    System.exit(1);
-                }
+        try {
+            while ((line = input.readLine()) != null)
+                System.out.println(line);
 
-
-               try {
-                       while( (line=input.readLine())!=null)
-                        System.out.println(line);
-
-                } catch (IOException e1) {
-                    e1.printStackTrace();  
-                    System.exit(0);
-                }   
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            System.exit(0);
+        }
+        try {
+            while(ls.waitFor() == 1){
+                System.out.println(line);
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         status = Status.ENCRYPTING;
-        //start encrypting
-        //then start launching server
-        //then change to enabled
+        // start encrypting
+        // then start launching server
+        // then change to enabled
         return this;
     }
 
     private void parseXML() {
-        
+
     }
 
     // will return true on successful shutdown, false on failed shutdown.
