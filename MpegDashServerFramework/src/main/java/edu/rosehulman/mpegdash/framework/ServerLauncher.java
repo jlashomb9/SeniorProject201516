@@ -34,6 +34,9 @@ public class ServerLauncher {
         addServer("new name of video", Constants.getDashcastLaunchVideoCommand(8090, srProjRoot));
 //        directoryThread = new Thread(this.directoryMonitor);
 //        directoryThread.start();
+        while(true){
+            
+        }
     }
 
     private void addShutdownHook() {
