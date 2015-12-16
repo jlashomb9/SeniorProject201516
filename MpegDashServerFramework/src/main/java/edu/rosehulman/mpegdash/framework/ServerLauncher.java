@@ -1,6 +1,9 @@
 package edu.rosehulman.mpegdash.framework;
 
 import java.io.File;
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
@@ -23,20 +26,19 @@ public class ServerLauncher {
     private Thread directoryThread;
 
     public ServerLauncher() {
-//        addShutdownHook();
+        addShutdownHook();
         servers = new HashMap<String, Server>();
 
-//        this.directoryMonitor = new DirectoryMonitor(this);
+        this.directoryMonitor = new DirectoryMonitor(this);
 
-        final File folder = new File("").getAbsoluteFile();
-        String srProjRoot = folder.getParentFile().getParentFile().getAbsolutePath();
-        System.out.println(srProjRoot);
-        addServer("new name of video", Constants.getDashcastLaunchVideoCommand(8090, srProjRoot));
-//        directoryThread = new Thread(this.directoryMonitor);
-//        directoryThread.start();
-        while(true){
-            
-        }
+        // final File folder = new File("").getAbsoluteFile();
+        // String srProjRoot =
+        // folder.getParentFile().getParentFile().getAbsolutePath();
+        // addServer("new name of video",
+        // Constants.getDashcastLaunchVideoCommand(port, srProjRoot));
+        directoryThread = new Thread(this.directoryMonitor);
+        directoryThread.start();
+        // while(true);
     }
 
     private void addShutdownHook() {
@@ -70,71 +72,65 @@ public class ServerLauncher {
             }
         }));
     }
-    protected Server addServer(String name, String command) {
-    	if (servers.containsKey(name)) {
+
+    protected Void addServer(String name, String command) {
+        if (servers.containsKey(name)) {
             LOGGER.info("Server with that name already exists... Updating server configuration");
             final Server server = servers.get(name);
-            return Server.runWithBackoff(3, new Callable<Server>() {
-                public Server call() {
-                    return server.update();
+            return Server.runWithBackoff(3, new Callable<Void>() {
+                public Void call() {
+                    server.update();
+                    return null;
                 }
             });
         }
-    	final Server server = new Server(command);
-        Server result = Server.runWithBackoff(3, new Callable<Server>() {
-
-            public Server call() {
-                return server.launch();
+        final Server server = new Server(command);
+        servers.put(name, server);
+        return Server.runWithBackoff(3, new Callable<Void>() {
+            public Void call() {
+                new Thread(server).start();
+                return null;
             }
-
         });
-        if (result == null) {
-            LOGGER.error("server failed to launch");
-            return result;
-        }
-        LOGGER.info("server successfully launched");
-        return servers.put(name, server);
     }
 
-    //NOT UP TO-DATE
-    protected Server addServer(String filename) {
-        if (servers.containsKey(filename)) {
-            LOGGER.info("Server with that name already exists... Updating server configuration");
-            final Server server = servers.get(filename);
-            return Server.runWithBackoff(3, new Callable<Server>() {
-                public Server call() {
-                    return server.update();
-                }
-            });
+    // NOT UP TO-DATE
+    protected Void addServer(String filename) {
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getParentFile().getParentFile().getAbsolutePath();
+        String videoTitle = null;
+        int port = 0;
+        String videoName = null;
+        String dashcastCommand = "DashCast -v ";
+        try {
+            File inputFile = new File(filename);
+            System.out.println(inputFile.toString());
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            port = Integer.parseInt(doc.getElementsByTagName("Port").item(0).getTextContent());
+            videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
+            videoName = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
+            dashcastCommand += videoName + " ";
+            dashcastCommand += doc.getElementsByTagName("DashcastParameters").item(0).getTextContent();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        final Server server = new Server();
-        Server result = Server.runWithBackoff(3, new Callable<Server>() {
+        System.out.println("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoName " + videoName
+                + "\ndashcastCommand: " + dashcastCommand);
 
-            public Server call() {
-                return server.launch();
-            }
-
-        });
-        if (result == null) {
-            LOGGER.error("server failed to launch");
-            return result;
-        }
-        LOGGER.info("server successfully launched");
-        return servers.put(filename, server);
+        return addServer(videoTitle,
+                Constants.getDashcastLaunchVideoCommand(port, srProjRoot, videoName, dashcastCommand));
     }
 
-    protected Server removeServer(String filename) {
+    protected void removeServer(String filename) {
         final Server server = servers.get(filename);
-        Server result = Server.runWithBackoff(3, new Callable<Server>() {
-            public Server call() {
+        servers.remove(filename);
+        Server.runWithBackoff(3, new Callable<Void>() {
+            public Void call() {
                 return server.shutdown();
             }
         });
-        if (result == null) {
-            LOGGER.error("server failed to shutdown");
-            return result;
-        }
-        LOGGER.info("server successfully shutdown");
-        return servers.remove(filename);
     }
 }

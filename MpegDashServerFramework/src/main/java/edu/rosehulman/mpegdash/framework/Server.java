@@ -16,10 +16,11 @@ import edu.rosehulman.mpegdash.constants.Constants;
  * dash streamed video
  *
  */
-public class Server {
+public class Server implements Runnable{
 
     private static final Logger LOGGER = LogManager.getLogger(Server.class);
     private String launchCommand;
+    private Process ls = null;
 
     enum Status {
         DISABLED, ENCRYPTING, ENABLED, LAUNCHING,
@@ -38,14 +39,14 @@ public class Server {
     }
 
     // will return true on successful launch, false on failed launch.
-    public Server launch() {
+    public void run() {
         parseXML();
-        Process ls = null;
         BufferedReader input = null;
         String line = null;
         BufferedReader error = null;
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
 
+        status = Status.ENCRYPTING;
         try {
             ls = Runtime.getRuntime().exec(cmd);
             input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
@@ -65,21 +66,11 @@ public class Server {
             e1.printStackTrace();
             System.exit(0);
         }
-        try {
-            while(ls.waitFor() == 1){
-                ls.wait(10000);
-                System.out.println("ha");
-            }
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
-        status = Status.ENCRYPTING;
+        status = Status.ENABLED;
         // start encrypting
         // then start launching server
         // then change to enabled
-        return this;
     }
 
     private void parseXML() {
@@ -87,32 +78,29 @@ public class Server {
     }
 
     // will return true on successful shutdown, false on failed shutdown.
-    public Server shutdown() {
+    public Void shutdown() {
         status = Status.DISABLED;
-        return this;
+        return null;
     }
 
     public Status getStatus() {
         return status;
     }
 
-    public Server update() {
+    public void update() {
         shutdown();
-        return launch();
+        run();
     }
 
-    public static Server runWithBackoff(int maxRetries, Callable<Server> func) {
+    public static Void runWithBackoff(int maxRetries, Callable<Void> callable) {
         int exponentialBackoffTime = Constants.INITIAL_BACKOFF;
         int numRetries = 0;
         boolean interrupted = false;
-        Server result = null;
         try {
             do {
-                if (numRetries >= maxRetries) {
-                    break;
-                }
                 try {
-                    result = func.call();
+                    callable.call();
+                    return null;
                 } catch (Exception e) {
                     LOGGER.error("Error occurred, backing off...\n" + e);
                     try {
@@ -127,13 +115,13 @@ public class Server {
                         exponentialBackoffTime = Constants.MAX_EXPONENTIAL_BACKOFF_TIME;
                     }
                 }
-            } while (result == null);
-            return result;
+            } while (numRetries < maxRetries);
         } finally {
             if (interrupted) {
                 Thread.currentThread().interrupt();
             }
         }
+        return null;
     }
 
 }

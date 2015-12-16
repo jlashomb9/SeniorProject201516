@@ -2,8 +2,6 @@ edu\rosehulman\mpegdash\framework\DirectoryMonitor.class
 edu\rosehulman\mpegdash\constants\Constants.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$4.class
 edu\rosehulman\mpegdash\framework\CommandLineArgs.class
-edu\rosehulman\mpegdash\framework\ServerLauncher$6.class
-edu\rosehulman\mpegdash\framework\ServerLauncher$5.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$1.class
 edu\rosehulman\mpegdash\framework\Server$Status.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$1$1.class

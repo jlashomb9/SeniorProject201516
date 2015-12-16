@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Servers>
   <Server>
-    <IP>123.456.678.901</IP>
-    <Port>8050</Port>
-    <DashcastParameters>
-      <Parameter>-seg-dur 1000</Parameter>
-      <Parameter>-frag-dur 200</Parameter>
-    </DashcastParameters>
-  </Server>
-  <Server>
-    <IP>128.432.654.123</IP>
-    <Port>1234</Port>
-    <DashcastParameters>
-      <Parameter>-seg-dur 500</Parameter>
-      <Parameter>-frag-dur 100</Parameter>
-      <Parameter>-mpd-refresh 1</Parameter>
-    </DashcastParameters>
+    <Name>Sample Video Title</Name>
+    <Port>8099</Port>
+    <VideoFile>SampleVideo_720x480_50mb.mp4</VideoFile>
+    <DashcastParameters>-seg-dur 1000 -frag-dur 200 -mpd-refresh 10000 -time-shift -1 -seg-marker eods -min-buffer 0.2 -pixf yuv420p -insert-utc -low-delay -no-loop</DashcastParameters>
   </Server>
 </Servers>

@@ -31,6 +31,10 @@ public class DirectoryMonitor implements Runnable {
             System.exit(1);
         }
         dir = new File(Constants.PATH_TO_SERVER_CONFIGURATIONS).toPath();
+        final File folder = new File(dir.toUri().toString().substring(5, dir.toUri().toString().length()).replaceAll("%20", " "));
+        for (final File fileEntry : folder.listFiles()) {
+            serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
+        }
         this.serverLauncher = serverLauncher;
     }
 
