@@ -44,16 +44,28 @@ DashPlayerHelpers = {
 */
   Template.dashplayer.helpers({
     startVideo: function (url) {
-	$('#videoPlayer').ready(function() {
-	//$('#'.concat(videoID)).ready(function() {
-        var video = document.getElementById("videoPlayer");
-		//var video = document.getElementById(videoID);
+	console.log(Template.parentData(0)._id);
+	var video_id = "videoPlayer"+Template.parentData(0)._id;
+	console.log(video_id);
+	console.log('#videoPlayer'+Template.parentData(0)._id);
+	var player = document.getElementById("mpegdashplayer"+Template.parentData(0)._id);
+	console.log($("#videoPlayer"+Template.parentData(0)._id));
+	//var video = document.createElement('video');
+	$("#videoPlayer"+Template.parentData(0)._id).ready(function() {
+        var video = document.getElementById(video_id);
+		//player.appendhild(video);
+		console.log(video);
+		
         //var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
         // var url = "http://137.112.104.147:8008/output/dashcast.mpd";
         VideoPlayBackHelper.createVideo(video, url);
+		
+		VideoPlayBackHelper.videoStartup(video);
+		console.log(video);
       });
      
     },
+	/*
     updateBar: function(){
       var video = document.getElementById('videoPlayer');
       var outer = document.createElement("div");
@@ -70,6 +82,7 @@ DashPlayerHelpers = {
     isRunning: function(){
       return document.getElementById("toggleRunning") === "Play";
     }
+	*/
   });
 
   Template.dashplayer.events({
@@ -84,17 +97,17 @@ DashPlayerHelpers = {
     },
   
     'click #skipBack': function () {
-      var video = document.getElementById('videoPlayer');
+      var video = document.getElementById('videoPlayer'+this._id);
       video.currentTime -= 10;
     },
     'click #rewind': function (event) {
         $("#rewind").mousehold(300, function(){
-          var video = document.getElementById('videoPlayer');
+          var video = document.getElementById('videoPlayer'+this._id);
           video.currentTime -= .5;
         });   
     },
     'click #expand': function(){
-        var video = document.getElementById('videoPlayer');
+        var video = document.getElementById('videoPlayer'+this._id);
           if(document.getElementById("expand").innerHTML == "Expand"){
               video.height = 1000;
               video.width = 1200;
@@ -106,7 +119,8 @@ DashPlayerHelpers = {
           }
     },
     'click #toggleRunning':function(){
-       var video = document.getElementById('videoPlayer');
+       var video = document.getElementById('videoPlayer'+this._id);
+	   console.log(video);
         if(document.getElementById('toggleRunning').innerHTML == "Pause"){
             document.getElementById('toggleRunning').innerHTML = "Play";
             video.pause();
@@ -118,7 +132,7 @@ DashPlayerHelpers = {
         }
       },
       'click #fastForward':function(){
-        var video = document.getElementById('videoPlayer');
+        var video = document.getElementById('videoPlayer'+this._id);
           if(video.playbackRate == 20.0){
               video.playbackRate = 1.0;
           }else{
@@ -126,11 +140,11 @@ DashPlayerHelpers = {
           }
       },
       'click #skipForward':function(){
-         var video = document.getElementById('videoPlayer');
+         var video = document.getElementById('videoPlayer'+this._id);
           video.currentTime += 10;
       },
       'click #expand':function(){
-        var video = document.getElementById('videoPlayer');
+        var video = document.getElementById('videoPlayer'+this._id);
           if(document.getElementById("expand").innerHTML == "Expand"){
               video.height = 1000;
               video.width = 1200;

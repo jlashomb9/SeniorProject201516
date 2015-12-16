@@ -36,14 +36,10 @@
 </body>
 
 <template name="dashplayer">
-<li class="{{#if checked}}checked{{/if}}">
     <button class="delete">&times;</button>
- 
-    <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
- 
     <span class="text">{{host}}</span>
-
-		<video id="videoPlayer" width="520" height="400"></video>
+		<!--<div id="mpegdashplayer{{_id}}">!-->
+		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
 		<div id="playerButtons">
 		    <button class="btn btn-default" id="skipBack"> Skip Back </button>
 	        <button class="btn btn-default" id="rewind"> Rewind </button>
@@ -52,8 +48,8 @@
 	        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
 	        <button class="btn btn-default" id="expand">Expand</button>
 		</div>
+		<!--</div>!-->
 		{{startVideo(host)}}
-	</li>
 </template>
 
 <template name="videoFeedSelector">

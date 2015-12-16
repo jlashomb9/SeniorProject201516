@@ -48,8 +48,8 @@ Template.videoFeedSelector.events({
 		var playerButtons = document.getElementById("playerButtons");
 	    player.appendChild(playerButtons);
 	   */
-	    dashplayers.push({host: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd"});
-		console.log(dashplayers[0]);
+	    //dashplayers.push({host: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd"});
+		//console.log(dashplayers[0]);
 	}
 });
 
