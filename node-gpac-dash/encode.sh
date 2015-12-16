@@ -9,3 +9,8 @@ echo $IPvar
 nodejs gpac-dash.js -cors -segment-marker eods -chunk-media-segments -ip $IPvar -port $2 &
 
 $3
+
+while true
+do
+  sleep 1
+done
