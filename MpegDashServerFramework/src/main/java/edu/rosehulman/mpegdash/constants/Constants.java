@@ -1,5 +1,7 @@
 package edu.rosehulman.mpegdash.constants;
 
+import java.io.File;
+
 public class Constants {
     // -v since audio encoding is experiencing issues.
     // add video at runtime.
@@ -12,10 +14,22 @@ public class Constants {
     public static final int INITIAL_BACKOFF = 128;
     public static final int WAITING_PERIOD_FOR_THREAD_TERMINATION_SECONDS = 10;
 
-    public static String getDashcastLaunchVideoCommand(int port, String srProjRoot, String videoName, String dashcastCommand) {
+    public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand) {
         // return "ls -l | echo hi | echo hi | echo hi";
-        return "sudo docker run -p " + port + ":" + port + " -v " + srProjRoot
+        return "sudo docker run -p " + port + ":" + port + " -v " + pathToServerConfigurations()
                 + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
-                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " " + dashcastCommand + "'";
+                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\"'";
+    }
+    
+    public static String pathToServerConfigurations(){
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
+        return srProjRoot;
+    }
+    
+    public static String absolutePathToServerConfigurations(){
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
+        return srProjRoot += "MpegDashServerFramework/" + PATH_TO_SERVER_CONFIGURATIONS;
     }
 }

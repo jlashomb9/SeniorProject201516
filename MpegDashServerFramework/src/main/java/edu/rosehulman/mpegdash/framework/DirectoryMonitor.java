@@ -30,8 +30,9 @@ public class DirectoryMonitor implements Runnable {
             LOGGER.error("Error initializing WatchService:\n" + e);
             System.exit(1);
         }
-        dir = new File(Constants.PATH_TO_SERVER_CONFIGURATIONS).toPath();
-        final File folder = new File(Constants.PATH_TO_SERVER_CONFIGURATIONS);
+        String absPath = Constants.absolutePathToServerConfigurations().replaceAll("%20", " ");
+        final File folder = new File(absPath);
+        dir = folder.toPath();
         for (final File fileEntry : folder.listFiles()) {
             serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
         }

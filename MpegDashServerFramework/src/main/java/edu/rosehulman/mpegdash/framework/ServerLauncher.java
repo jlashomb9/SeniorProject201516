@@ -31,14 +31,8 @@ public class ServerLauncher {
 
         this.directoryMonitor = new DirectoryMonitor(this);
 
-        // final File folder = new File("").getAbsoluteFile();
-        // String srProjRoot =
-        // folder.getParentFile().getParentFile().getAbsolutePath();
-        // addServer("new name of video",
-        // Constants.getDashcastLaunchVideoCommand(port, srProjRoot));
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();
-        // while(true);
     }
 
     private void addShutdownHook() {
@@ -120,8 +114,10 @@ public class ServerLauncher {
         System.out.println("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoName " + videoName
                 + "\ndashcastCommand: " + dashcastCommand);
 
+        System.out.println(Constants.getDashcastLaunchVideoCommand(port, videoName, dashcastCommand));
+//        return null;
         return addServer(videoTitle,
-                Constants.getDashcastLaunchVideoCommand(port, srProjRoot, videoName, dashcastCommand));
+                Constants.getDashcastLaunchVideoCommand(port, videoName, dashcastCommand));
     }
 
     protected void removeServer(String filename) {
