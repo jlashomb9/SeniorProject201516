@@ -32,9 +32,7 @@ public class DirectoryMonitor implements Runnable {
         }
         String absPath = Constants.absolutePathToServerConfigurations().replaceAll("%20", " ");
         final File folder = new File(absPath);
-        System.out.println("folder" + folder.getAbsolutePath().toString());
         dir = folder.toPath();
-        System.out.println("dir" + dir);
         for (final File fileEntry : folder.listFiles()) {
             serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
         }

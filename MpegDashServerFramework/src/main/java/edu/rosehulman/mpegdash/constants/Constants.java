@@ -23,13 +23,13 @@ public class Constants {
     
     public static String pathToServerConfigurations(){
         final File folder = new File("").getAbsoluteFile();
-        String srProjRoot = folder.getParentFile().getParentFile().getAbsolutePath();
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("\\MpegDashServerFramework"));
         return srProjRoot;
     }
     
     public static String absolutePathToServerConfigurations(){
         final File folder = new File("").getAbsoluteFile();
-        String srProjRoot = folder.getParentFile().getParentFile().getAbsolutePath();
-        return srProjRoot += "/SeniorProject201516/MpegDashServerFramework/" + PATH_TO_SERVER_CONFIGURATIONS;
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("\\MpegDashServerFramework"));
+        return srProjRoot += "/MpegDashServerFramework/" + PATH_TO_SERVER_CONFIGURATIONS;
     }
 }
