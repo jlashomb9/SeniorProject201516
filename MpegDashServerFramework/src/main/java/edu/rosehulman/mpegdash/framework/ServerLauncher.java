@@ -114,6 +114,8 @@ public class ServerLauncher {
         System.out.println("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoName " + videoName
                 + "\ndashcastCommand: " + dashcastCommand);
 
+        System.out.println(Constants.getDashcastLaunchVideoCommand(port, videoName, dashcastCommand));
+//        return null;
         return addServer(videoTitle,
                 Constants.getDashcastLaunchVideoCommand(port, videoName, dashcastCommand));
     }
