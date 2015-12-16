@@ -8,4 +8,4 @@ echo $IPvar
 
 nodejs gpac-dash.js -cors -segment-marker eods -chunk-media-segments -ip $IPvar -port $2 &
 
-DashCast -v $1 $3
+$3
