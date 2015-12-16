@@ -1,3 +1,27 @@
+Dashplayers = new Mongo.Collection("dashplayers");
+Template.body.helpers({
+	dashplayers: function() {
+		return Dashplayers.find({});
+	}
+});
+
+Template.body.events({
+    'submit .new-feed': function (event) {
+      event.preventDefault();
+ 
+      // Get value from form element
+      var text = event.target.text.value;
+		console.log(text);
+      // Insert a task into the collection
+      Dashplayers.insert({
+        host: text
+      });
+ 
+      // Clear form
+      event.target.text.value = "";
+    }
+  });
+/*
 DashPlayerHelpers = {
   skipTotheBegining: function(rewindSpeed) { 
       var video = document.getElementById('videoPlayer');   
@@ -17,11 +41,14 @@ DashPlayerHelpers = {
       }, 30);
     }
 }
+*/
   Template.dashplayer.helpers({
-    startVideo: function () {
-      $('#videoPlayer').ready(function() {
+    startVideo: function (url) {
+	$('#videoPlayer').ready(function() {
+	//$('#'.concat(videoID)).ready(function() {
         var video = document.getElementById("videoPlayer");
-        var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
+		//var video = document.getElementById(videoID);
+        //var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
         // var url = "http://137.112.104.147:8008/output/dashcast.mpd";
         VideoPlayBackHelper.createVideo(video, url);
       });
@@ -46,6 +73,16 @@ DashPlayerHelpers = {
   });
 
   Template.dashplayer.events({
+  
+    "click .toggle-checked": function () {
+      Dashplayers.update(this._id, {
+        $set: {checked: ! this.checked}
+      });
+    },
+    "click .delete": function () {
+      Dashplayers.remove(this._id);
+    },
+  
     'click #skipBack': function () {
       var video = document.getElementById('videoPlayer');
       video.currentTime -= 10;

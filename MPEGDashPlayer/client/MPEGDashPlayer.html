@@ -10,23 +10,39 @@
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="bootstrap.js"></script>
 	<link rel="stylesheet" type="text/css" href="bootstrap.css" /> -->
+	
 </head>
 <body>
-	<div class="comtainer-fluid">
-	<h1>MPEG Dash Video Player</h1>
+	<div class="container-fluid">
+	<header>
+		<h1>MPEG Dash Video Player</h1>
+		<form class="new-feed">
+			<input type="text" name="text" placeholder="Add host" />
+		</form>
+	</header>
 		<div class="row">
 			<div class="col-md-5">
-				{{> dashplayer}}
+			<h1>
+				{{#each dashplayers}}
+					{{> dashplayer}}
+				{{/each}}
+			</h1>
 			</div>
-			<div class=".col-md-3">
+			<!--<div class=".col-md-3">
 				{{> videoFeedSelector}}
-			</div>
+			</div>!-->
 		</div> 
 	</div>
 </body>
 
 <template name="dashplayer">
-	<div id="mpegdashplayer">
+<li class="{{#if checked}}checked{{/if}}">
+    <button class="delete">&times;</button>
+ 
+    <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
+ 
+    <span class="text">{{host}}</span>
+
 		<video id="videoPlayer" width="520" height="400"></video>
 		<div id="playerButtons">
 		    <button class="btn btn-default" id="skipBack"> Skip Back </button>
@@ -36,9 +52,8 @@
 	        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
 	        <button class="btn btn-default" id="expand">Expand</button>
 		</div>
-		{{startVideo}}
-	</div>
-
+		{{startVideo(host)}}
+	</li>
 </template>
 
 <template name="videoFeedSelector">

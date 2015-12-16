@@ -23,6 +23,7 @@ Template.videoFeedSelector.events({
      	Modal.show('videoFeedModal')
     },
     'click #feedButton': function (event) {
+	/*
 		var feedName = event.currentTarget.innerText;
 		var hostName = VideoFeedHelper.getFeed(feedName);
 
@@ -46,9 +47,10 @@ Template.videoFeedSelector.events({
 		//get playback buttons 
 		var playerButtons = document.getElementById("playerButtons");
 	    player.appendChild(playerButtons);
-	   
-	    
-    }
+	   */
+	    dashplayers.push({host: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd"});
+		console.log(dashplayers[0]);
+	}
 });
 
 
