@@ -1,9 +1,11 @@
 <head>
 	<title>Senior Project 2015 MPEG DASH Project</title>
 	<script src="dash.webm.debug.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
 	<script src="http://download.remysharp.com/mousehold.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+  	<script src="jquery.livequery.js"></script>
 	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -36,20 +38,19 @@
 </body>
 
 <template name="dashplayer">
-    <button class="delete">&times;</button>
-    <span class="text">{{host}}</span>
-		<!--<div id="mpegdashplayer{{_id}}">!-->
-		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
-		<div id="playerButtons">
-		    <button class="btn btn-default" id="skipBack"> Skip Back </button>
-	        <button class="btn btn-default" id="rewind"> Rewind </button>
-	        <button class="btn btn-default" id="toggleRunning">Pause</button>
-	        <button class="btn btn-default" id="fastForward"> Fast Forward </button>
-	        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
-	        <button class="btn btn-default" id="expand">Expand</button>
-		</div>
-		<!--</div>!-->
-		{{startVideo(host)}}
+	<div id="videoObject{{_id}}">
+	    <button class="delete">&times;</button>
+	    <span id="span{{_id}}" class="text">{{host}}</span>
+			<video id="videoPlayer{{_id}}" width="520" height="400"></video>
+			<div id="playerButtons{{_id}}">
+			    <button class="btn btn-default" id="skipBack"> Skip Back </button>
+		        <button class="btn btn-default" id="rewind"> Rewind </button>
+		        <button class="btn btn-default" id="toggleRunning">Pause</button>
+		        <button class="btn btn-default" id="fastForward"> Fast Forward </button>
+		        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
+		        <button class="btn btn-default" id="expand">Expand</button>
+	 		</div>
+	</div>
 </template>
 
 <template name="videoFeedSelector">
