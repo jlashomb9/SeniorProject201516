@@ -5,6 +5,8 @@
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
 	<script src="http://download.remysharp.com/mousehold.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+	<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>--> 
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   	<script src="jquery.livequery.js"></script>
 	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,6 +20,7 @@
 	<div class="container-fluid">
 	<header>
 		<h1>MPEG Dash Video Player</h1>
+		<div></div>
 		<form class="new-feed">
 			<input type="text" name="text" placeholder="Add host" />
 		</form>
@@ -36,11 +39,11 @@
 		</div> 
 	</div>
 </body>
-
+  
 <template name="dashplayer">
-	<div id="videoObject{{_id}}">
-	    <button class="delete">&times;</button>
-	    <span id="span{{_id}}" class="text">{{host}}</span>
+	<div id="draggable{{_id}}" class="ui-widget-content" >
+	    <button class="delete" >&times;</button>
+	    <span id="span{{_id}}" class="text" >{{host}}</span>
 			<video id="videoPlayer{{_id}}" width="520" height="400"></video>
 			<div id="playerButtons{{_id}}">
 			    <button class="btn btn-default" id="skipBack"> Skip Back </button>
@@ -85,3 +88,4 @@
         </div>
     </div>
 </template>
+

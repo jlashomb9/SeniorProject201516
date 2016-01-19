@@ -8,3 +8,7 @@ h1 {
 h3 {
 	color:white;
 }
+#draggable {
+	/*position: absolute;*/
+	padding: 0.5em;
+}

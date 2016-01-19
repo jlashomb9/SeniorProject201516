@@ -1,3 +1,5 @@
+
+	
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.body.helpers({
 	dashplayers: function() {
@@ -57,7 +59,7 @@ Template.dashplayer.helpers({
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
       // });
-     
+     $("#draggable"+Template.parentData(0)._id).draggable();
     },
   );
 
