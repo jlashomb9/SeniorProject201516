@@ -8,6 +8,11 @@
 	<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>--> 
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   	<script src="jquery.livequery.js"></script>
+
+
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  	<link rel="stylesheet" href="/resources/demos/style.css">
+
 	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -44,7 +49,11 @@
 	<div id="draggable{{_id}}" class="ui-widget-content" >
 	    <button class="delete" >&times;</button>
 	    <span id="span{{_id}}" class="text" >{{host}}</span>
-			<video id="videoPlayer{{_id}}" width="520" height="400"></video>
+
+	    	<div id="resizable{{_id}}" class="ui-widget-content">
+	    		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
+	    	</div>
+			
 			<div id="playerButtons{{_id}}">
 			    <button class="btn btn-default" id="skipBack"> Skip Back </button>
 		        <button class="btn btn-default" id="rewind"> Rewind </button>
@@ -88,4 +97,3 @@
         </div>
     </div>
 </template>
-

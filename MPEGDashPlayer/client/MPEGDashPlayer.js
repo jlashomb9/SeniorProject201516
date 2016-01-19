@@ -6,7 +6,6 @@ Template.body.helpers({
 		return Dashplayers.find({});
 	}
 });
-
 Template.body.events({
     'submit .new-feed': function (event) {
       event.preventDefault();
@@ -60,6 +59,7 @@ Template.dashplayer.helpers({
         VideoPlayBackHelper.videoStartup(video);
       // });
      $("#draggable"+Template.parentData(0)._id).draggable();
+     $("#resizable"+Template.parentData(0)._id).resizable();
     },
   );
 
@@ -123,3 +123,6 @@ Template.dashplayer.helpers({
           }
       },
   });
+
+var x = Dashplayers.find({});
+console.log(x);
