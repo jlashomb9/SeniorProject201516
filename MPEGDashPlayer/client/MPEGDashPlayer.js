@@ -1,5 +1,4 @@
 
-	
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.body.helpers({
 	dashplayers: function() {
@@ -22,29 +21,6 @@ Template.body.events({
       event.target.text.value = "";
     }
   });
-/*
-we can probably remove this
-
-DashPlayerHelpers = {
-  skipTotheBegining: function(rewindSpeed) { 
-      var video = document.getElementById('videoPlayer');   
-      clearInterval(intervalRewind);
-      var startSystemTime = new Date().getTime();
-      var startVideoTime = video.currentTime;
-       
-      var intervalRewind = setInterval(function(){
-        video.playbackRate = 1.0;
-        if(video.currentTime == 0){
-          clearInterval(intervalRewind);
-          video.pause();
-        } else {
-          var elapsed = new Date().getTime()-startSystemTime;
-          video.currentTime = Math.max(startVideoTime - elapsed*rewindSpeed/1000.0, 0);
-        }
-      }, 30);
-    }
-}
-*/
 Template.dashplayer.helpers({
 
   });
@@ -59,9 +35,11 @@ Template.dashplayer.helpers({
         VideoPlayBackHelper.videoStartup(video);
       // });
      $("#draggable"+Template.parentData(0)._id).draggable();
-     $("#resizable"+Template.parentData(0)._id).resizable();
+     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:100});
+	 $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
     },
   );
+  
 
   Template.dashplayer.events({
   
