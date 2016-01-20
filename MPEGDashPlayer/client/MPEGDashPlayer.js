@@ -1,9 +1,8 @@
-
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.body.helpers({
-	dashplayers: function() {
-		return Dashplayers.find({});
-	}
+  dashplayers: function() {
+    return Dashplayers.find({});
+  }
 });
 Template.body.events({
     'submit .new-feed': function (event) {
@@ -11,7 +10,7 @@ Template.body.events({
  
       // Get value from form element
       var text = event.target.text.value;
-		console.log(text);
+    console.log(text);
       // Insert a task into the collection
       Dashplayers.insert({
         host: text
@@ -21,6 +20,76 @@ Template.body.events({
       event.target.text.value = "";
     }
   });
+/*
+we can probably remove this
+DashPlayerHelpers = {
+  skipTotheBegining: function(rewindSpeed) { 
+      var video = document.getElementById('videoPlayer');   
+      clearInterval(intervalRewind);
+      var startSystemTime = new Date().getTime();
+      var startVideoTime = video.currentTime;
+       
+      var intervalRewind = setInterval(function(){
+        video.playbackRate = 1.0;
+        if(video.currentTime == 0){
+          clearInterval(intervalRewind);
+          video.pause();
+        } else {
+          var elapsed = new Date().getTime()-startSystemTime;
+          video.currentTime = Math.max(startVideoTime - elapsed*rewindSpeed/1000.0, 0);
+        }
+      }, 30);
+    }
+}
+*/
+TilingHelper = {
+  getWidthForVideo: function(w,numVideos){
+    return w/numVideos;
+  },
+  getHeightForVideo: function(h,numVideos){
+    return h/numVideos;
+  },
+  toggleTiling: function(playerWidth, playerHeight){
+    Dashplayers.find({}).forEach(
+      function (u){
+        console.log(u.parentData);
+        var div_id = "#draggable"+u.parentData;
+        var draggable_div = document.getElementById(div_id);
+        console.log(playerWidth);
+        $(div_id).width(playerWidth);
+        $(div_id).height(playerHeight);
+        // draggable_div.width = playerWidth;
+        // draggable_div.height = playerHeight;
+        // console.log(draggable_div.width);
+
+      });
+  },
+  addingParentData: function(parentData,url){  
+      var player = Dashplayers.findOne({_id: parentData});
+      Dashplayers.update({_id: parentData},
+        {
+          host: url,
+          parentData: parentData
+      });
+      console.log(player);
+  }
+
+}
+
+Template.tiling.events({
+  'click #tile': function(){
+    var numVideos = Dashplayers.find().count();
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var playerWidth = TilingHelper.getWidthForVideo(w,numVideos);
+    var playerHeight = TilingHelper.getHeightForVideo(h,numVideos);
+    TilingHelper.toggleTiling(playerWidth,playerHeight);
+  }
+});
+Template.tiling.helpers({
+ 
+});
+
 Template.dashplayer.helpers({
 
   });
@@ -36,7 +105,15 @@ Template.dashplayer.helpers({
       // });
      $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0});
      $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:100});
-	 $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
+   $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
+  
+    //shapeshift
+    $(".container").shapeshift({
+      minColumns: 3
+    });
+    $(".container").trigger("ss-rearrange");
+    //adding id to the mongodb entry
+    TilingHelper.addingParentData(Template.parentData(0)._id, url);
     },
   );
   
@@ -65,7 +142,7 @@ Template.dashplayer.helpers({
     },
     'click #toggleRunning':function(){
        var video = document.getElementById('videoPlayer'+this._id);
-	     console.log(video);
+       console.log(video);
         if(document.getElementById('toggleRunning').innerHTML == "Pause"){
             document.getElementById('toggleRunning').innerHTML = "Play";
             video.pause();
