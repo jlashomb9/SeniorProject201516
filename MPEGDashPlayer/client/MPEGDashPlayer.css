@@ -13,6 +13,27 @@ h3 {
 	padding: 0.5em;
 }
 */
+
+.header-cont {
+    width:100%;
+	position:fixed;
+	padding: 0;
+	background-size: 100%;
+	top:0px;
+	left:0px;
+	z-index:100;
+	height:150px;
+    background:#F0F0F0;
+    border:1px solid #CCC;
+    margin-left: auto;
+	margin-right: auto;
+}
+
+.center-controls {
+	display: table;
+	margin: 0 auto;
+}
+
 .resizable { 
 	font-size: 0;	
 }
