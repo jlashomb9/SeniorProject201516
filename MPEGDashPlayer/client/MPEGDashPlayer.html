@@ -8,11 +8,10 @@
 	<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>--> 
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   	<script src="jquery.livequery.js"></script>
-
-
   	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   	<link rel="stylesheet" href="/resources/demos/style.css">
-
+  	<script src="http://mcpants.github.io/jquery.shapeshift/core/jquery.shapeshift.min.js"></script>
+  	 <link rel="stylesheet" type="text/css" href="assets/css/jquery.gridster.css">
 	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -22,33 +21,35 @@
 	
 </head>
 <body>
-	<div class="container-fluid">
+	<!-- <div class="container-fluid"> -->
 	<header>
 		<h1>MPEG Dash Video Player</h1>
 		<div></div>
 		<form class="new-feed">
 			<input type="text" name="text" placeholder="Add host" />
 		</form>
-	</header>
-		<div class="row">
-			<div class="col-md-5">
-			<h1>
-				{{#each dashplayers}}
-					{{> dashplayer}}
-				{{/each}}
-			</h1>
-			</div>
-			<!--<div class=".col-md-3">
-				{{> videoFeedSelector}}
-			</div>!-->
-		</div> 
-	</div>
+		{{ > tiling}}
+	</header>	
+		<section class="demo">
+			<div class="gridster">
+				<ul>
+					{{#each dashplayers}}
+						{{> dashplayer}}
+					{{/each}}
+				</ul>
+			</div>	
+		</section>
+	<!-- </div> -->
 </body>
+<template name="tiling">
+	<button class="btn btn-default" id="tile">Tile Videos</button>
+</template>
   
 <template name="dashplayer">
-	<div id="draggable{{_id}}" class="ui-widget-content" >
-	    <button class="delete" >&times;</button>
-	    <span id="span{{_id}}" class="text" >{{host}}</span>
+	<li data-row="40" data-col="6" data-sizex="1" data-sizey="1">
+		<div id="draggable{{_id}}" class="ui-widget-content">
+		    <button class="delete" >&times;</button>
+		    <span id="span{{_id}}" class="text" >{{host}}</span>
 
 	    	<div id="resizable{{_id}}" class="ui-widget-content">
 	    		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
@@ -62,7 +63,8 @@
 		        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
 		        <button class="btn btn-default" id="expand">Expand</button>
 	 		</div>
-	</div>
+		</div>
+	</li>
 </template>
 
 <template name="videoFeedSelector">

@@ -1,5 +1,4 @@
 
-	
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.body.helpers({
 	dashplayers: function() {
@@ -45,6 +44,54 @@ DashPlayerHelpers = {
     }
 }
 */
+TilingHelper = {
+  getWidthForVideo: function(w,numVideos){
+    return w/numVideos;
+  },
+  getHeightForVideo: function(h,numVideos){
+    return h/numVideos;
+  },
+  toggleTiling: function(playerWidth, playerHeight){
+    Dashplayers.find({}).forEach(
+      function (u){
+        console.log(u.parentData);
+        var div_id = "#draggable"+u.parentData;
+        var draggable_div = document.getElementById(div_id);
+        console.log(playerWidth);
+        $(div_id).width(playerWidth);
+        $(div_id).height(playerHeight);
+        // draggable_div.width = playerWidth;
+        // draggable_div.height = playerHeight;
+        // console.log(draggable_div.width);
+
+      });
+  },
+  addingParentData: function(parentData,url){  
+      var player = Dashplayers.findOne({_id: parentData});
+      Dashplayers.update({_id: parentData},
+        {
+          host: url,
+          parentData: parentData
+      });
+      console.log(player);
+  }
+
+}
+
+Template.tiling.events({
+  'click #tile': function(){
+    var numVideos = Dashplayers.find().count();
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var playerWidth = TilingHelper.getWidthForVideo(w,numVideos);
+    var playerHeight = TilingHelper.getHeightForVideo(h,numVideos);
+    TilingHelper.toggleTiling(playerWidth,playerHeight);
+  }
+});
+Template.tiling.helpers({
+ 
+});
+
 Template.dashplayer.helpers({
 
   });
@@ -60,6 +107,21 @@ Template.dashplayer.helpers({
       // });
      $("#draggable"+Template.parentData(0)._id).draggable();
      $("#resizable"+Template.parentData(0)._id).resizable();
+
+      //gridster
+      $(".gridster > ul").gridster({
+              widget_margins: [10, 10],
+              widget_base_dimensions: [140, 140],
+              min_cols: 3
+          }).data('gridster');
+
+     //shapeshift
+    //  $(".container").shapeshift({
+    //     minColumns: 3   
+    // });
+    // $(".container").trigger("ss-rearrange");
+    //adding id to the mongodb entry
+    TilingHelper.addingParentData(Template.parentData(0)._id, url);
     },
   );
 
