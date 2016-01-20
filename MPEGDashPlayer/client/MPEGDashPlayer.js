@@ -34,7 +34,7 @@ Template.dashplayer.helpers({
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
       // });
-     $("#draggable"+Template.parentData(0)._id).draggable();
+     $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0});
      $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:100});
 	 $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
     },
