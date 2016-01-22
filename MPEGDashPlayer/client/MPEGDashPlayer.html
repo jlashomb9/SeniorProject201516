@@ -7,8 +7,7 @@
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   	<script src="jquery.livequery.js"></script>
   	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  	<link rel="stylesheet" href="/resources/demos/style.css">
-  	<script src="http://mcpants.github.io/jquery.shapeshift/core/jquery.shapeshift.min.js"></script>	
+  	<link rel="stylesheet" href="/resources/demos/style.css">	
 </head>
 <body>
 
@@ -21,9 +20,9 @@
 			{{> tiling}}
 		</div>
 	</div>
-	<div class="container">
+	<div id="display" class="displayScreen">
 			{{#each dashplayers}}
-				<div>{{> dashplayer}}</div>
+				<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
 			{{/each}}
 	</div>
 </body>
@@ -33,13 +32,13 @@
 </template>
 
 <template name="dashplayer">
-	<div id="draggable{{_id}}" class="ui-widget-content" >
+	<div class="videoPlayerContainer2 ui-widget-content" >
 	    <button class="delete" >&times;</button>
 	    <span id="span{{_id}}" class="text" >{{host}}</span>
-	    	<div id="resizable{{_id}}" class="ui-widget-content">
+	    	<div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
 	    		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
 	    	</div>
-			<div id="playerButtons{{_id}}">
+			<div class="buttonPanel" id="playerButtons{{_id}}">
 			    <button class="btn btn-default" id="skipBack"> Skip Back </button>
 		        <button class="btn btn-default" id="rewind"> Rewind </button>
 		        <button class="btn btn-default" id="toggleRunning">Pause</button>

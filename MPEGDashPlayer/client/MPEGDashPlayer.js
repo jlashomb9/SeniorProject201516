@@ -1,3 +1,5 @@
+var videos = [];
+
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.body.helpers({
   dashplayers: function() {
@@ -78,12 +80,25 @@ TilingHelper = {
 
 Template.tiling.events({
   'click #tile': function(){
-    var numVideos = Dashplayers.find().count();
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    var playerWidth = TilingHelper.getWidthForVideo(w,numVideos);
-    var playerHeight = TilingHelper.getHeightForVideo(h,numVideos);
-    TilingHelper.toggleTiling(playerWidth,playerHeight);
+    // for(var i = 0; i < videos.length; i++){
+    //   $(videos[i]).remove();
+    // }
+
+    for(var i = 0; i < videos.length; i++) {
+      $(videos[i]).css({
+        'top':'0',
+        'left':'0'
+      });
+      // $(videos[i]).appendTo($("#display"));
+    }
+
+
+    // var numVideos = Dashplayers.find().count();
+    // var w = window.innerWidth;
+    // var h = window.innerHeight;
+    // var playerWidth = TilingHelper.getWidthForVideo(w,numVideos);
+    // var playerHeight = TilingHelper.getHeightForVideo(h,numVideos);
+    // TilingHelper.toggleTiling(playerWidth,playerHeight);
   }
 });
 Template.tiling.helpers({
@@ -103,17 +118,13 @@ Template.dashplayer.helpers({
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
       // });
-     $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0});
+     $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
      $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:100});
    $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
-  
-    //shapeshift
-    $(".container").shapeshift({
-      minColumns: 3
-    });
-    $(".container").trigger("ss-rearrange");
+
     //adding id to the mongodb entry
     TilingHelper.addingParentData(Template.parentData(0)._id, url);
+    videos.push("#draggable"+Template.parentData(0)._id);
     },
   );
   
@@ -127,6 +138,7 @@ Template.dashplayer.helpers({
     },
     "click .delete": function () {
       Dashplayers.remove(this._id);
+      videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
     },
   
     'click #skipBack': function () {
@@ -178,6 +190,3 @@ Template.dashplayer.helpers({
           }
       },
   });
-
-var x = Dashplayers.find({});
-console.log(x);
