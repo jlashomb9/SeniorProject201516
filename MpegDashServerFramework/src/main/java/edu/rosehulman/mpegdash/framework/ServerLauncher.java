@@ -5,7 +5,10 @@ import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,6 +18,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import edu.rosehulman.mpegdash.constants.Constants;
+import edu.rosehulman.mpegdash.framework.Server.Status;
 
 public class ServerLauncher {
 
@@ -25,11 +29,11 @@ public class ServerLauncher {
 
     private Thread directoryThread;
 
-    public ServerLauncher() {
+    public ServerLauncher(boolean autoLaunch) {
         addShutdownHook();
         servers = new HashMap<String, Server>();
 
-        this.directoryMonitor = new DirectoryMonitor(this);
+        this.directoryMonitor = new DirectoryMonitor(this, autoLaunch);
 
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();
@@ -67,19 +71,26 @@ public class ServerLauncher {
         }));
     }
 
-    protected Void addServer(String name, String command) {
-        if (servers.containsKey(name)) {
-            LOGGER.info("Server with that name already exists... Updating server configuration");
-            final Server server = servers.get(name);
-            return Server.runWithBackoff(3, new Callable<Void>() {
-                public Void call() {
-                    server.update();
-                    return null;
-                }
-            });
+    protected Void addServer(String videoTitle, String command, int port, String videoFile) {
+        if (servers.containsKey(videoFile)) {
+            System.out.println("Server with that name already exists.");
+            return null;
         }
-        final Server server = new Server(command);
-        servers.put(name, server);
+        final Server server = new Server(command, videoTitle, port, videoFile);
+        servers.put(videoTitle, server);
+        return null;
+    }
+
+    protected Void launchServer(String serverName) {
+        System.out.println("launching server: " + serverName);
+        final Server server = servers.get(serverName);
+        if(!servers.containsKey(serverName)){
+            System.out.println("Server: [" + serverName + "] does not exist");
+            return null;
+        }
+        if(server.getStatus() == Status.ENABLED){
+            return null;
+        }
         return Server.runWithBackoff(3, new Callable<Void>() {
             public Void call() {
                 new Thread(server).start();
@@ -88,13 +99,31 @@ public class ServerLauncher {
         });
     }
 
+    public Void shutdownServer(String serverName) {
+        System.out.println("shutting down server: " + serverName);
+        if(!servers.containsKey(serverName)){
+            System.out.println("Server: [" + serverName + "] does not exist");
+            return null;
+        }
+        final Server server = servers.get(serverName);
+        if(server.getStatus() == Status.DISABLED){
+            return null;
+        }
+        return server.shutdown();
+    }
+
+    public Void restartServer(String serverName) {
+        shutdownServer(serverName);
+        return launchServer(serverName);
+    }
+
     // NOT UP TO-DATE
-    protected Void addServer(String filename) {
+    protected String addServer(String filename) {
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getParentFile().getParentFile().getAbsolutePath();
-        String videoTitle = null;
+        String videoFile = null;
         int port = 0;
-        String videoName = null;
+        String videoTitle = null;
         String dashcastCommand = "DashCast -v ";
         try {
             File inputFile = new File(filename);
@@ -105,19 +134,20 @@ public class ServerLauncher {
             doc.getDocumentElement().normalize();
             port = Integer.parseInt(doc.getElementsByTagName("Port").item(0).getTextContent());
             videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
-            videoName = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
-            dashcastCommand += videoName + " ";
+            videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
+            dashcastCommand += videoTitle + " ";
             dashcastCommand += doc.getElementsByTagName("DashcastParameters").item(0).getTextContent();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoName " + videoName
+        LOGGER.debug("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoFile " + videoFile
                 + "\ndashcastCommand: " + dashcastCommand);
 
-        System.out.println(Constants.getDashcastLaunchVideoCommand(port, videoName, dashcastCommand));
-//        return null;
-        return addServer(videoTitle,
-                Constants.getDashcastLaunchVideoCommand(port, videoName, dashcastCommand));
+        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand));
+        // return null;
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand), port,
+                videoFile);
+        return videoTitle;
     }
 
     protected void removeServer(String filename) {
@@ -129,4 +159,63 @@ public class ServerLauncher {
             }
         });
     }
+
+    public void printAllServers() {
+        Columns columns = new Columns();
+        columns.addLine("TITLE", "PORT", "VIDEO_FILE", "STATUS");
+        columns.addLine("_____", "____", "__________", "______");
+        for (String serverName : servers.keySet()) {
+            Server server = servers.get(serverName);
+            columns.addLine(server.getTitle(), "" + server.getPort(), server.getVideoFile(), "" + server.getStatus());
+        }
+        columns.print();
+    }
+
+    public class Columns {
+
+        List<List<String>> lines = new ArrayList<>();
+        List<Integer> maxLengths = new ArrayList<>();
+        int numColumns = -1;
+
+        public Columns addLine(String... line) {
+            if (numColumns == -1) {
+                numColumns = line.length;
+                for (int i = 0; i < numColumns; i++) {
+                    maxLengths.add(0);
+                }
+            }
+            if (numColumns != line.length) {
+                throw new IllegalArgumentException();
+            }
+            for (int i = 0; i < numColumns; i++) {
+                maxLengths.set(i, Math.max(maxLengths.get(i), line[i].length()));
+            }
+            lines.add(Arrays.asList(line));
+            return this;
+        }
+
+        public void print() {
+            System.out.println(toString());
+        }
+
+        public String toString() {
+            String result = "";
+            for (List<String> line : lines) {
+                for (int i = 0; i < numColumns; i++) {
+                    result += pad(line.get(i), maxLengths.get(i) + 1);
+                }
+                result += System.lineSeparator();
+            }
+            return result;
+        }
+
+        private String pad(String word, int newLength) {
+            while (word.length() < newLength) {
+                word += " ";
+            }
+            return word;
+        }
+    }
+
+
 }

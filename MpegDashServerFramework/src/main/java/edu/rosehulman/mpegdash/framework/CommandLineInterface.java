@@ -1,5 +1,7 @@
 package edu.rosehulman.mpegdash.framework;
 
+import java.util.Scanner;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -23,7 +25,43 @@ public class CommandLineInterface {
             cmd.usage();
             return;
         }
-        ServerLauncher launcher = new ServerLauncher();
+        
+        String imageName = null;
+        if (params.getSetup()) {
+            imageName = params.getImageName();
+            DockerCommandLauncher.setupImage(imageName);
+            System.exit(0);
+            return;
+        }
+        
+        ServerLauncher launcher = new ServerLauncher(params.getAutoLaunch());
+        Scanner scanner = new Scanner(System.in);
+        String line = null;
+        printHelpMessage();
+        
+        while(scanner.hasNext()){
+            line = scanner.nextLine();
+            if(line.equals("quit")){
+                System.exit(0);
+            }else if(line.equals("feeds")){
+                launcher.printAllServers();
+            }else if(line.startsWith("launch")){
+                launcher.launchServer(line.substring(7, line.length()));
+            }else if(line.startsWith("shutdown")){
+                launcher.shutdownServer(line.substring(9, line.length()));
+            }else if(line.startsWith("restart")){
+                launcher.restartServer(line.substring(8, line.length()));
+            }
+        }
+    }
+    
+    private static void printHelpMessage(){
+        System.out.println(
+                "Valid commands: \n" +
+                "quit - exits the current program and shuts down all video feeds\n" +
+                "feeds - prints out a list of video feeds and their details" +
+                "launch [video title] - launches the specified server if not enabled" +
+                "shutdown [video title] - shuts down the specified server if not disabled");
     }
 
 }

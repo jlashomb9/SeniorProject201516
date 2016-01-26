@@ -32,4 +32,10 @@ public class Constants {
         String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
         return srProjRoot += "MpegDashServerFramework/" + PATH_TO_SERVER_CONFIGURATIONS;
     }
+
+    public static String getDashcastSetupCommand(String name) {
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
+        return "Docker build -f " + srProjRoot + "DockerFile" + (name != null ? " -t " + name : "") + " .";
+    }
 }

@@ -2,6 +2,7 @@ package edu.rosehulman.mpegdash.framework;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
@@ -23,7 +24,7 @@ public class DirectoryMonitor implements Runnable {
     public String currentDir;
     public ServerLauncher serverLauncher;
 
-    public DirectoryMonitor(ServerLauncher serverLauncher) {
+    public DirectoryMonitor(ServerLauncher serverLauncher, boolean autoLaunch) {
         try {
             watcher = FileSystems.getDefault().newWatchService();
         } catch (IOException e) {
@@ -34,7 +35,10 @@ public class DirectoryMonitor implements Runnable {
         final File folder = new File(absPath);
         dir = folder.toPath();
         for (final File fileEntry : folder.listFiles()) {
-            serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
+            String videoTitle = serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
+            if (autoLaunch) {
+                serverLauncher.launchServer(videoTitle);
+            }
         }
         this.serverLauncher = serverLauncher;
     }
@@ -54,7 +58,7 @@ public class DirectoryMonitor implements Runnable {
                     if (kind == StandardWatchEventKinds.OVERFLOW) {
                         continue;
                     } else if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
-                        serverLauncher.addServer(filename.toString());
+                        serverLauncher.addServer(dir + File.separator + filename.toString());
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
                         serverLauncher.removeServer(filename.toString());
                     }

@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.LogManager;
@@ -21,9 +24,12 @@ public class Server implements Runnable{
     private static final Logger LOGGER = LogManager.getLogger(Server.class);
     private String launchCommand;
     private Process ls = null;
+    private String name;
+    private int port;
+    private String videoFile;
 
     enum Status {
-        DISABLED, ENCRYPTING, ENABLED, LAUNCHING,
+        DISABLED, ENCRYPTING, ENABLED
     };
 
     private Status status;
@@ -33,52 +39,62 @@ public class Server implements Runnable{
         this.launchCommand = "";
     }
 
-    public Server(String launchCommand) {
+    public Server(String launchCommand, String name, int port, String videoFile) {
         status = Status.DISABLED;
         this.launchCommand = launchCommand;
+        this.name = name;
+        this.port = port;
+        this.videoFile = videoFile;
+    }
+    
+    public int getPort(){
+        return port;
+    }
+    
+    public String getTitle(){
+        return name;
+    }
+    
+    public String getVideoFile(){
+        return videoFile;
     }
 
     // will return true on successful launch, false on failed launch.
     public void run() {
-        parseXML();
         BufferedReader input = null;
         String line = null;
         BufferedReader error = null;
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
 
         status = Status.ENCRYPTING;
-        try {
-            ls = Runtime.getRuntime().exec(cmd);
-            input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
-            error = new BufferedReader(new InputStreamReader(ls.getErrorStream()));
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            System.exit(1);
-        }
-        try {
-            while ((line = input.readLine()) != null)
-                System.out.println(line);
-
-            while ((line = error.readLine()) != null)
-                System.out.println(line);
-
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            System.exit(0);
-        }
+//        try {
+//            ls = Runtime.getRuntime().exec(cmd);
+//            input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
+//            error = new BufferedReader(new InputStreamReader(ls.getErrorStream()));
+//        } catch (IOException e1) {
+//            e1.printStackTrace();
+//            System.exit(1);
+//        }
+//        try {
+//            while ((line = input.readLine()) != null)
+//                System.out.println(line);
+//
+//            while ((line = error.readLine()) != null)
+//                System.out.println(line);
+//
+//        } catch (IOException e1) {
+//            e1.printStackTrace();
+//            System.exit(1);
+//        }
 
         status = Status.ENABLED;
-        // start encrypting
-        // then start launching server
-        // then change to enabled
-    }
-
-    private void parseXML() {
-
     }
 
     // will return true on successful shutdown, false on failed shutdown.
     public Void shutdown() {
+        if(ls != null){
+            ls.destroy();
+        }
         status = Status.DISABLED;
         return null;
     }
@@ -123,5 +139,6 @@ public class Server implements Runnable{
         }
         return null;
     }
-
+    
 }
+
