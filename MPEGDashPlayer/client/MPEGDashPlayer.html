@@ -1,55 +1,52 @@
 <head>
 	<title>Senior Project 2015 MPEG DASH Project</title>
 	<script src="dash.webm.debug.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
 	<script src="http://download.remysharp.com/mousehold.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
-	<!-- <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="bootstrap.js"></script>
-	<link rel="stylesheet" type="text/css" href="bootstrap.css" /> -->
-	
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  	<script src="jquery.livequery.js"></script>
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  	<link rel="stylesheet" href="/resources/demos/style.css">	
 </head>
 <body>
-	<div class="container-fluid">
-	<header>
-		<h1>MPEG Dash Video Player</h1>
-		<form class="new-feed">
-			<input type="text" name="text" placeholder="Add host" />
-		</form>
-	</header>
-		<div class="row">
-			<div class="col-md-5">
-			<h1>
-				{{#each dashplayers}}
-					{{> dashplayer}}
-				{{/each}}
-			</h1>
-			</div>
-			<!--<div class=".col-md-3">
-				{{> videoFeedSelector}}
-			</div>!-->
-		</div> 
+
+	<div class="header-cont">
+		<div class="center-controls">
+			<h1>MPEG Dash Video Player</h1>
+			<form class="new-feed">
+				<input type="text" name="text" placeholder="Add host" />
+			</form>
+			{{> tiling}}
+		</div>
+	</div>
+	<div id="display" class="displayScreen">
+			{{#each dashplayers}}
+				<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
+			{{/each}}
 	</div>
 </body>
+  
+<template name="tiling">
+	<button class="btn btn-default" id="tile">Tile Videos</button>
+</template>
 
 <template name="dashplayer">
-    <button class="delete">&times;</button>
-    <span class="text">{{host}}</span>
-		<!--<div id="mpegdashplayer{{_id}}">!-->
-		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
-		<div id="playerButtons">
-		    <button class="btn btn-default" id="skipBack"> Skip Back </button>
-	        <button class="btn btn-default" id="rewind"> Rewind </button>
-	        <button class="btn btn-default" id="toggleRunning">Pause</button>
-	        <button class="btn btn-default" id="fastForward"> Fast Forward </button>
-	        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
-	        <button class="btn btn-default" id="expand">Expand</button>
-		</div>
-		<!--</div>!-->
-		{{startVideo(host)}}
+	<div class="videoPlayerContainer2 ui-widget-content" >
+	    <button class="delete" >&times;</button>
+	    <span id="span{{_id}}" class="text" >{{host}}</span>
+	    	<div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
+	    		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
+	    	</div>
+			<div class="buttonPanel" id="playerButtons{{_id}}">
+			    <button class="btn btn-default" id="skipBack"> Skip Back </button>
+		        <button class="btn btn-default" id="rewind"> Rewind </button>
+		        <button class="btn btn-default" id="toggleRunning">Pause</button>
+		        <button class="btn btn-default" id="fastForward"> Fast Forward </button>
+		        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
+		        <button class="btn btn-default" id="expand">Expand</button>
+	 		</div>
+	</div>
 </template>
 
 <template name="videoFeedSelector">

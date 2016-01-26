@@ -1,17 +1,18 @@
+var videos = [];
+
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.body.helpers({
-	dashplayers: function() {
-		return Dashplayers.find({});
-	}
+  dashplayers: function() {
+    return Dashplayers.find({});
+  }
 });
-
 Template.body.events({
     'submit .new-feed': function (event) {
       event.preventDefault();
  
       // Get value from form element
       var text = event.target.text.value;
-		console.log(text);
+    console.log(text);
       // Insert a task into the collection
       Dashplayers.insert({
         host: text
@@ -22,6 +23,7 @@ Template.body.events({
     }
   });
 /*
+we can probably remove this
 DashPlayerHelpers = {
   skipTotheBegining: function(rewindSpeed) { 
       var video = document.getElementById('videoPlayer');   
@@ -42,48 +44,90 @@ DashPlayerHelpers = {
     }
 }
 */
-  Template.dashplayer.helpers({
-    startVideo: function (url) {
-	console.log(Template.parentData(0)._id);
-	var video_id = "videoPlayer"+Template.parentData(0)._id;
-	console.log(video_id);
-	console.log('#videoPlayer'+Template.parentData(0)._id);
-	var player = document.getElementById("mpegdashplayer"+Template.parentData(0)._id);
-	console.log($("#videoPlayer"+Template.parentData(0)._id));
-	//var video = document.createElement('video');
-	$("#videoPlayer"+Template.parentData(0)._id).ready(function() {
-        var video = document.getElementById(video_id);
-		//player.appendhild(video);
-		console.log(video);
-		
-        //var url = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
-        // var url = "http://137.112.104.147:8008/output/dashcast.mpd";
-        VideoPlayBackHelper.createVideo(video, url);
-		
-		VideoPlayBackHelper.videoStartup(video);
-		console.log(video);
+TilingHelper = {
+  getWidthForVideo: function(w,numVideos){
+    return w/numVideos;
+  },
+  getHeightForVideo: function(h,numVideos){
+    return h/numVideos;
+  },
+  toggleTiling: function(playerWidth, playerHeight){
+    Dashplayers.find({}).forEach(
+      function (u){
+        console.log(u.parentData);
+        var div_id = "#draggable"+u.parentData;
+        var draggable_div = document.getElementById(div_id);
+        console.log(playerWidth);
+        $(div_id).width(playerWidth);
+        $(div_id).height(playerHeight);
+        // draggable_div.width = playerWidth;
+        // draggable_div.height = playerHeight;
+        // console.log(draggable_div.width);
+
       });
-     
-    },
-	/*
-    updateBar: function(){
-      var video = document.getElementById('videoPlayer');
-      var outer = document.createElement("div");
-      outer.class = "progress";
-      var bar = document.createElement("div");
-      bar.class = "progress-bar progress-bar-striped active";
-      bar.id = "progressBar";
-      bar.style = "color:black"
-      var time = video.currentTime;
-      bar.text = time + "seconds";      
-      outer.appendChild(bar); 
-      document.body.appendChild(outer);
-    },
-    isRunning: function(){
-      return document.getElementById("toggleRunning") === "Play";
+  },
+  addingParentData: function(parentData,url){  
+      var player = Dashplayers.findOne({_id: parentData});
+      Dashplayers.update({_id: parentData},
+        {
+          host: url,
+          parentData: parentData
+      });
+      console.log(player);
+  }
+
+}
+
+Template.tiling.events({
+  'click #tile': function(){
+    // for(var i = 0; i < videos.length; i++){
+    //   $(videos[i]).remove();
+    // }
+
+    for(var i = 0; i < videos.length; i++) {
+      $(videos[i]).css({
+        'top':'0',
+        'left':'0'
+      });
+      // $(videos[i]).appendTo($("#display"));
     }
-	*/
+
+
+    // var numVideos = Dashplayers.find().count();
+    // var w = window.innerWidth;
+    // var h = window.innerHeight;
+    // var playerWidth = TilingHelper.getWidthForVideo(w,numVideos);
+    // var playerHeight = TilingHelper.getHeightForVideo(h,numVideos);
+    // TilingHelper.toggleTiling(playerWidth,playerHeight);
+  }
+});
+Template.tiling.helpers({
+ 
+});
+
+Template.dashplayer.helpers({
+
   });
+  Template.dashplayer.onRendered(function () {
+    var span_id = "span"+Template.parentData(0)._id;
+    var video_id = "videoPlayer"+Template.parentData(0)._id;
+    var url = document.getElementById(span_id).innerText;  //$( span_id + ' span').text();
+    
+    // $("#videoPlayer"+Template.parentData(0)._id).ready(function() {
+        var video = document.getElementById(video_id);
+        VideoPlayBackHelper.createVideo(video, url);
+        VideoPlayBackHelper.videoStartup(video);
+      // });
+     $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
+     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:100});
+   $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
+
+    //adding id to the mongodb entry
+    TilingHelper.addingParentData(Template.parentData(0)._id, url);
+    videos.push("#draggable"+Template.parentData(0)._id);
+    },
+  );
+  
 
   Template.dashplayer.events({
   
@@ -94,6 +138,7 @@ DashPlayerHelpers = {
     },
     "click .delete": function () {
       Dashplayers.remove(this._id);
+      videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
     },
   
     'click #skipBack': function () {
@@ -103,24 +148,13 @@ DashPlayerHelpers = {
     'click #rewind': function (event) {
         $("#rewind").mousehold(300, function(){
           var video = document.getElementById('videoPlayer'+this._id);
+          console.log(video);
           video.currentTime -= .5;
         });   
     },
-    'click #expand': function(){
-        var video = document.getElementById('videoPlayer'+this._id);
-          if(document.getElementById("expand").innerHTML == "Expand"){
-              video.height = 1000;
-              video.width = 1200;
-              document.getElementById("expand").innerHTML = "Shrink";
-          }else{
-              video.height = 400
-              video.width = 520;
-              document.getElementById("expand").innerHTML = "Expand";
-          }
-    },
     'click #toggleRunning':function(){
        var video = document.getElementById('videoPlayer'+this._id);
-	   console.log(video);
+       console.log(video);
         if(document.getElementById('toggleRunning').innerHTML == "Pause"){
             document.getElementById('toggleRunning').innerHTML = "Play";
             video.pause();

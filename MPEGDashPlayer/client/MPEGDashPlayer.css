@@ -1,10 +1,75 @@
 /* CSS declarations go here */
+
 body {
-   background:#0066CC !important;
+   background:#004756 !important;
 }
-h1 {
-	color:white;
+/*h1 {
+    color:white;
 }
 h3 {
-	color:white;
+    color:white;
+}*/
+#draggable {
+    padding: 0.5em;
+}
+
+
+.header-cont {
+    width:100%;
+    position:fixed;
+    padding: 0;
+    background-size: 100%;
+    top:0px;
+    left:0px;
+    z-index:100;
+    height:150px;
+    background:#F0F0F0;
+    border:1px solid #CCC;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-controls {
+    display: table;
+    margin: 0 auto;
+}
+
+.resizable { 
+    font-size: 0;   
+}
+
+video {
+    width:100%;
+    height:100%;
+    max-height: none;
+    max-width: none;
+}
+
+.videoPlayerContainer1 {
+    position:relative;
+    display:inline-block;
+}
+
+.videoPlayerContainer2 {
+	display:inline-block;
+}
+
+.videoPlayerContainer3 {
+	width:550px;
+}
+
+.displayScreen {
+	position:fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	padding-top:175px;
+	padding-bottom:25px;
+	margin:0px;
+	background-color:#ABC;
+}
+
+.buttonPanel {
+	display:inline-block;
 }
