@@ -143,12 +143,24 @@ Template.dashplayer.helpers({
         rewindButton.appendChild(t);                
         rewindButton.class = "btn btn-default";
         rewindButton.id = "rewind"+ Template.parentData(0)._id;
-        var rewindJquery = $("#rewind"+Template.parentData(0)._id); 
-        rewindButton.addEventListener("click", function() {
-            rewindJquery.mousehold(300, function(){
-              video.currentTime -= .5;
-          });   
-        });
+		var rwinterval;
+		rewindButton.addEventListener('mousedown',function(e) {
+			rwinterval = setInterval(function() {
+				if(video.currentTime == 0){
+					clearInterval(rwinterval);
+					video.pause();
+				}
+				else{
+					video.currentTime += -1.2;
+				}
+			},360);
+		});
+		rewindButton.addEventListener('mouseup',function(e) {
+			clearInterval(rwinterval);
+		});
+		rewindButton.addEventListener('mouseout',function(e) {
+			clearInterval(rwinterval);
+		});
         //skip backwards
         var skipBackButton = document.createElement("BUTTON");        // Create a <button> element
         var t = document.createTextNode("|<");       // Create a text node
@@ -173,13 +185,18 @@ Template.dashplayer.helpers({
         fastForwardButton.appendChild(t);                
         fastForwardButton.class = "btn btn-default";
         fastForwardButton.id = "fastForward"+ Template.parentData(0)._id;
-        fastForwardButton.addEventListener("click", function() {
-          if(video.playbackRate == 20.0){
-              video.playbackRate = 1.0;
-          }else{
-               video.playbackRate = 20.0;
-          }
-        });
+		var ffinterval;
+		fastForwardButton.addEventListener('mousedown',function(e) {
+			ffinterval = setInterval(function() {
+				video.currentTime += 1.2;
+			},360);
+		});
+		fastForwardButton.addEventListener('mouseup',function(e) {
+			clearInterval(ffinterval);
+		});
+		fastForwardButton.addEventListener('mouseout',function(e) {
+			clearInterval(ffinterval);
+		});
         //full screen
         var fullScreenButton = document.createElement("BUTTON");        // Create a <button> element
         var t = document.createTextNode("Full Screen");       // Create a text node
@@ -294,7 +311,7 @@ Template.dashplayer.helpers({
         VideoPlayBackHelper.videoStartup(video);
       // });
      $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:100});
+     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:350});
      $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
     //adding id to the mongodb entry
