@@ -55,7 +55,8 @@ video {
 }
 
 .videoPlayerContainer3 {
-	width:550px;
+	width: 640px;
+    height: 365px;
 }
 
 .displayScreen {
@@ -72,4 +73,18 @@ video {
 
 .buttonPanel {
 	display:inline-block;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button {
+    background: rgba(0,0,0,.5);
+    border: 0;
+    color: #EEE;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
 }
