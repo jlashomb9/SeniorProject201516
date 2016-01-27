@@ -75,6 +75,10 @@ video {
 	display:inline-block;
 }
 
+.videoHeaderPanel {
+	display:inline-block;
+}
+
 button:hover {
     cursor: pointer;
 }

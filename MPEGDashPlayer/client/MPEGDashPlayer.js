@@ -296,6 +296,26 @@ Template.dashplayer.helpers({
           "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
           "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
         });
+		
+		$("#videoHeader"+Template.parentData(0)._id).css({
+          "position": "absolute",
+          "top": 0,
+          "left": 0,
+          "right": 0,
+          "padding": "5px",
+          "opacity": 0,
+          "-webkit-transition": "opacity .3s",
+          "-moz-transition": "opacity .3s",
+          "-o-transition": "opacity .3s",
+          "-ms-transition": "opacity .3s",
+          "transition": "opacity .3s",
+          "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+        });
         // $("#"+video_id+":hover "+"#playerButtons"+Template.parentData(0)._id).css({"opacity": .9});
         var jqueryVideo = $("#draggable"+Template.parentData(0)._id);
         var jqueryPlayerButtons = $("#playerButtons"+Template.parentData(0)._id);
@@ -304,6 +324,14 @@ Template.dashplayer.helpers({
             jqueryPlayerButtons.css({"opacity": .9});
           },function() {
             jqueryPlayerButtons.css({"opacity": 0});
+        });
+		
+		var jqueryVideoHeader = $("#videoHeader"+Template.parentData(0)._id);
+        jqueryVideo.hover(
+          function() {
+            jqueryVideoHeader.css({"opacity": .9});
+          },function() {
+            jqueryVideoHeader.css({"opacity": 0});
         });
 
 
