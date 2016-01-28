@@ -77,9 +77,10 @@ public class Server implements Runnable{
             System.exit(1);
         }
         try {
-            while ((line = input.readLine()) != null)
+            while ((line = input.readLine()) != null){
                 System.out.println(line);
                 imageID = line;
+            }
 
             while ((line = error.readLine()) != null)
                 System.out.println(line);
