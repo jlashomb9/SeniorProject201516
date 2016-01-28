@@ -18,7 +18,7 @@ public class Constants {
         // return "ls -l | echo hi | echo hi | echo hi";
         return "sudo docker run -p " + port + ":" + port + " -v " + pathToServerConfigurations()
                 + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
-                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + " -out " + videoTitle + "\"'";
+                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\"'";
     }
     
     public static String pathToServerConfigurations(){
