@@ -135,7 +135,7 @@ public class ServerLauncher {
             port = Integer.parseInt(doc.getElementsByTagName("Port").item(0).getTextContent());
             videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
             videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
-            dashcastCommand += videoTitle + " ";
+            dashcastCommand += videoFile + " ";
             dashcastCommand += doc.getElementsByTagName("DashcastParameters").item(0).getTextContent();
         } catch (Exception e) {
             e.printStackTrace();
