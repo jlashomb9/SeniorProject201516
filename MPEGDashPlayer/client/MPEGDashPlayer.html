@@ -32,20 +32,22 @@
 </template>
 
 <template name="dashplayer">
-	<div class="videoPlayerContainer2 ui-widget-content" >
-	    <button class="delete" >&times;</button>
-	    <span id="span{{_id}}" class="text" >{{host}}</span>
-	    	<div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
-	    		<video id="videoPlayer{{_id}}" width="520" height="400"></video>
-	    	</div>
-			<div class="buttonPanel" id="playerButtons{{_id}}">
-			    <button class="btn btn-default" id="skipBack"> Skip Back </button>
-		        <button class="btn btn-default" id="rewind"> Rewind </button>
-		        <button class="btn btn-default" id="toggleRunning">Pause</button>
-		        <button class="btn btn-default" id="fastForward"> Fast Forward </button>
-		        <button class="btn btn-default" id="skipForward"> Skip Forward </button>
-		        <button class="btn btn-default" id="expand">Expand</button>
-	 		</div>
+	<div class="videoPlayerContainer2 ui-widget-content">
+	    <div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
+	    	<video id="videoPlayer{{_id}}" width="520" height="400"></video>
+	    </div>
+		<div class="videoHeaderPanel" id="videoHeader{{_id}}">
+			<button class="delete">&times;</button>
+			<span id="span{{_id}}" class="text" style="color:white">{{host}}</span>
+		</div>
+		<div class="buttonPanel" id="playerButtons{{_id}}">
+			<!-- <button class="btn btn-default" id="skipBack"> Skip Back </button>
+		    <button class="btn btn-default" id="rewind"> Rewind </button>
+		    <button class="btn btn-default" id="toggleRunning">Pause</button>
+		    <button class="btn btn-default" id="fastForward"> Fast Forward </button>
+		    <button class="btn btn-default" id="skipForward"> Skip Forward </button>
+		    <button class="btn btn-default" id="expand">Expand</button> -->
+	 	</div>
 	</div>
 </template>
 
