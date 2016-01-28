@@ -27,6 +27,7 @@ public class Server implements Runnable{
     private String name;
     private int port;
     private String videoFile;
+    private String imageID;
 
     enum Status {
         DISABLED, ENCRYPTING, ENABLED
@@ -77,7 +78,7 @@ public class Server implements Runnable{
         }
         try {
             while ((line = input.readLine()) != null)
-                System.out.println(line);
+                imageID = line;
 
             while ((line = error.readLine()) != null)
                 System.out.println(line);
@@ -90,11 +91,11 @@ public class Server implements Runnable{
     }
 
     public Void shutdown() {
+        status = Status.DISABLED;
+        String[] cmd = { "/bin/bash", "-c", Constants.getDashcastShutdownCommand(imageID)};
         if(ls != null){
             ls.destroy();
         }
-        System.out.println("it is destroyed.");
-        status = Status.DISABLED;
         return null;
     }
 

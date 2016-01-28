@@ -16,7 +16,7 @@ public class Constants {
 
     public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle) {
         // return "ls -l | echo hi | echo hi | echo hi";
-        return "sudo docker run -p " + port + ":" + port + " -v " + pathToServerConfigurations()
+        return "sudo docker run -d -p " + port + ":" + port + " -v " + pathToServerConfigurations()
                 + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
                 + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\"'";
     }
@@ -37,5 +37,9 @@ public class Constants {
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
         return "Docker build -f " + srProjRoot + "DockerFile" + (name != null ? " -t " + name : "") + " .";
+    }
+
+    public static String getDashcastShutdownCommand(String imageID) {
+        return "sudo docker kill " + imageID;
     }
 }
