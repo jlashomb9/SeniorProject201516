@@ -94,6 +94,11 @@ public class Server implements Runnable{
     public Void shutdown() {
         status = Status.DISABLED;
         String[] cmd = { "/bin/bash", "-c", Constants.getDashcastShutdownCommand(imageID)};
+        try {
+            Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if(ls != null){
             ls.destroy();
         }
