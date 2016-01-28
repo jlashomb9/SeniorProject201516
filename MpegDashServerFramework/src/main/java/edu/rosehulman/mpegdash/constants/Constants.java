@@ -14,11 +14,11 @@ public class Constants {
     public static final int INITIAL_BACKOFF = 128;
     public static final int WAITING_PERIOD_FOR_THREAD_TERMINATION_SECONDS = 10;
 
-    public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand) {
+    public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle) {
         // return "ls -l | echo hi | echo hi | echo hi";
         return "sudo docker run -p " + port + ":" + port + " -v " + pathToServerConfigurations()
                 + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
-                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\"'";
+                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + " -out " + videoTitle + "\"'";
     }
     
     public static String pathToServerConfigurations(){

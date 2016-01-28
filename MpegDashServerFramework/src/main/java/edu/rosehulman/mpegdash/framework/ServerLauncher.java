@@ -143,9 +143,9 @@ public class ServerLauncher {
         LOGGER.debug("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoFile " + videoFile
                 + "\ndashcastCommand: " + dashcastCommand);
 
-        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand));
+        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle));
         // return null;
-        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand), port,
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle), port,
                 videoFile);
         return videoTitle;
     }
