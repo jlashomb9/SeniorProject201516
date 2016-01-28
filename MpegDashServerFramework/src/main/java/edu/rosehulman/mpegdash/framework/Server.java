@@ -93,6 +93,7 @@ public class Server implements Runnable{
         if(ls != null){
             ls.destroy();
         }
+        System.out.println("it is destroyed.");
         status = Status.DISABLED;
         return null;
     }
