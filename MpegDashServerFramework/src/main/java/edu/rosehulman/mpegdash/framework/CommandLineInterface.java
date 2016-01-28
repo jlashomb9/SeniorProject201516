@@ -51,6 +51,8 @@ public class CommandLineInterface {
                 launcher.shutdownServer(line.substring(9, line.length()));
             }else if(line.startsWith("restart")){
                 launcher.restartServer(line.substring(8, line.length()));
+            }else{
+                printHelpMessage();
             }
         }
     }
@@ -59,9 +61,9 @@ public class CommandLineInterface {
         System.out.println(
                 "Valid commands: \n" +
                 "quit - exits the current program and shuts down all video feeds\n" +
-                "feeds - prints out a list of video feeds and their details" +
-                "launch [video title] - launches the specified server if not enabled" +
-                "shutdown [video title] - shuts down the specified server if not disabled");
+                "feeds - prints out a list of video feeds and their details\n" +
+                "launch [video title] - launches the specified server if not enabled\n" +
+                "shutdown [video title] - shuts down the specified server if not disabled\n");
     }
 
 }
