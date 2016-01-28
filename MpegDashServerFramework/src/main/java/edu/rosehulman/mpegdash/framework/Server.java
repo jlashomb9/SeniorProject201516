@@ -63,29 +63,28 @@ public class Server implements Runnable{
         BufferedReader input = null;
         String line = null;
         BufferedReader error = null;
-        System.out.println(this.launchCommand);
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
 
         status = Status.ENCRYPTING;
-//        try {
-//            ls = Runtime.getRuntime().exec(cmd);
-//            input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
-//            error = new BufferedReader(new InputStreamReader(ls.getErrorStream()));
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
-//            System.exit(1);
-//        }
-//        try {
-//            while ((line = input.readLine()) != null)
-//                System.out.println(line);
-//
-//            while ((line = error.readLine()) != null)
-//                System.out.println(line);
-//
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
-//            System.exit(1);
-//        }
+        try {
+            ls = Runtime.getRuntime().exec(cmd);
+            input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
+            error = new BufferedReader(new InputStreamReader(ls.getErrorStream()));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            System.exit(1);
+        }
+        try {
+            while ((line = input.readLine()) != null)
+                System.out.println(line);
+
+            while ((line = error.readLine()) != null)
+                System.out.println(line);
+
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            System.exit(1);
+        }
 
         status = Status.ENABLED;
     }
