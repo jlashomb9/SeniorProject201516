@@ -354,7 +354,7 @@ Template.dashplayer.helpers({
         VideoPlayBackHelper.videoStartup(video);
       // });
      $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:350, handles: {'se': resizerBox} });
+     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:365, minWidth: 640, handles: {'se': resizerBox} });
      $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
     //adding id to the mongodb entry
