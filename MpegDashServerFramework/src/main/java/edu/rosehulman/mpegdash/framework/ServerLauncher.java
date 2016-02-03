@@ -1,6 +1,7 @@
 package edu.rosehulman.mpegdash.framework;
 
-import java.io.File;
+import java.net.URL;
+
 import org.w3c.dom.*;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
@@ -38,6 +39,7 @@ public class ServerLauncher {
     private DirectoryMonitor directoryMonitor;
     private Table table;
     private boolean autoLaunch;
+    private String ip;
 
     private Thread directoryThread;
 
@@ -49,6 +51,16 @@ public class ServerLauncher {
         DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
                 new DefaultAWSCredentialsProviderChain()));
         table = dynamoDB.getTable("mpegdash.csse.rose-hulman.edu");
+        BufferedReader in;
+        try {
+            URL whatismyip = new URL("http://checkip.amazonaws.com");
+            in = new BufferedReader(new InputStreamReader(
+                            whatismyip.openStream()));
+            ip = in.readLine(); //you get the IP as a String
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         this.directoryMonitor = new DirectoryMonitor(this, autoLaunch);
 
@@ -97,22 +109,16 @@ public class ServerLauncher {
         final Server server = new Server(command, videoTitle, port, videoFile);
         servers.put(videoTitle, server);
 
-        Item item;
+        Item item = new Item()
+                .withPrimaryKey("name", server.getName())
+                .withString("launchCommand", server.getLaunchCommand())
+                .withString("address", "http://" + ip + ":" + server.getPort() + "/" + server.getOutputFolder() + "/dashcast.mpd")
+                .withString("videoFile", server.getVideoFile());
         if(autoLaunch){
-            item = new Item()
-                    .withPrimaryKey("name", server.getName())
-                    .withString("launchCommand", server.getLaunchCommand())
-                    .withNumber("port", server.getPort())
-                    .withString("videoFile", server.getVideoFile())
-                    .withString("status", "ENABLED");
+            item = item.withString("status", "ENABLED");
     
         }else{
-            item = new Item()
-                    .withPrimaryKey("name", server.getName())
-                    .withString("launchCommand", server.getLaunchCommand())
-                    .withNumber("port", server.getPort())
-                    .withString("videoFile", server.getVideoFile())
-                    .withString("status", "DISABLED");
+            item = item.withString("status", "DISABLED");
         }
         table.putItem(item);
         return null;
@@ -134,7 +140,7 @@ public class ServerLauncher {
                 Item item = new Item()
                       .withPrimaryKey("name", server.getName())
                       .withString("launchCommand", server.getLaunchCommand())
-                      .withNumber("port", server.getPort())
+                      .withString("address", "http://" + ip + ":" + server.getPort() + "/" + server.getOutputFolder() + "/dashcast.mpd")
                       .withString("videoFile", server.getVideoFile())
                       .withString("status", "ENABLED");
         

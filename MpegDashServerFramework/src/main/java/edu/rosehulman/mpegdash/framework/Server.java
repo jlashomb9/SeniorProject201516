@@ -28,9 +28,10 @@ public class Server implements Runnable{
     private int port;
     private String videoFile;
     private String imageID;
+    private String outputFolder;
 
     enum Status {
-        DISABLED, ENCRYPTING, ENABLED
+        DISABLED, ENABLED
     };
 
     private Status status;
@@ -38,6 +39,7 @@ public class Server implements Runnable{
     public Server() {
         status = Status.DISABLED;
         this.launchCommand = "";
+        this.outputFolder = "output";
     }
 
     public Server(String launchCommand, String name, int port, String videoFile) {
@@ -46,6 +48,7 @@ public class Server implements Runnable{
         this.name = name;
         this.port = port;
         this.videoFile = videoFile;
+        this.outputFolder = "output";
     }
     
     public String getLaunchCommand(){
@@ -69,8 +72,6 @@ public class Server implements Runnable{
         String line = null;
         BufferedReader error = null;
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
-
-        status = Status.ENCRYPTING;
         try {
             ls = Runtime.getRuntime().exec(cmd);
             input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
@@ -153,6 +154,10 @@ public class Server implements Runnable{
             }
         }
         return null;
+    }
+
+    public String getOutputFolder() {
+        return outputFolder;
     }
     
 }
