@@ -1,6 +1,9 @@
 package edu.rosehulman.mpegdash.constants;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Constants {
     // -v since audio encoding is experiencing issues.

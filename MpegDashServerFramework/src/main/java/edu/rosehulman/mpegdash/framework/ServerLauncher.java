@@ -2,6 +2,16 @@ package edu.rosehulman.mpegdash.framework;
 
 import java.io.File;
 import org.w3c.dom.*;
+
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
+
 import javax.xml.parsers.*;
 import java.io.*;
 import java.nio.file.Path;
@@ -26,12 +36,19 @@ public class ServerLauncher {
 
     private HashMap<String, Server> servers;
     private DirectoryMonitor directoryMonitor;
+    private Table table;
+    private boolean autoLaunch;
 
     private Thread directoryThread;
 
     public ServerLauncher(boolean autoLaunch) {
         addShutdownHook();
+        this.autoLaunch = autoLaunch;
         servers = new HashMap<String, Server>();
+        
+        DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
+                new DefaultAWSCredentialsProviderChain()));
+        table = dynamoDB.getTable("mpegdash.csse.rose-hulman.edu");
 
         this.directoryMonitor = new DirectoryMonitor(this, autoLaunch);
 
@@ -48,6 +65,7 @@ public class ServerLauncher {
                     Runnable run = new Runnable() {
                         public void run() {
                             Server server = servers.get(key);
+                            table.deleteItem("name", server.getName());
                             server.shutdown();
                         }
                     };
@@ -78,6 +96,25 @@ public class ServerLauncher {
         }
         final Server server = new Server(command, videoTitle, port, videoFile);
         servers.put(videoTitle, server);
+
+        Item item;
+        if(autoLaunch){
+            item = new Item()
+                    .withPrimaryKey("name", server.getName())
+                    .withString("launchCommand", server.getLaunchCommand())
+                    .withNumber("port", server.getPort())
+                    .withString("videoFile", server.getVideoFile())
+                    .withString("status", "ENABLED");
+    
+        }else{
+            item = new Item()
+                    .withPrimaryKey("name", server.getName())
+                    .withString("launchCommand", server.getLaunchCommand())
+                    .withNumber("port", server.getPort())
+                    .withString("videoFile", server.getVideoFile())
+                    .withString("status", "DISABLED");
+        }
+        table.putItem(item);
         return null;
     }
 
@@ -94,6 +131,14 @@ public class ServerLauncher {
         return Server.runWithBackoff(3, new Callable<Void>() {
             public Void call() {
                 new Thread(server).start();
+                Item item = new Item()
+                      .withPrimaryKey("name", server.getName())
+                      .withString("launchCommand", server.getLaunchCommand())
+                      .withNumber("port", server.getPort())
+                      .withString("videoFile", server.getVideoFile())
+                      .withString("status", "ENABLED");
+        
+                table.putItem(item);
                 return null;
             }
         });
@@ -109,6 +154,13 @@ public class ServerLauncher {
         if(server.getStatus() == Status.DISABLED){
             return null;
         }
+        Item item = new Item()
+                .withPrimaryKey("name", server.getName())
+                .withString("launchCommand", server.getLaunchCommand())
+                .withNumber("port", server.getPort())
+                .withString("videoFile", server.getVideoFile())
+                .withString("status", "DISABLED");
+        table.putItem(item);
         return server.shutdown();
     }
 
@@ -166,7 +218,7 @@ public class ServerLauncher {
         columns.addLine("_____", "____", "__________", "______");
         for (String serverName : servers.keySet()) {
             Server server = servers.get(serverName);
-            columns.addLine(server.getTitle(), "" + server.getPort(), server.getVideoFile(), "" + server.getStatus());
+            columns.addLine(server.getName(), "" + server.getPort(), server.getVideoFile(), "" + server.getStatus());
         }
         columns.print();
     }

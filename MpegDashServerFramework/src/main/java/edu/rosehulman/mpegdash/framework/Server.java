@@ -48,11 +48,15 @@ public class Server implements Runnable{
         this.videoFile = videoFile;
     }
     
+    public String getLaunchCommand(){
+        return launchCommand;
+    }
+    
     public int getPort(){
         return port;
     }
     
-    public String getTitle(){
+    public String getName(){
         return name;
     }
     
@@ -64,7 +68,6 @@ public class Server implements Runnable{
         BufferedReader input = null;
         String line = null;
         BufferedReader error = null;
-        System.out.println(this.launchCommand);
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
 
         status = Status.ENCRYPTING;
@@ -109,6 +112,10 @@ public class Server implements Runnable{
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getStatusAsString() {
+        return status.toString();
     }
 
     public void update() {
