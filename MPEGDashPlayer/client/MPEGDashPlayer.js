@@ -243,6 +243,8 @@ Template.dashplayer.helpers({
           // Update the video volume
           video.volume = volumeBar.value;
         });
+		
+        
 
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
         //Appending all buttons
@@ -255,7 +257,11 @@ Template.dashplayer.helpers({
         buttonList.appendChild(fullScreenButton);
         buttonList.appendChild(volumeBar);
         
-
+		//adding something visible to the resizer
+		var resizeId = "resizer"+Template.parentData(0)._id;
+		var resizerBox = document.getElementById(resizeId);
+		
+		
         $("#playerButtons"+Template.parentData(0)._id).css({
           "position": "absolute",
 		  "z-index": 1,
@@ -283,6 +289,25 @@ Template.dashplayer.helpers({
           "top": 0,
           "left": 0,
           "right": 0,
+          "opacity": 0,
+          "-webkit-transition": "opacity .3s",
+          "-moz-transition": "opacity .3s",
+          "-o-transition": "opacity .3s",
+          "-ms-transition": "opacity .3s",
+          "transition": "opacity .3s",
+          "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+          "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+        });
+		
+		$("#resizer"+Template.parentData(0)._id).css({
+          "position": "absolute",
+		  "z-index": 2,
+          "bottom": 0,
+          "right": 0,
           "padding": "5px",
           "opacity": 0,
           "-webkit-transition": "opacity .3s",
@@ -297,6 +322,7 @@ Template.dashplayer.helpers({
           "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
           "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
         });
+		
         // $("#"+video_id+":hover "+"#playerButtons"+Template.parentData(0)._id).css({"opacity": .9});
         var jqueryVideo = $("#draggable"+Template.parentData(0)._id);
         var jqueryPlayerButtons = $("#playerButtons"+Template.parentData(0)._id);
@@ -315,12 +341,20 @@ Template.dashplayer.helpers({
             jqueryVideoHeader.css({"opacity": 0});
         });
 
+		var jqueryresizer = $("#resizer"+Template.parentData(0)._id);
+        jqueryresizer.hover(
+          function() {
+            jqueryresizer.css({"opacity": .9});
+          },function() {
+            jqueryresizer.css({"opacity": 0});
+        });
+		
 
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
       // });
      $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:350});
+     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:350, handles: {'se': resizerBox} });
      $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
     //adding id to the mongodb entry
