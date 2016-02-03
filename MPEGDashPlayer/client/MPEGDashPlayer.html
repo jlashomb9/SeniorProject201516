@@ -10,23 +10,38 @@
   	<link rel="stylesheet" href="/resources/demos/style.css">	
 </head>
 <body>
-
 	<div class="header-cont">
 		<div class="center-controls">
 			<h1>MPEG Dash Video Player</h1>
+			<div>
+				<div style="display: inline-block;">
+					<a href="{{ pathFor 'videoManager'}}"> 
+	                    <li class="tag" role="presentation">Timesheet</li>
+	                </a>
+	            </div>
+	            <div style="display: inline-block;">
+	                <a href="{{ pathFor 'listOfVideos'}}"> 
+	                    <li class="tag" role="presentation">Video List</li>
+	                </a>
+				</div>
+			</div>
 			<form class="new-feed">
 				<input type="text" name="text" placeholder="Add host" />
 			</form>
 			{{> tiling}}
 		</div>
 	</div>
-	<div id="display" class="displayScreen">
-			{{#each dashplayers}}
-				<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
-			{{/each}}
-	</div>
+			
 </body>
-  
+
+  <template name="listOfVideos">
+	<div id="display" class="displayScreen">
+		{{#each dashplayers}}
+			<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
+		{{/each}}
+	</div>
+  </template>
+
 <template name="tiling">
 	<button class="btn btn-default" id="tile">Tile Videos</button>
 </template>
@@ -40,14 +55,7 @@
 			<button class="delete">&times;</button>
 			<span id="span{{_id}}" class="text" style="color:white">{{host}}</span>
 		</div>
-		<div class="buttonPanel" id="playerButtons{{_id}}">
-			<!-- <button class="btn btn-default" id="skipBack"> Skip Back </button>
-		    <button class="btn btn-default" id="rewind"> Rewind </button>
-		    <button class="btn btn-default" id="toggleRunning">Pause</button>
-		    <button class="btn btn-default" id="fastForward"> Fast Forward </button>
-		    <button class="btn btn-default" id="skipForward"> Skip Forward </button>
-		    <button class="btn btn-default" id="expand">Expand</button> -->
-	 	</div>
+		<div class="buttonPanel" id="playerButtons{{_id}}"></div>
 	</div>
 </template>
 
@@ -83,3 +91,4 @@
         </div>
     </div>
 </template>
+

@@ -92,3 +92,7 @@ button {
     -o-border-radius: 3px;
     border-radius: 3px;
 }
+
+#nav-bar {
+    display: inline-block;
+}
