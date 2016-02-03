@@ -1,5 +1,35 @@
 <template name ="videoManager">
 	<div style="margin-top:200px">
 	<h1> Here Btom</h1>
+     <ul id="objects"></ul>
 	</div>
+
+<script src="aws-sdk-2.2.33.min.js"></script>
+
+
+<script type="text/javascript">
+	AWS.config.update({accessKeyId: 'AKIAIJD7PHG33VZSTPQQ', secretAccessKey: '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'});
+AWS.config.region = 'us-east-1';
+  var db = new AWS.DynamoDB();
+
+var params = {
+  TableName: 'mpegdash.csse.rose-hulman.edu',
+  AttributesToGet: [
+    'name',
+    'port',
+    'status'
+  ]
+}
+db.scan(params, function(err, data) {
+  if (err) console.log(err, err.stack); // an error occurred
+  else{
+	console.log(data);
+	for (var i = 0; i < data.Count; i++) {
+        document.getElementById('objects').innerHTML +=
+          '<li>' + data.Items[i].name.S + ' ' + data.Items[i].port.N + ' ' + data.Items[i].status.S + '</li>';
+      }
+  }
+});
+
+</script>
 </template>
