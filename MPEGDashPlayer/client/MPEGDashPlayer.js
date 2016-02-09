@@ -1,4 +1,6 @@
 var videos = [];
+var videoModalData = [{name: "Sample Video 1", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, 
+{name: "Sample Video 2", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, {name: "Sample Video 3", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}]
 
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.listOfVideos.helpers({
@@ -7,17 +9,17 @@ Template.listOfVideos.helpers({
   }
 });
 Template.body.events({
-    'submit .new-feed': function (event) {
-      event.preventDefault();
- 
+  'submit .new-feed': function (event) {
+    event.preventDefault();
+
       // Get value from form element
       var text = event.target.text.value;
-    console.log(text);
+      console.log(text);
       // Insert a task into the collection
       Dashplayers.insert({
         host: text
       });
- 
+
       // Clear form
       event.target.text.value = "";
     }
@@ -46,13 +48,13 @@ TilingHelper = {
       });
   },
   addingParentData: function(parentData,url){  
-      var player = Dashplayers.findOne({_id: parentData});
-      Dashplayers.update({_id: parentData},
-        {
-          host: url,
-          parentData: parentData
-      });
-      console.log(player);
+    var player = Dashplayers.findOne({_id: parentData});
+    Dashplayers.update({_id: parentData},
+    {
+      host: url,
+      parentData: parentData
+    });
+    console.log(player);
   }
 
 }
@@ -81,19 +83,48 @@ Template.tiling.events({
   }
 });
 Template.tiling.helpers({
- 
+
+});
+
+Template.videoModal.onRendered(function() {
+  var table = document.getElementById("videoTable");
+  for (var i = 0; i < videoModalData.length; i++) {
+    var row = table.insertRow(-1);
+    var name = row.insertCell(0);
+    var status = row.insertCell(1);
+    var playButton = row.insertCell(2);
+
+    name.innerHTML = videoModalData[i].name;
+    status.innerHTML = videoModalData[i].status;
+
+    var play = $(document.createElement('button'));
+    play.addClass("btn btn-default");
+    play.html("Play");
+
+    url = videoModalData[i].url;
+    play.click(function() {
+      Dashplayers.insert({
+         host: url
+      });
+    })
+
+    play.appendTo(playButton);
+
+
+
+  }
 });
 
 Template.dashplayer.helpers({
 
-  });
-  Template.dashplayer.onRendered(function () {
-    var span_id = "span"+Template.parentData(0)._id;
-    var video_id = "videoPlayer"+Template.parentData(0)._id;
+});
+Template.dashplayer.onRendered(function () {
+  var span_id = "span"+Template.parentData(0)._id;
+  var video_id = "videoPlayer"+Template.parentData(0)._id;
     var url = document.getElementById(span_id).innerText;  //$( span_id + ' span').text();
     
     // $("#videoPlayer"+Template.parentData(0)._id).ready(function() {
-        var video = document.getElementById(video_id);
+      var video = document.getElementById(video_id);
 
         //play-pause
         var playButton = document.createElement("BUTTON");        // Create a <button> element
@@ -122,24 +153,24 @@ Template.dashplayer.helpers({
         rewindButton.appendChild(t);                
         rewindButton.class = "btn btn-default";
         rewindButton.id = "rewind"+ Template.parentData(0)._id;
-		var rwinterval;
-		rewindButton.addEventListener('mousedown',function(e) {
-			rwinterval = setInterval(function() {
-				if(video.currentTime == 0){
-					clearInterval(rwinterval);
-					video.pause();
-				}
-				else{
-					video.currentTime += -1.2;
-				}
-			},360);
-		});
-		rewindButton.addEventListener('mouseup',function(e) {
-			clearInterval(rwinterval);
-		});
-		rewindButton.addEventListener('mouseout',function(e) {
-			clearInterval(rwinterval);
-		});
+        var rwinterval;
+        rewindButton.addEventListener('mousedown',function(e) {
+         rwinterval = setInterval(function() {
+          if(video.currentTime == 0){
+           clearInterval(rwinterval);
+           video.pause();
+         }
+         else{
+           video.currentTime += -1.2;
+         }
+       },360);
+       });
+        rewindButton.addEventListener('mouseup',function(e) {
+         clearInterval(rwinterval);
+       });
+        rewindButton.addEventListener('mouseout',function(e) {
+         clearInterval(rwinterval);
+       });
         //skip backwards
         var skipBackButton = document.createElement("BUTTON");        // Create a <button> element
         var t = document.createTextNode("|<");       // Create a text node
@@ -164,18 +195,18 @@ Template.dashplayer.helpers({
         fastForwardButton.appendChild(t);                
         fastForwardButton.class = "btn btn-default";
         fastForwardButton.id = "fastForward"+ Template.parentData(0)._id;
-		var ffinterval;
-		fastForwardButton.addEventListener('mousedown',function(e) {
-			ffinterval = setInterval(function() {
-				video.currentTime += 1.2;
-			},360);
-		});
-		fastForwardButton.addEventListener('mouseup',function(e) {
-			clearInterval(ffinterval);
-		});
-		fastForwardButton.addEventListener('mouseout',function(e) {
-			clearInterval(ffinterval);
-		});
+        var ffinterval;
+        fastForwardButton.addEventListener('mousedown',function(e) {
+         ffinterval = setInterval(function() {
+          video.currentTime += 1.2;
+        },360);
+       });
+        fastForwardButton.addEventListener('mouseup',function(e) {
+         clearInterval(ffinterval);
+       });
+        fastForwardButton.addEventListener('mouseout',function(e) {
+         clearInterval(ffinterval);
+       });
         //full screen
         var fullScreenButton = document.createElement("BUTTON");        // Create a <button> element
         var t = document.createTextNode("Full Screen");       // Create a text node
@@ -243,7 +274,7 @@ Template.dashplayer.helpers({
           // Update the video volume
           video.volume = volumeBar.value;
         });
-		
+
         
 
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
@@ -262,67 +293,67 @@ Template.dashplayer.helpers({
 		var resizerBox = document.getElementById(resizeId);
 		
 		
-        $("#playerButtons"+Template.parentData(0)._id).css({
-          "position": "absolute",
-		  "z-index": 1,
-          "bottom": 0,
-          "left": 0,
-          "right": 0,
-          "padding": "5px",
-          "opacity": 0,
-          "-webkit-transition": "opacity .3s",
-          "-moz-transition": "opacity .3s",
-          "-o-transition": "opacity .3s",
-          "-ms-transition": "opacity .3s",
-          "transition": "opacity .3s",
-          "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
-        });
-		
-		$("#videoHeader"+Template.parentData(0)._id).css({
-          "position": "absolute",
-		  "z-index": 1,
-          "top": 0,
-          "left": 0,
-          "right": 0,
-          "opacity": 0,
-          "-webkit-transition": "opacity .3s",
-          "-moz-transition": "opacity .3s",
-          "-o-transition": "opacity .3s",
-          "-ms-transition": "opacity .3s",
-          "transition": "opacity .3s",
-          "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
-        });
-		
-		$("#resizer"+Template.parentData(0)._id).css({
-          "position": "absolute",
-		  "z-index": 2,
-          "bottom": 0,
-          "right": 0,
-          "padding": "5px",
-          "opacity": 0,
-          "-webkit-transition": "opacity .3s",
-          "-moz-transition": "opacity .3s",
-          "-o-transition": "opacity .3s",
-          "-ms-transition": "opacity .3s",
-          "transition": "opacity .3s",
-          "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
-        });
-		
+    $("#playerButtons"+Template.parentData(0)._id).css({
+      "position": "absolute",
+      "z-index": 1,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "padding": "5px",
+      "opacity": 0,
+      "-webkit-transition": "opacity .3s",
+      "-moz-transition": "opacity .3s",
+      "-o-transition": "opacity .3s",
+      "-ms-transition": "opacity .3s",
+      "transition": "opacity .3s",
+      "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+    });
+
+    $("#videoHeader"+Template.parentData(0)._id).css({
+      "position": "absolute",
+      "z-index": 1,
+      "top": 0,
+      "left": 0,
+      "right": 0,
+      "opacity": 0,
+      "-webkit-transition": "opacity .3s",
+      "-moz-transition": "opacity .3s",
+      "-o-transition": "opacity .3s",
+      "-ms-transition": "opacity .3s",
+      "transition": "opacity .3s",
+      "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+    });
+
+    $("#resizer"+Template.parentData(0)._id).css({
+      "position": "absolute",
+      "z-index": 2,
+      "bottom": 0,
+      "right": 0,
+      "padding": "5px",
+      "opacity": 0,
+      "-webkit-transition": "opacity .3s",
+      "-moz-transition": "opacity .3s",
+      "-o-transition": "opacity .3s",
+      "-ms-transition": "opacity .3s",
+      "transition": "opacity .3s",
+      "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+    });
+
         // $("#"+video_id+":hover "+"#playerButtons"+Template.parentData(0)._id).css({"opacity": .9});
         var jqueryVideo = $("#draggable"+Template.parentData(0)._id);
         var jqueryPlayerButtons = $("#playerButtons"+Template.parentData(0)._id);
@@ -331,50 +362,50 @@ Template.dashplayer.helpers({
             jqueryPlayerButtons.css({"opacity": .9});
           },function() {
             jqueryPlayerButtons.css({"opacity": 0});
-        });
-		
-		var jqueryVideoHeader = $("#videoHeader"+Template.parentData(0)._id);
+          });
+
+        var jqueryVideoHeader = $("#videoHeader"+Template.parentData(0)._id);
         jqueryVideo.hover(
           function() {
             jqueryVideoHeader.css({"opacity": .9});
           },function() {
             jqueryVideoHeader.css({"opacity": 0});
-        });
+          });
 
-		var jqueryresizer = $("#resizer"+Template.parentData(0)._id);
+        var jqueryresizer = $("#resizer"+Template.parentData(0)._id);
         jqueryresizer.hover(
           function() {
             jqueryresizer.css({"opacity": .9});
           },function() {
             jqueryresizer.css({"opacity": 0});
-        });
-		
+          });
+
 
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
       // });
-     $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:365, minWidth: 640, handles: {'se': resizerBox} });
-     $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
+$("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
+$("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:365, minWidth: 640, handles: {'se': resizerBox} });
+$("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
     //adding id to the mongodb entry
     TilingHelper.addingParentData(Template.parentData(0)._id, url);
     videos.push("#draggable"+Template.parentData(0)._id);
-    },
+  },
   );
+
+
+Template.dashplayer.events({
+
+  "click .toggle-checked": function () {
+    Dashplayers.update(this._id, {
+      $set: {checked: ! this.checked}
+    });
+  },
+  "click .delete": function () {
+    Dashplayers.remove(this._id);
+    videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
+  },
   
 
-  Template.dashplayer.events({
-  
-    "click .toggle-checked": function () {
-      Dashplayers.update(this._id, {
-        $set: {checked: ! this.checked}
-      });
-    },
-    "click .delete": function () {
-      Dashplayers.remove(this._id);
-      videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
-    },
-  
-    
-  });
+});

@@ -52,6 +52,11 @@ video {
     display:inline-block;
 }
 
+#table-scroll {
+    max-height:300px;
+    overflow-y:scroll;
+}
+
 .videoPlayerContainer2 {
 	min-width: 100%;
     min-height: 100%;
