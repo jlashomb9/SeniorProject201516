@@ -1,4 +1,4 @@
-Initiail Installation
+Initial Installation
 ========
 
 Download the latest version of java here:
