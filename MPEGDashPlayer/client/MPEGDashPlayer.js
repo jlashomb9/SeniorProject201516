@@ -1,4 +1,9 @@
 var videos = [];
+//important for positioning videos
+var top = 0;
+var left = 0;
+var bottomost = top;
+
 var videoModalData = [{name: "Sample Video 1", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, 
 {name: "Sample Video 2", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, {name: "Sample Video 3", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}]
 
@@ -64,11 +69,11 @@ Template.tiling.events({
     // for(var i = 0; i < videos.length; i++){
     //   $(videos[i]).remove();
     // }
-	var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
-	var DISPLAY_HEIGHT = parseInt($("#display").css("height"), 10);
-	var top = 0;
-	var left = 0;
-	var bottomost = top;
+	
+var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
+	top = 0;
+	left = 0;
+	bottomost = top;
 	
     for(var i = 0; i < videos.length; i++) {
 	  var currentWidth = parseInt($(videos[i]).css("width"), 10);
@@ -417,6 +422,29 @@ $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeigh
 });
 $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
+	//////////positioning the video//////////////
+	  var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
+	  var currentWidth = parseInt($("#draggable"+Template.parentData(0)._id).css("width"), 10);
+	  var currentHeight = parseInt($("#draggable"+Template.parentData(0)._id).css("height"), 10);
+	  //console.log("top: "+top+ ", height: "+ currentHeight+", bottomost: "+bottomost);
+	  console.log("height: "+ currentHeight + ", width: "+ currentWidth);
+	  if ( (top  + currentHeight) > bottomost ) {
+		bottomost = top + currentHeight;
+	  }
+	  
+	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
+		left = 0;
+		top = bottomost;
+	  }
+	  
+      $("#draggable"+Template.parentData(0)._id).css({
+        'top': top,
+        'left':left
+      });
+	  
+	  left = left + currentWidth;
+	  
+	  
     //adding id to the mongodb entry
     TilingHelper.addingParentData(Template.parentData(0)._id, url);
     videos.push("#draggable"+Template.parentData(0)._id);
