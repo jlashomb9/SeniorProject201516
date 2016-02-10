@@ -79,6 +79,7 @@ public class Server implements Runnable{
         BufferedReader input = null;
         String line = null;
         BufferedReader error = null;
+        status = Status.ENABLED;
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
         try {
             ls = Runtime.getRuntime().exec(cmd);
@@ -101,7 +102,6 @@ public class Server implements Runnable{
             LOGGER.debug("process was shutdown");
         }
 
-        status = Status.ENABLED;
     }
 
     public Void shutdown() {

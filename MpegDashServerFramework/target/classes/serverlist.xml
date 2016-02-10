@@ -9,6 +9,6 @@
 <Name>video1</Name>
 <Address>http://67.219.80.71:8098/video1/dashcast.mpd</Address>
 <VideoFile>SampleVideo_720x480_50mb.mp4</VideoFile>
-<Status>DISABLED</Status>
+<Status>ENABLED</Status>
 </Server>
 </Servers>
