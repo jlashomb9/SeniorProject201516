@@ -13,7 +13,15 @@ function loadDoc() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (xhttp.readyState == 4 && xhttp.status == 200) {
-      document.getElementById("demo").innerHTML = xhttp.responseText;
+      var xmlDoc = xhttp.responseXML;
+	for (i = 0; i < xmlDoc.getElementsByTagName("Name").length; i++) {
+	var name = xmlDoc.getElementsByTagName("Name")[i].childNodes[0].nodeValue;
+	var address = xmlDoc.getElementsByTagName("Address")[i].childNodes[0].nodeValue;
+	var videoFile = xmlDoc.getElementsByTagName("VideoFile")[i].childNodes[0].nodeValue;
+	var status = xmlDoc.getElementsByTagName("Status")[i].childNodes[0].nodeValue;
+	document.getElementById("demo").innerHTML = document.getElementById("demo").innerHTML + "<br>" + name + " " + address + " " + videoFile + " " + status;
+
+}
     }
   };
   xhttp.open("GET", "http://137.112.104.147:8098/serverlist.xml", true);
