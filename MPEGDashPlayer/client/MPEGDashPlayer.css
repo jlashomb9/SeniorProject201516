@@ -48,7 +48,7 @@ video {
 }
 
 .videoPlayerContainer1 {
-    position:relative;
+    position:absolute;
     display:inline-block;
 }
 
@@ -69,8 +69,8 @@ video {
 }
 
 .videoPlayerContainer3 {
-	width: 640px; 
-    height: 365px;
+	width: 560px; 
+    height: 336px;
 	min-width: 100%;
     min-height: 100%;
 	overflow: hidden;
@@ -84,11 +84,10 @@ video {
 
 .displayScreen {
 	position:fixed;
-	top:0;
+	top:150px;
 	right:0;
 	bottom:0;
 	left:0;
-	padding-top:175px;
 	margin:0px;
 	background-color:#ABC;
 	overflow: scroll;

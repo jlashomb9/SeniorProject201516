@@ -64,12 +64,33 @@ Template.tiling.events({
     // for(var i = 0; i < videos.length; i++){
     //   $(videos[i]).remove();
     // }
-
+	var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
+	var DISPLAY_HEIGHT = parseInt($("#display").css("height"), 10);
+	var top = 0;
+	var left = 0;
+	var bottomost = top;
+	
     for(var i = 0; i < videos.length; i++) {
+	  var currentWidth = parseInt($(videos[i]).css("width"), 10);
+	  var currentHeight = parseInt($(videos[i]).css("height"), 10);
+	  //console.log("top: "+top+ ", height: "+ currentHeight+", bottomost: "+bottomost);
+	  console.log("height: "+ currentHeight + ", width: "+ currentWidth);
+	  if ( (top  + currentHeight) > bottomost ) {
+		bottomost = top + currentHeight;
+	  }
+	  
+	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
+		left = 0;
+		top = bottomost;
+	  }
+	  
       $(videos[i]).css({
-        'top':'0',
-        'left':'0'
+        'top': top,
+        'left':left
       });
+	  
+	  left = left + currentWidth;
+	  
       // $(videos[i]).appendTo($("#display"));
     }
 
@@ -385,7 +406,7 @@ Template.dashplayer.onRendered(function () {
         VideoPlayBackHelper.videoStartup(video);
       // });
 $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-$("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:365, minWidth: 640, handles: {'se': resizerBox} });
+$("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:336, minWidth: 560, handles: {'se': resizerBox} });
 $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
     //adding id to the mongodb entry
