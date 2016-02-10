@@ -15,7 +15,8 @@ Go into the folder MpegDashServerFramework/target and run the following command:
 ```
 java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -setup
 ```
-	[this will setup the docker image for launching video feeds]
+
+[this will setup the docker image for launching video feeds]
 		
 There is an example configuration file located in MpegDashServerFramework/src/main/resources/servers
 This is where you will setup parameters for encoding the video into MPEG-DASH format, as well as specifying the video name, port, and 
@@ -29,7 +30,8 @@ Now that the docker image is setup, you can run the server with the following co
 ```
 java -jar mpeg-dash-server-framework-1.0.0-shaded.jar
 ```
-	[optional parameter '-autolaunch false' -default true, if set to false the program will launch with the videos DISABLED]
+
+[optional parameter '-autolaunch false' -default true, if set to false the program will launch with the videos DISABLED]
 
 Running the web client
 ========
