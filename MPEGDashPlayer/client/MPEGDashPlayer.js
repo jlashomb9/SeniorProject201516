@@ -232,6 +232,8 @@ Template.dashplayer.onRendered(function () {
   var span_id = "span"+Template.parentData(0)._id;
   var video_id = "videoPlayer"+Template.parentData(0)._id;
     var url = document.getElementById(span_id).innerText;  //$( span_id + ' span').text();
+
+    var download_id = "download"+Template.parentData(0)._id;
     
     // $("#videoPlayer"+Template.parentData(0)._id).ready(function() {
       var video = document.getElementById(video_id);
@@ -385,7 +387,10 @@ Template.dashplayer.onRendered(function () {
           video.volume = volumeBar.value;
         });
 
-        
+        document.getElementById(download_id).addEventListener('click', function() {
+            var dataURL = CanvasHelper.getDataURL(video);
+            CanvasHelper.downloadCanvas(this, dataURL, "image.png");
+        }, false);       
 
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
         //Appending all buttons
