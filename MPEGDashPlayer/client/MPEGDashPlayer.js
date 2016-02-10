@@ -405,8 +405,16 @@ Template.dashplayer.onRendered(function () {
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
       // });
+	  var resize_ref = document.getElementById("draggable"+Template.parentData(0)._id);
 $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-$("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:336, minWidth: 560, handles: {'se': resizerBox} });
+$("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:336, minWidth: 560, handles: {'se': resizerBox},start: function( event, ui ) 
+	{
+		console.log(resize_ref);
+		var z = $(resize_ref).css("z-index");
+		console.log(z);
+		$(resize_ref).css({"z-index": z+1});
+	}
+});
 $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
     //adding id to the mongodb entry

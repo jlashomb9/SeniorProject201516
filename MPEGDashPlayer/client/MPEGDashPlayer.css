@@ -50,6 +50,7 @@ video {
 .videoPlayerContainer1 {
     position:absolute;
     display:inline-block;
+	z-index:1;
 }
 
 #table-scroll {
