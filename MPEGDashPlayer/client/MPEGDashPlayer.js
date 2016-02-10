@@ -1,4 +1,11 @@
 var videos = [];
+//important for positioning videos
+var top = 0;
+var left = 0;
+var bottomost = top;
+
+var videoModalData = [{name: "Sample Video 1", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, 
+{name: "Sample Video 2", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, {name: "Sample Video 3", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}]
 
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.listOfVideos.helpers({
@@ -7,23 +14,24 @@ Template.listOfVideos.helpers({
   }
 });
 Template.body.events({
-    'submit .new-feed': function (event) {
-      event.preventDefault();
- 
+  'submit .new-feed': function (event) {
+    event.preventDefault();
+
       // Get value from form element
       var text = event.target.text.value;
-    console.log(text);
+      console.log(text);
       // Insert a task into the collection
       Dashplayers.insert({
         host: text
       });
- 
+
       // Clear form
       event.target.text.value = "";
     }
   });
 
 TilingHelper = {
+/*
   getWidthForVideo: function(w,numVideos){
     return w/numVideos;
   },
@@ -44,15 +52,47 @@ TilingHelper = {
         // console.log(draggable_div.width);
 
       });
+  }, */
+  //finds the largest video that hasnt been used yet (marked true in array) under a maximum width (or no max indicated by -1)
+  indexOfLargestVideo: function(videoArray, booleanArray, maximum_width, maximum_height) {
+	//height vs width to keep track of doesnt matter because all aspect ratios are the same
+	var largest_width = 0;
+	var indexOfMax = -1;
+	for(var i = 0; i < videoArray.length; i ++ ) {
+		if (booleanArray[i]) {
+		console.log("booleanarray");
+			var currentWidth = parseInt($(videoArray[i]).css("width"), 10);
+			var currentHeight = parseInt($(videoArray[i]).css("height"), 10);
+			if(maximum_width == -1 && currentWidth > largest_width) {
+			console.log("first");
+				if(maximum_height == -1 || maximum_height > currentHeight) {
+					largest_width = currentWidth;
+					indexOfMax = i;
+					console.log("made it " + indexOfMax);
+				}
+				
+			}
+			else if(maximum_width > currentWidth && currentWidth > largest_width) {
+			console.log("second");
+				if(maximum_height == -1 || maximum_height > currentHeight) {
+					largest_width = currentWidth;
+					indexOfMax = i;
+					console.log("made it " + indexOfMax);
+				}
+			}
+			
+		}
+	}
+	return indexOfMax;
   },
   addingParentData: function(parentData,url){  
-      var player = Dashplayers.findOne({_id: parentData});
-      Dashplayers.update({_id: parentData},
-        {
-          host: url,
-          parentData: parentData
-      });
-      console.log(player);
+    var player = Dashplayers.findOne({_id: parentData});
+    Dashplayers.update({_id: parentData},
+    {
+      host: url,
+      parentData: parentData
+    });
+    console.log(player);
   }
 
 }
@@ -62,12 +102,84 @@ Template.tiling.events({
     // for(var i = 0; i < videos.length; i++){
     //   $(videos[i]).remove();
     // }
-
+	
+	var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
+	top = 0;
+	left = 0;
+	bottomost = top;
+	var booleanArray = [];
+	for (var i = 0; i < videos.length; i++) booleanArray[i] = true;
+	
     for(var i = 0; i < videos.length; i++) {
+	  if(booleanArray[i] == false) {
+		continue;
+	 }
+	  booleanArray[i] = false;
+	  var currentWidth = parseInt($(videos[i]).css("width"), 10);
+	  var currentHeight = parseInt($(videos[i]).css("height"), 10);
+	  
+	  
+	  
+	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
+		//video cannot fit on the end of row, recursively fit the largest videos that will fit
+		while(true){
+			var index = TilingHelper.indexOfLargestVideo(videos, booleanArray, DISPLAY_WIDTH - left, bottomost - top);
+			if (index == -1) {
+				break;
+			}
+			booleanArray[index] = false;
+			var recurWidth = parseInt($(videos[index]).css("width"), 10);
+			var recurHeight = parseInt($(videos[index]).css("height"), 10);
+			$(videos[index]).css({
+				'top': top,
+				'left':left
+			});
+	  
+			left = left + recurWidth;
+		}
+	  
+		left = 0;
+		top = bottomost;
+		bottomost = top + currentHeight;
+	  } else {
+		if ( (top  + currentHeight) > bottomost ) {
+			bottomost = top + currentHeight;
+		} else {
+			//video has space below it within this row, recursively fill it
+			console.log("RIGHT CASE");
+			var tempTop = top;
+			var top = top + currentHeight;
+			while(true){
+				var tempval = bottomost - top;
+				console.log("parameters: " + currentWidth + "            " + tempval);
+				var index = TilingHelper.indexOfLargestVideo(videos, booleanArray, currentWidth, bottomost - top);
+				if (index == -1) {
+					
+					break;
+				}
+				console.log("FOUND ONE");
+				booleanArray[index] = false;
+				var recurWidth = parseInt($(videos[index]).css("width"), 10);
+				var recurHeight = parseInt($(videos[index]).css("height"), 10);
+				$(videos[index]).css({
+					'top': top,
+					'left':left
+				});
+				
+				top = top + recurHeight;
+			}
+			top = tempTop;
+		}
+	  }
+	  
+	  
       $(videos[i]).css({
-        'top':'0',
-        'left':'0'
+        'top': top,
+        'left':left
       });
+	  
+	  left = left + currentWidth;
+	  
       // $(videos[i]).appendTo($("#display"));
     }
 
@@ -84,16 +196,45 @@ Template.tiling.helpers({
  
 });
 
+Template.videoModal.onRendered(function() {
+  var table = document.getElementById("videoTable");
+  for (var i = 0; i < videoModalData.length; i++) {
+    var row = table.insertRow(-1);
+    var name = row.insertCell(0);
+    var status = row.insertCell(1);
+    var playButton = row.insertCell(2);
+
+    name.innerHTML = videoModalData[i].name;
+    status.innerHTML = videoModalData[i].status;
+
+    var play = $(document.createElement('button'));
+    play.addClass("btn btn-default");
+    play.html("Play");
+
+    url = videoModalData[i].url;
+    play.click(function() {
+      Dashplayers.insert({
+         host: url
+      });
+    })
+
+    play.appendTo(playButton);
+
+
+
+  }
+});
+
 Template.dashplayer.helpers({
 
-  });
-  Template.dashplayer.onRendered(function () {
-    var span_id = "span"+Template.parentData(0)._id;
-    var video_id = "videoPlayer"+Template.parentData(0)._id;
+});
+Template.dashplayer.onRendered(function () {
+  var span_id = "span"+Template.parentData(0)._id;
+  var video_id = "videoPlayer"+Template.parentData(0)._id;
     var url = document.getElementById(span_id).innerText;  //$( span_id + ' span').text();
     
     // $("#videoPlayer"+Template.parentData(0)._id).ready(function() {
-        var video = document.getElementById(video_id);
+      var video = document.getElementById(video_id);
 
         //play-pause
         var playButton = document.createElement("BUTTON");        // Create a <button> element
@@ -122,24 +263,24 @@ Template.dashplayer.helpers({
         rewindButton.appendChild(t);                
         rewindButton.class = "btn btn-default";
         rewindButton.id = "rewind"+ Template.parentData(0)._id;
-		var rwinterval;
-		rewindButton.addEventListener('mousedown',function(e) {
-			rwinterval = setInterval(function() {
-				if(video.currentTime == 0){
-					clearInterval(rwinterval);
-					video.pause();
-				}
-				else{
-					video.currentTime += -1.2;
-				}
-			},360);
-		});
-		rewindButton.addEventListener('mouseup',function(e) {
-			clearInterval(rwinterval);
-		});
-		rewindButton.addEventListener('mouseout',function(e) {
-			clearInterval(rwinterval);
-		});
+        var rwinterval;
+        rewindButton.addEventListener('mousedown',function(e) {
+         rwinterval = setInterval(function() {
+          if(video.currentTime == 0){
+           clearInterval(rwinterval);
+           video.pause();
+         }
+         else{
+           video.currentTime += -1.2;
+         }
+       },360);
+       });
+        rewindButton.addEventListener('mouseup',function(e) {
+         clearInterval(rwinterval);
+       });
+        rewindButton.addEventListener('mouseout',function(e) {
+         clearInterval(rwinterval);
+       });
         //skip backwards
         var skipBackButton = document.createElement("BUTTON");        // Create a <button> element
         var t = document.createTextNode("|<");       // Create a text node
@@ -164,18 +305,18 @@ Template.dashplayer.helpers({
         fastForwardButton.appendChild(t);                
         fastForwardButton.class = "btn btn-default";
         fastForwardButton.id = "fastForward"+ Template.parentData(0)._id;
-		var ffinterval;
-		fastForwardButton.addEventListener('mousedown',function(e) {
-			ffinterval = setInterval(function() {
-				video.currentTime += 1.2;
-			},360);
-		});
-		fastForwardButton.addEventListener('mouseup',function(e) {
-			clearInterval(ffinterval);
-		});
-		fastForwardButton.addEventListener('mouseout',function(e) {
-			clearInterval(ffinterval);
-		});
+        var ffinterval;
+        fastForwardButton.addEventListener('mousedown',function(e) {
+         ffinterval = setInterval(function() {
+          video.currentTime += 1.2;
+        },360);
+       });
+        fastForwardButton.addEventListener('mouseup',function(e) {
+         clearInterval(ffinterval);
+       });
+        fastForwardButton.addEventListener('mouseout',function(e) {
+         clearInterval(ffinterval);
+       });
         //full screen
         var fullScreenButton = document.createElement("BUTTON");        // Create a <button> element
         var t = document.createTextNode("Full Screen");       // Create a text node
@@ -244,6 +385,8 @@ Template.dashplayer.helpers({
           video.volume = volumeBar.value;
         });
 
+        
+
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
         //Appending all buttons
         buttonList.appendChild(skipBackButton);
@@ -255,46 +398,72 @@ Template.dashplayer.helpers({
         buttonList.appendChild(fullScreenButton);
         buttonList.appendChild(volumeBar);
         
-
-        $("#playerButtons"+Template.parentData(0)._id).css({
-          "position": "absolute",
-          "bottom": 0,
-          "left": 0,
-          "right": 0,
-          "padding": "5px",
-          "opacity": 0,
-          "-webkit-transition": "opacity .3s",
-          "-moz-transition": "opacity .3s",
-          "-o-transition": "opacity .3s",
-          "-ms-transition": "opacity .3s",
-          "transition": "opacity .3s",
-          "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
-        });
+		//adding something visible to the resizer
+		var resizeId = "resizer"+Template.parentData(0)._id;
+		var resizerBox = document.getElementById(resizeId);
 		
-		$("#videoHeader"+Template.parentData(0)._id).css({
-          "position": "absolute",
-          "top": 0,
-          "left": 0,
-          "right": 0,
-          "padding": "5px",
-          "opacity": 0,
-          "-webkit-transition": "opacity .3s",
-          "-moz-transition": "opacity .3s",
-          "-o-transition": "opacity .3s",
-          "-ms-transition": "opacity .3s",
-          "transition": "opacity .3s",
-          "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
-          "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
-        });
+		
+    $("#playerButtons"+Template.parentData(0)._id).css({
+      "position": "absolute",
+      "z-index": 1,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "padding": "5px",
+      "opacity": 0,
+      "-webkit-transition": "opacity .3s",
+      "-moz-transition": "opacity .3s",
+      "-o-transition": "opacity .3s",
+      "-ms-transition": "opacity .3s",
+      "transition": "opacity .3s",
+      "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+    });
+
+    $("#videoHeader"+Template.parentData(0)._id).css({
+      "position": "absolute",
+      "z-index": 1,
+      "top": 0,
+      "left": 0,
+      "right": 0,
+      "opacity": 0,
+      "-webkit-transition": "opacity .3s",
+      "-moz-transition": "opacity .3s",
+      "-o-transition": "opacity .3s",
+      "-ms-transition": "opacity .3s",
+      "transition": "opacity .3s",
+      "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+    });
+
+    $("#resizer"+Template.parentData(0)._id).css({
+      "position": "absolute",
+      "z-index": 2,
+      "bottom": 0,
+      "right": 0,
+      "padding": "5px",
+      "opacity": 0,
+      "-webkit-transition": "opacity .3s",
+      "-moz-transition": "opacity .3s",
+      "-o-transition": "opacity .3s",
+      "-ms-transition": "opacity .3s",
+      "transition": "opacity .3s",
+      "background-image": "linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-o-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-moz-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-ms-linear-gradient(bottom, rgb(3,113,168) 13%, rgb(0,136,204) 100%)",
+      "background-image": "-webkit-gradient(linear,left bottom, left top,color-stop(0.13, rgb(3,113,168)),color-stop(1, rgb(0,136,204)))"
+    });
+
         // $("#"+video_id+":hover "+"#playerButtons"+Template.parentData(0)._id).css({"opacity": .9});
         var jqueryVideo = $("#draggable"+Template.parentData(0)._id);
         var jqueryPlayerButtons = $("#playerButtons"+Template.parentData(0)._id);
@@ -303,42 +472,80 @@ Template.dashplayer.helpers({
             jqueryPlayerButtons.css({"opacity": .9});
           },function() {
             jqueryPlayerButtons.css({"opacity": 0});
-        });
-		
-		var jqueryVideoHeader = $("#videoHeader"+Template.parentData(0)._id);
+          });
+
+        var jqueryVideoHeader = $("#videoHeader"+Template.parentData(0)._id);
         jqueryVideo.hover(
           function() {
             jqueryVideoHeader.css({"opacity": .9});
           },function() {
             jqueryVideoHeader.css({"opacity": 0});
-        });
+          });
+
+        var jqueryresizer = $("#resizer"+Template.parentData(0)._id);
+        jqueryresizer.hover(
+          function() {
+            jqueryresizer.css({"opacity": .9});
+          },function() {
+            jqueryresizer.css({"opacity": 0});
+          });
 
 
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
       // });
-     $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-     $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:350});
-     $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
+	  var resize_ref = document.getElementById("draggable"+Template.parentData(0)._id);
+$("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
+$("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:336, minWidth: 560, handles: {'se': resizerBox},start: function( event, ui ) 
+	{
+		var z = $(resize_ref).css("z-index");
+		$(resize_ref).css({"z-index": z+1});
+	}
+});
+$("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 
+	//////////positioning the video//////////////
+	  var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
+	  var currentWidth = parseInt($("#draggable"+Template.parentData(0)._id).css("width"), 10);
+	  var currentHeight = parseInt($("#draggable"+Template.parentData(0)._id).css("height"), 10);
+	  
+	  
+	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
+		left = 0;
+		top = bottomost;
+		bottomost = top + currentHeight;
+	  } else {
+		if ( (top  + currentHeight) > bottomost ) {
+			bottomost = top + currentHeight;
+		}
+	  }
+	  
+      $("#draggable"+Template.parentData(0)._id).css({
+        'top': top,
+        'left':left
+      });
+	  
+	  left = left + currentWidth;
+	  
+	  
     //adding id to the mongodb entry
     TilingHelper.addingParentData(Template.parentData(0)._id, url);
     videos.push("#draggable"+Template.parentData(0)._id);
-    },
+  },
   );
+
+
+Template.dashplayer.events({
+
+  "click .toggle-checked": function () {
+    Dashplayers.update(this._id, {
+      $set: {checked: ! this.checked}
+    });
+  },
+  "click .delete": function () {
+    Dashplayers.remove(this._id);
+    videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
+  },
   
 
-  Template.dashplayer.events({
-  
-    "click .toggle-checked": function () {
-      Dashplayers.update(this._id, {
-        $set: {checked: ! this.checked}
-      });
-    },
-    "click .delete": function () {
-      Dashplayers.remove(this._id);
-      videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
-    },
-  
-    
-  });
+});

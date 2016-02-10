@@ -5,9 +5,13 @@
 	<script src="http://download.remysharp.com/mousehold.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  	<script src="jquery.livequery.js"></script>
-  	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  	<link rel="stylesheet" href="/resources/demos/style.css">	
+	<script src="jquery.livequery.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="/resources/demos/style.css">
+
+
+
+
 </head>
 <body>
 	<div class="header-cont">
@@ -16,79 +20,128 @@
 			<div>
 				<div style="display: inline-block;">
 					<a href="{{ pathFor 'videoManager'}}"> 
-	                    <li class="tag" role="presentation">Timesheet</li>
-	                </a>
-	            </div>
-	            <div style="display: inline-block;">
-	                <a href="{{ pathFor 'listOfVideos'}}"> 
-	                    <li class="tag" role="presentation">Video List</li>
-	                </a>
+						<li class="tag" role="presentation">Timesheet</li>
+					</a>
+				</div>
+				<div style="display: inline-block;">
+					<a href="{{ pathFor 'listOfVideos'}}"> 
+						<li class="tag" role="presentation">Video List</li>
+					</a>
 				</div>
 			</div>
 			<form class="new-feed">
 				<input type="text" name="text" placeholder="Add host" />
 			</form>
-			{{> tiling}}
-		</div>
+		{{> tiling}}
+		{{> AddVideo}}
 	</div>
-			
+</div>
+{{ > videoModal }}
 </body>
 
-  <template name="listOfVideos">
+
+
+<template name="listOfVideos">
 	<div id="display" class="displayScreen">
 		{{#each dashplayers}}
-			<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
+		<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
 		{{/each}}
 	</div>
-  </template>
+</template>
 
 <template name="tiling">
 	<button class="btn btn-default" id="tile">Tile Videos</button>
 </template>
 
-<template name="dashplayer">
-	<div class="videoPlayerContainer2 ui-widget-content">
-	    <div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
-	    	<video id="videoPlayer{{_id}}" width="520" height="400"></video>
-	    </div>
-		<div class="videoHeaderPanel" id="videoHeader{{_id}}">
-			<button class="delete">&times;</button>
-			<span id="span{{_id}}" class="text" style="color:white">{{host}}</span>
-		</div>
-		<div class="buttonPanel" id="playerButtons{{_id}}"></div>
-	</div>
+<template name="AddVideo">
+	<button class="btn btn-default" data-toggle="modal" data-target="#addVideoModal" id="tile">Add Video</button>
 </template>
 
-<template name="videoFeedSelector">
+<template name="videoModal">
+	<div class="modal fade" id="addVideoModal" tabindex="-1" role="dialog" aria-labelledby="addVideosLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="addVideosLabel">Select Video to Add</h4>
+				</div>
+				<div class="modal-body">
+					<div id="table-scroll">
+					<table id="videoTable" class="table table-striped">
+							<tr>
+								<th>Name</th>
+								<th>Status</th>
+								<th></th>
+							</tr>
+						<!--
+						<tr>
+							<td>Sample Video 1</td>
+							<td>Archived</td>
+							<td><button class="btn btn-default tableButton">Play</button></td>
+						</tr>
+						<tr>
+							<td>Sample Video 2</td>
+							<td>Archived</td>
+							<td><button class="btn btn-default tableButton">Play</button></td>
+						</tr>
+					-->
+				</table>
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	</div>
+</div>
+</div>
+</template>
+
+
+
+<template name="dashplayer">
+	<div class="videoPlayerContainer2 ui-widget-content">
+		<div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
+			<video id="videoPlayer{{_id}}" width="560" height="336"></video></div>
+			<div class="videoHeaderPanel" id="videoHeader{{_id}}">
+				<button class="delete">&times;</button>
+				<span id="span{{_id}}" class="text" style="color:white">{{host}}</span>
+			</div>
+			<div class="buttonPanel" id="playerButtons{{_id}}"></div>
+			<div class="ui-resizable-handle ui-resizable-se" id="resizer{{_id}}"></div>
+		</div>
+	</template>
+
+	<template name="videoFeedSelector">
 		<div class="col-xs-2">
 			<div id="videoFeed"><h3>Active Feeds</h3></div>
 		</div>
-        <div class="col-xs-2">
-       		<button class="btn btn-default" id="newFeed">Add New Feed</button>
-        </div>
-</template>
+		<div class="col-xs-2">
+			<button class="btn btn-default" id="newFeed">Add New Feed</button>
+		</div>
+	</template>
 
 
-<template name="videoFeedModal">
-    <div class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add a New Feed</h4>
-                </div>
-                <div class="modal-body">
-                   <form>
-					  Feed Name: <input type="text" id="feedName" name="feedName"><br>
-					  Feed Host: <input type="text" id="hostName" name="hostName"><br>
-					</form>
+	<template name="videoFeedModal">
+		<div class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Add a New Feed</h4>
+					</div>
+					<div class="modal-body">
+						<form>
+							Feed Name: <input type="text" id="feedName" name="feedName"><br>
+							Feed Host: <input type="text" id="hostName" name="hostName"><br>
+						</form>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" id="addingFeed" data-dismiss="modal">Add</button>
+					</div>
+
 				</div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="addingFeed" data-dismiss="modal">Add</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</template>
+			</div>
+		</div>
+	</template>
 
