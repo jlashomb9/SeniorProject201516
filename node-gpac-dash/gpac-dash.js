@@ -430,7 +430,9 @@ var onRequest = function(req, res) {
 		} else {
 			sendFile(res, filename);
 		}
-	}
+	} else {
+		sendFile(res, filename);
+		}
 }
 
 process.argv.splice(1).forEach(function(val, index, array) {
