@@ -31,6 +31,7 @@ Template.body.events({
   });
 
 TilingHelper = {
+/*
   getWidthForVideo: function(w,numVideos){
     return w/numVideos;
   },
@@ -51,6 +52,38 @@ TilingHelper = {
         // console.log(draggable_div.width);
 
       });
+  }, */
+  //finds the largest video that hasnt been used yet (marked true in array) under a maximum width (or no max indicated by -1)
+  indexOfLargestVideo: function(videoArray, booleanArray, maximum_width, maximum_height) {
+	//height vs width to keep track of doesnt matter because all aspect ratios are the same
+	var largest_width = 0;
+	var indexOfMax = -1;
+	for(var i = 0; i < videoArray.length; i ++ ) {
+		if (booleanArray[i]) {
+		console.log("booleanarray");
+			var currentWidth = parseInt($(videoArray[i]).css("width"), 10);
+			var currentHeight = parseInt($(videoArray[i]).css("height"), 10);
+			if(maximum_width == -1 && currentWidth > largest_width) {
+			console.log("first");
+				if(maximum_height == -1 || maximum_height > currentHeight) {
+					largest_width = currentWidth;
+					indexOfMax = i;
+					console.log("made it " + indexOfMax);
+				}
+				
+			}
+			else if(maximum_width > currentWidth && currentWidth > largest_width) {
+			console.log("second");
+				if(maximum_height == -1 || maximum_height > currentHeight) {
+					largest_width = currentWidth;
+					indexOfMax = i;
+					console.log("made it " + indexOfMax);
+				}
+			}
+			
+		}
+	}
+	return indexOfMax;
   },
   addingParentData: function(parentData,url){  
     var player = Dashplayers.findOne({_id: parentData});
@@ -70,24 +103,72 @@ Template.tiling.events({
     //   $(videos[i]).remove();
     // }
 	
-var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
+	var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
 	top = 0;
 	left = 0;
 	bottomost = top;
+	var booleanArray = [];
+	for (var i = 0; i < videos.length; i++) booleanArray[i] = true;
 	
     for(var i = 0; i < videos.length; i++) {
+	  if(booleanArray[i] == false) {
+		continue;
+	 }
+	  booleanArray[i] = false;
 	  var currentWidth = parseInt($(videos[i]).css("width"), 10);
 	  var currentHeight = parseInt($(videos[i]).css("height"), 10);
 	  
 	  
 	  
 	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
+		//video cannot fit on the end of row, recursively fit the largest videos that will fit
+		while(true){
+			var index = TilingHelper.indexOfLargestVideo(videos, booleanArray, DISPLAY_WIDTH - left, bottomost - top);
+			if (index == -1) {
+				break;
+			}
+			booleanArray[index] = false;
+			var recurWidth = parseInt($(videos[index]).css("width"), 10);
+			var recurHeight = parseInt($(videos[index]).css("height"), 10);
+			$(videos[index]).css({
+				'top': top,
+				'left':left
+			});
+	  
+			left = left + recurWidth;
+		}
+	  
 		left = 0;
 		top = bottomost;
 		bottomost = top + currentHeight;
 	  } else {
 		if ( (top  + currentHeight) > bottomost ) {
 			bottomost = top + currentHeight;
+		} else {
+			//video has space below it within this row, recursively fill it
+			console.log("RIGHT CASE");
+			var tempTop = top;
+			var top = top + currentHeight;
+			while(true){
+				var tempval = bottomost - top;
+				console.log("parameters: " + currentWidth + "            " + tempval);
+				var index = TilingHelper.indexOfLargestVideo(videos, booleanArray, currentWidth, bottomost - top);
+				if (index == -1) {
+					
+					break;
+				}
+				console.log("FOUND ONE");
+				booleanArray[index] = false;
+				var recurWidth = parseInt($(videos[index]).css("width"), 10);
+				var recurHeight = parseInt($(videos[index]).css("height"), 10);
+				$(videos[index]).css({
+					'top': top,
+					'left':left
+				});
+				
+				top = top + recurHeight;
+			}
+			top = tempTop;
 		}
 	  }
 	  
@@ -112,7 +193,7 @@ var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
   }
 });
 Template.tiling.helpers({
-
+ 
 });
 
 Template.videoModal.onRendered(function() {
@@ -417,9 +498,7 @@ Template.dashplayer.onRendered(function () {
 $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
 $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:336, minWidth: 560, handles: {'se': resizerBox},start: function( event, ui ) 
 	{
-		console.log(resize_ref);
 		var z = $(resize_ref).css("z-index");
-		console.log(z);
 		$(resize_ref).css({"z-index": z+1});
 	}
 });
