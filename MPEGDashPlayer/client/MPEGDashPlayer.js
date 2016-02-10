@@ -78,16 +78,19 @@ var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
     for(var i = 0; i < videos.length; i++) {
 	  var currentWidth = parseInt($(videos[i]).css("width"), 10);
 	  var currentHeight = parseInt($(videos[i]).css("height"), 10);
-	  //console.log("top: "+top+ ", height: "+ currentHeight+", bottomost: "+bottomost);
-	  console.log("height: "+ currentHeight + ", width: "+ currentWidth);
-	  if ( (top  + currentHeight) > bottomost ) {
-		bottomost = top + currentHeight;
-	  }
+	  
+	  
 	  
 	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
 		left = 0;
 		top = bottomost;
+		bottomost = top + currentHeight;
+	  } else {
+		if ( (top  + currentHeight) > bottomost ) {
+			bottomost = top + currentHeight;
+		}
 	  }
+	  
 	  
       $(videos[i]).css({
         'top': top,
@@ -426,15 +429,16 @@ $("#resizable"+Template.parentData(0)._id).css({"font-size":0});
 	  var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
 	  var currentWidth = parseInt($("#draggable"+Template.parentData(0)._id).css("width"), 10);
 	  var currentHeight = parseInt($("#draggable"+Template.parentData(0)._id).css("height"), 10);
-	  //console.log("top: "+top+ ", height: "+ currentHeight+", bottomost: "+bottomost);
-	  console.log("height: "+ currentHeight + ", width: "+ currentWidth);
-	  if ( (top  + currentHeight) > bottomost ) {
-		bottomost = top + currentHeight;
-	  }
+	  
 	  
 	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
 		left = 0;
 		top = bottomost;
+		bottomost = top + currentHeight;
+	  } else {
+		if ( (top  + currentHeight) > bottomost ) {
+			bottomost = top + currentHeight;
+		}
 	  }
 	  
       $("#draggable"+Template.parentData(0)._id).css({
