@@ -26,9 +26,11 @@ public class Server implements Runnable{
     private Process ls = null;
     private String name;
     private int port;
+    private String ip;
     private String videoFile;
     private String imageID;
     private String outputFolder;
+    private String address;
 
     enum Status {
         DISABLED, ENABLED
@@ -42,13 +44,19 @@ public class Server implements Runnable{
         this.outputFolder = "output";
     }
 
-    public Server(String launchCommand, String name, int port, String videoFile) {
+    public Server(String launchCommand, String name, int port, String videoFile, String ip) {
         status = Status.DISABLED;
         this.launchCommand = launchCommand;
         this.name = name;
         this.port = port;
         this.videoFile = videoFile;
-        this.outputFolder = "output";
+        this.outputFolder = name;
+        this.ip = ip;
+        this.address = "http://" + ip + ":" + this.getPort() + "/" + this.getOutputFolder() + "/dashcast.mpd";
+    }
+    
+    public String getAddress(){
+        return this.address;
     }
     
     public String getLaunchCommand(){

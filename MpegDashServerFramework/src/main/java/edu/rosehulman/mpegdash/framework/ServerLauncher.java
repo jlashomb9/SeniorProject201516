@@ -33,11 +33,14 @@ public class ServerLauncher {
     private String ip;
 
     private Thread directoryThread;
+    private ServerFileLister lister;
 
     public ServerLauncher(boolean autoLaunch) {
         addShutdownHook();
         this.autoLaunch = autoLaunch;
         servers = new HashMap<String, Server>();
+        lister = new ServerFileLister();
+        updateServerList();
         
 //        DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
 //                new DefaultAWSCredentialsProviderChain()));
@@ -70,6 +73,7 @@ public class ServerLauncher {
                             Server server = servers.get(key);
 //                            table.deleteItem("name", server.getName());
                             server.shutdown();
+                            updateServerList();
                         }
                     };
                     es.execute(run);
@@ -97,7 +101,7 @@ public class ServerLauncher {
             System.out.println("Server with that name already exists.");
             return null;
         }
-        final Server server = new Server(command, videoTitle, port, videoFile);
+        final Server server = new Server(command, videoTitle, port, videoFile, ip);
         servers.put(videoTitle, server);
 
 //        Item item = new Item()
@@ -112,6 +116,7 @@ public class ServerLauncher {
 //            item = item.withString("status", "DISABLED");
 //        }
 //        table.putItem(item);
+        updateServerList();
         return null;
     }
 
@@ -136,6 +141,7 @@ public class ServerLauncher {
 //                      .withString("status", "ENABLED");
 //        
 //                table.putItem(item);
+                updateServerList();
                 return null;
             }
         });
@@ -158,6 +164,7 @@ public class ServerLauncher {
 //                .withString("videoFile", server.getVideoFile())
 //                .withString("status", "DISABLED");
 //        table.putItem(item);
+        updateServerList();
         return server.shutdown();
     }
 
@@ -209,14 +216,37 @@ public class ServerLauncher {
             }
         });
     }
+    
+    private void updateServerList(){
+        File serverList = new File(Constants.absolutePathToResources() + "//" + Constants.SERVER_LIST_FILE_NAME);
+        try {
+            PrintWriter writer = new PrintWriter(serverList, "UTF-8");
+            writer.println("<Servers>");
+            for(String key : servers.keySet()){
+                Server server = servers.get(key);
+                writer.println("<Server>");
+                writer.println("<Name>" + server.getName() + "</Name>");
+                writer.println("<Address>" + server.getAddress() + "</Address>");
+                writer.println("<VideoFile>" + server.getVideoFile() + "</VideoFile>");
+                writer.println("<Status>" + server.getStatusAsString() + "</Status>");
+                writer.println("</Server>");
+            }
+            writer.println("</Servers>");
+            writer.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        
+        lister.copyFolder();
+    }
 
     public void printAllServers() {
         Columns columns = new Columns();
-        columns.addLine("TITLE", "PORT", "VIDEO_FILE", "STATUS");
-        columns.addLine("_____", "____", "__________", "______");
+        columns.addLine("TITLE", "ADDRESS", "VIDEO_FILE", "STATUS");
+        columns.addLine("_____", "_______", "__________", "______");
         for (String serverName : servers.keySet()) {
             Server server = servers.get(serverName);
-            columns.addLine(server.getName(), "" + server.getPort(), server.getVideoFile(), "" + server.getStatus());
+            columns.addLine(server.getName(), "" + server.getAddress(), server.getVideoFile(), "" + server.getStatus());
         }
         columns.print();
     }

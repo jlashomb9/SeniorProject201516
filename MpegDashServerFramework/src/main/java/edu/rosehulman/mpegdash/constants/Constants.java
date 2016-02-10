@@ -16,6 +16,7 @@ public class Constants {
     public static final int MAX_EXPONENTIAL_BACKOFF_TIME = 2048;
     public static final int INITIAL_BACKOFF = 128;
     public static final int WAITING_PERIOD_FOR_THREAD_TERMINATION_SECONDS = 10;
+    public static final String SERVER_LIST_FILE_NAME = "serverlist.xml";
 
     public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle) {
         // return "ls -l | echo hi | echo hi | echo hi";
@@ -36,10 +37,22 @@ public class Constants {
         return srProjRoot += "MpegDashServerFramework/" + PATH_TO_SERVER_CONFIGURATIONS;
     }
 
+    public static String absolutePathToResources(){
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
+        return srProjRoot += "MpegDashServerFramework/src/main/resources/";
+    }
+
     public static String getDashcastSetupCommand(String name) {
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
         return "Docker build -f " + srProjRoot + "DockerFile" + (name != null ? " -t " + name : "") + " .";
+    }
+    
+    public static String absolutePathToWebService(){
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
+        return srProjRoot + "/node-gpac-dash";
     }
 
     public static String getDashcastShutdownCommand(String imageID) {

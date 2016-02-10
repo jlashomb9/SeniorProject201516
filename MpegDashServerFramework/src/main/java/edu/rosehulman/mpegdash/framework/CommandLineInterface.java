@@ -26,9 +26,9 @@ public class CommandLineInterface {
             return;
         }
         
-        String imageName = null;
+        String imageName = "mpegdash/nodejs";
         if (params.getSetup()) {
-            imageName = params.getImageName();
+//            imageName = params.getImageName();
             DockerCommandLauncher.setupImage(imageName);
             System.exit(0);
             return;
