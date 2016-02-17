@@ -200,7 +200,7 @@ public class ServerLauncher {
             videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
             videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
             dashcastCommand += videoFile + " ";
-            dashcastCommand += " -out " + videoTitle;
+            dashcastCommand += "-out " + videoTitle;
             dashcastCommand += doc.getElementsByTagName("DashcastParameters").item(0).getTextContent();
         } catch (Exception e) {
             e.printStackTrace();
