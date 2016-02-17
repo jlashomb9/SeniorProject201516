@@ -28,11 +28,13 @@ public class ServerLauncher {
 
     private HashMap<String, Server> servers;
     private DirectoryMonitor directoryMonitor;
-//    private Table table;
+    private NodeJSCommunicator nodeJSCommunicator;
+    // private Table table;
     private boolean autoLaunch;
     private String ip;
 
     private Thread directoryThread;
+    private Thread nodeJSThread;
     private ServerFileLister lister;
 
     public ServerLauncher(boolean autoLaunch) {
@@ -41,16 +43,15 @@ public class ServerLauncher {
         servers = new HashMap<String, Server>();
         lister = new ServerFileLister();
         updateServerList();
-        
-//        DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
-//                new DefaultAWSCredentialsProviderChain()));
-//        table = dynamoDB.getTable("mpegdash.csse.rose-hulman.edu");
+
+        // DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
+        // new DefaultAWSCredentialsProviderChain()));
+        // table = dynamoDB.getTable("mpegdash.csse.rose-hulman.edu");
         BufferedReader in;
         try {
             URL whatismyip = new URL("http://checkip.amazonaws.com");
-            in = new BufferedReader(new InputStreamReader(
-                            whatismyip.openStream()));
-            ip = in.readLine(); //you get the IP as a String
+            in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+            ip = in.readLine(); // you get the IP as a String
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -60,6 +61,10 @@ public class ServerLauncher {
 
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();
+        this.nodeJSCommunicator = new NodeJSCommunicator(this);
+
+        nodeJSThread = new Thread(this.nodeJSCommunicator);
+        nodeJSThread.start();
     }
 
     private void addShutdownHook() {
@@ -71,7 +76,7 @@ public class ServerLauncher {
                     Runnable run = new Runnable() {
                         public void run() {
                             Server server = servers.get(key);
-//                            table.deleteItem("name", server.getName());
+                            // table.deleteItem("name", server.getName());
                             server.shutdown();
                             updateServerList();
                         }
@@ -104,18 +109,19 @@ public class ServerLauncher {
         final Server server = new Server(command, videoTitle, port, videoFile, ip);
         servers.put(videoTitle, server);
 
-//        Item item = new Item()
-//                .withPrimaryKey("name", server.getName())
-//                .withString("launchCommand", server.getLaunchCommand())
-//                .withString("address", "http://" + ip + ":" + server.getPort() + "/" + server.getOutputFolder() + "/dashcast.mpd")
-//                .withString("videoFile", server.getVideoFile());
-//        if(autoLaunch){
-//            item = item.withString("status", "ENABLED");
-//    
-//        }else{
-//            item = item.withString("status", "DISABLED");
-//        }
-//        table.putItem(item);
+        // Item item = new Item()
+        // .withPrimaryKey("name", server.getName())
+        // .withString("launchCommand", server.getLaunchCommand())
+        // .withString("address", "http://" + ip + ":" + server.getPort() + "/"
+        // + server.getOutputFolder() + "/dashcast.mpd")
+        // .withString("videoFile", server.getVideoFile());
+        // if(autoLaunch){
+        // item = item.withString("status", "ENABLED");
+        //
+        // }else{
+        // item = item.withString("status", "DISABLED");
+        // }
+        // table.putItem(item);
         updateServerList();
         return null;
     }
@@ -123,24 +129,26 @@ public class ServerLauncher {
     protected Void launchServer(String serverName) {
         System.out.println("launching server: " + serverName);
         final Server server = servers.get(serverName);
-        if(!servers.containsKey(serverName)){
+        if (!servers.containsKey(serverName)) {
             System.out.println("Server: [" + serverName + "] does not exist");
             return null;
         }
-        if(server.getStatus() == Status.ENABLED){
+        if (server.getStatus() == Status.ENABLED) {
             return null;
         }
         return Server.runWithBackoff(3, new Callable<Void>() {
             public Void call() {
                 new Thread(server).start();
-//                Item item = new Item()
-//                      .withPrimaryKey("name", server.getName())
-//                      .withString("launchCommand", server.getLaunchCommand())
-//                      .withString("address", "http://" + ip + ":" + server.getPort() + "/" + server.getOutputFolder() + "/dashcast.mpd")
-//                      .withString("videoFile", server.getVideoFile())
-//                      .withString("status", "ENABLED");
-//        
-//                table.putItem(item);
+                // Item item = new Item()
+                // .withPrimaryKey("name", server.getName())
+                // .withString("launchCommand", server.getLaunchCommand())
+                // .withString("address", "http://" + ip + ":" +
+                // server.getPort() + "/" + server.getOutputFolder() +
+                // "/dashcast.mpd")
+                // .withString("videoFile", server.getVideoFile())
+                // .withString("status", "ENABLED");
+                //
+                // table.putItem(item);
                 updateServerList();
                 return null;
             }
@@ -149,21 +157,21 @@ public class ServerLauncher {
 
     public Void shutdownServer(String serverName) {
         System.out.println("shutting down server: " + serverName);
-        if(!servers.containsKey(serverName)){
+        if (!servers.containsKey(serverName)) {
             System.out.println("Server: [" + serverName + "] does not exist");
             return null;
         }
         final Server server = servers.get(serverName);
-        if(server.getStatus() == Status.DISABLED){
+        if (server.getStatus() == Status.DISABLED) {
             return null;
         }
-//        Item item = new Item()
-//                .withPrimaryKey("name", server.getName())
-//                .withString("launchCommand", server.getLaunchCommand())
-//                .withNumber("port", server.getPort())
-//                .withString("videoFile", server.getVideoFile())
-//                .withString("status", "DISABLED");
-//        table.putItem(item);
+        // Item item = new Item()
+        // .withPrimaryKey("name", server.getName())
+        // .withString("launchCommand", server.getLaunchCommand())
+        // .withNumber("port", server.getPort())
+        // .withString("videoFile", server.getVideoFile())
+        // .withString("status", "DISABLED");
+        // table.putItem(item);
         updateServerList();
         return server.shutdown();
     }
@@ -202,8 +210,8 @@ public class ServerLauncher {
 
         LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle));
         // return null;
-        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle), port,
-                videoFile);
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle),
+                port, videoFile);
         return videoTitle;
     }
 
@@ -216,13 +224,13 @@ public class ServerLauncher {
             }
         });
     }
-    
-    private void updateServerList(){
+
+    private void updateServerList() {
         File serverList = new File(Constants.absolutePathToResources() + "//" + Constants.SERVER_LIST_FILE_NAME);
         try {
             PrintWriter writer = new PrintWriter(serverList, "UTF-8");
             writer.println("<Servers>");
-            for(String key : servers.keySet()){
+            for (String key : servers.keySet()) {
                 Server server = servers.get(key);
                 writer.println("<Server>");
                 writer.println("<Name>" + server.getName() + "</Name>");
@@ -236,7 +244,7 @@ public class ServerLauncher {
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        
+
         lister.copyFolder();
     }
 
@@ -297,5 +305,19 @@ public class ServerLauncher {
         }
     }
 
+    public void parseCommand(String command) {
+        if (command.equals("quit")) {
+            System.exit(0);
+        } else if (command.equals("feeds")) {
+            this.printAllServers();
+        } else if (command.startsWith("launch")) {
+            this.launchServer(command.substring(7, command.length()));
+        } else if (command.startsWith("shutdown")) {
+            this.shutdownServer(command.substring(9, command.length()));
+        } else if (command.startsWith("restart")) {
+            this.restartServer(command.substring(8, command.length()));
+        }
+        return;
+    }
 
 }

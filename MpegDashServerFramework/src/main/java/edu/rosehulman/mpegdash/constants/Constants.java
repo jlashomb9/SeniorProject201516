@@ -58,4 +58,10 @@ public class Constants {
     public static String getDashcastShutdownCommand(String imageID) {
         return "sudo docker kill " + imageID;
     }
+
+    public static String absolutePathToNodeJS() {
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
+        return srProjRoot + "/node-gpac-dash/client";
+    }
 }

@@ -394,12 +394,26 @@ function sendFile(res, filename) {
 
 var onRequest = function(req, res) {
 
+
 	var parsed_url = url_parser.parse(req.url, true);
 	var filename = parsed_url.pathname.slice(1);
 	var time = res.startTime = getTime();
 
 	if (allowCors) {
 		res.setHeader("Access-Control-Allow-Origin", "*");
+	}
+	if (req.method == "POST"){
+		var filePath = "/client/log.txt" ; 
+		fs.unlinkSync(filePath);
+		fs.writeFile("/client/log.txt", req.data ,function(err) 		{
+    			if(err) {
+        			return console.log(err);
+    		}
+    			console.log("The file was saved!");
+		});
+		res.statusCode = 200;
+		res.end();
+		return;
 	}
 
 	// we send the files as they come, except for segments for which we send fragment by fragment
