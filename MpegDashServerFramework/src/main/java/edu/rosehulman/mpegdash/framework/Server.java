@@ -13,6 +13,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import edu.rosehulman.mpegdash.constants.Constants;
+import edu.rosehulman.mpegdash.framework.Server.Status;
 
 /**
  * Server class. Will initialize a state-machine to interact with current mpeg
@@ -171,6 +172,10 @@ public class Server implements Runnable{
 
     public String getOutputFolder() {
         return outputFolder;
+    }
+
+    public void setStatus(Status enabled) {
+        status = Status.ENABLED;
     }
     
 }

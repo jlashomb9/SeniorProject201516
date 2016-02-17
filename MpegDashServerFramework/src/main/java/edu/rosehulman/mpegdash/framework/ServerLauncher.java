@@ -142,6 +142,7 @@ public class ServerLauncher {
         return Server.runWithBackoff(3, new Callable<Void>() {
             public Void call() {
                 new Thread(server).start();
+                server.setStatus(Status.ENABLED);
                 // Item item = new Item()
                 // .withPrimaryKey("name", server.getName())
                 // .withString("launchCommand", server.getLaunchCommand())
