@@ -4,9 +4,6 @@ var top = 0;
 var left = 0;
 var bottomost = top;
 
-var videoModalData = [{name: "Sample Video 1", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, 
-{name: "Sample Video 2", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}, {name: "Sample Video 3", url: "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd", status: "archived"}]
-
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.listOfVideos.helpers({
   dashplayers: function() {
@@ -99,9 +96,12 @@ TilingHelper = {
 
 Template.tiling.events({
   'click #tile': function(){
-    // for(var i = 0; i < videos.length; i++){
-    //   $(videos[i]).remove();
-    // }
+
+    $.ajax({
+      type: "POST",
+      url: "http://137.112.104.147:8088/",
+      data: x
+    });
 	
 	var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
 	top = 0;
@@ -179,49 +179,83 @@ Template.tiling.events({
       });
 	  
 	  left = left + currentWidth;
-	  
-      // $(videos[i]).appendTo($("#display"));
     }
-
-
-    // var numVideos = Dashplayers.find().count();
-    // var w = window.innerWidth;
-    // var h = window.innerHeight;
-    // var playerWidth = TilingHelper.getWidthForVideo(w,numVideos);
-    // var playerHeight = TilingHelper.getHeightForVideo(h,numVideos);
-    // TilingHelper.toggleTiling(playerWidth,playerHeight);
   }
 });
 Template.tiling.helpers({
  
 });
 
-Template.videoModal.onRendered(function() {
-  var table = document.getElementById("videoTable");
-  for (var i = 0; i < videoModalData.length; i++) {
-    var row = table.insertRow(-1);
-    var name = row.insertCell(0);
-    var status = row.insertCell(1);
-    var playButton = row.insertCell(2);
+Template.AddVideo.events({
+  'click #addVideo': function(){
 
-    name.innerHTML = videoModalData[i].name;
-    status.innerHTML = videoModalData[i].status;
+    modal = $("#addVideoModal");
+    // Remove existing rows and repopulate.
+    $("#videoTable").find("tr:gt(0)").remove();
+    var videoModalData = [];
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "http://137.112.104.147:8088/serverlist.xml?=".concat(new Date().dateString), true);
+    xhttp.send();
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+        var xmlDoc = xhttp.responseXML;
+        for (i = 0; i < xmlDoc.getElementsByTagName("Name").length; i++) {
+          var name = xmlDoc.getElementsByTagName("Name")[i].childNodes[0].nodeValue;
+          var address = xmlDoc.getElementsByTagName("Address")[i].childNodes[0].nodeValue;
+          var videoFile = xmlDoc.getElementsByTagName("VideoFile")[i].childNodes[0].nodeValue;
+          var status = xmlDoc.getElementsByTagName("Status")[i].childNodes[0].nodeValue;
+          videoModalData.push({name: name, url: address, file: videoFile, status: status});
+        }
+        var table = document.getElementById("videoTable");
+        for (var i = 0; i < videoModalData.length; i++) {
+          var row = table.insertRow(-1);
+          var name = row.insertCell(0);
+          var status = row.insertCell(1);
+          var launchButton = row.insertCell(2);
+          var playButton = row.insertCell(3);
 
-    var play = $(document.createElement('button'));
-    play.addClass("btn btn-default");
-    play.html("Play");
+          name.innerHTML = videoModalData[i].name;
+          status.innerHTML = videoModalData[i].status;
 
-    url = videoModalData[i].url;
-    play.click(function() {
-      Dashplayers.insert({
-         host: url
-      });
-    })
+          var play = $(document.createElement('button'));
+          play.addClass("btn btn-default");
+          play.html("Play");
+          console.log(videoModalData[i].status);
+          url = videoModalData[i].url;
+          play.click(function() {
+            Dashplayers.insert({
+             host: url
+           });
+            $("[data-dismiss=modal]").trigger({ type: "click" });
+          });
+          var launch = $(document.createElement('button'));
+          launch.addClass("btn btn-default");
+          launch.html("Shutdown");
+          var type = "shutdown ".concat(videoModalData[i].name);
 
-    play.appendTo(playButton);
-
-
-
+          // Handie if video is disabled.
+          if(videoModalData[i].status == "DISABLED") {
+            play.prop('disabled', true);
+            launch.html("Launch");
+            var type = "launch ".concat(videoModalData[i].name);
+          }
+          launch.click(function(){
+              var x = type;
+              console.log(x);
+              $.ajax({
+                type: "POST",
+                url: "http://137.112.104.147:8088/",
+                data: x,
+                success: function() {
+                  $("[data-dismiss=modal]").trigger({ type: "click" });
+                }
+              });
+            });
+          play.appendTo(playButton);
+          launch.appendTo(launchButton);
+        }
+      }
+    };
   }
 });
 
@@ -549,8 +583,8 @@ Template.dashplayer.events({
   },
   "click .delete": function () {
     Dashplayers.remove(this._id);
-    videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
+    if(array.indexOf("#resizable"+Template.parentData(0)._id) > -1) {
+      videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
+    }
   },
-  
-
 });
