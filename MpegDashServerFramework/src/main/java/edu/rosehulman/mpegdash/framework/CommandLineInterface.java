@@ -2,6 +2,12 @@ package edu.rosehulman.mpegdash.framework;
 
 import java.util.Scanner;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -9,11 +15,13 @@ import com.beust.jcommander.JCommander;
 
 import edu.rosehulman.mpegdash.framework.ServerLauncher;
 
+@SpringBootApplication
 public class CommandLineInterface {
 
     private static final Logger LOGGER = LogManager.getLogger(CommandLineInterface.class);
 
     public static void main(String[] args) {
+        SpringApplication.run(CommandLineInterface.class, args);
         CommandLineArgs params = new CommandLineArgs();
         JCommander cmd = new JCommander(params);
 
@@ -64,6 +72,16 @@ public class CommandLineInterface {
                 "feeds - prints out a list of video feeds and their details\n" +
                 "launch [video title] - launches the specified server if not enabled\n" +
                 "shutdown [video title] - shuts down the specified server if not disabled\n");
+    }
+    
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/greeting").allowedOrigins("*");
+            }
+        };
     }
 
 }
