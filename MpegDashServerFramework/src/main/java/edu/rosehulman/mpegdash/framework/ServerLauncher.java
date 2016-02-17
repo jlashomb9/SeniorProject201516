@@ -39,6 +39,9 @@ public class ServerLauncher {
 
     public ServerLauncher(boolean autoLaunch) {
         addShutdownHook();
+        Server server = new Server();
+        new Thread(server).start();
+        
         this.autoLaunch = autoLaunch;
         servers = new HashMap<String, Server>();
         lister = new ServerFileLister();

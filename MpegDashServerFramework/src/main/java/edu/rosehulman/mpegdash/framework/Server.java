@@ -41,7 +41,12 @@ public class Server implements Runnable{
     public Server() {
         status = Status.DISABLED;
         this.launchCommand = "";
-        this.outputFolder = "output";
+        this.name = "";
+        this.port = 8088;
+        this.videoFile = "";
+        this.outputFolder = "";
+        this.ip = "";
+        this.address = "";
     }
 
     public Server(String launchCommand, String name, int port, String videoFile, String ip) {
