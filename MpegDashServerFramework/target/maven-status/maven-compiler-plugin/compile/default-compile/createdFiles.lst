@@ -1,6 +1,4 @@
-edu\rosehulman\mpegdash\framework\GreetingController.class
 edu\rosehulman\mpegdash\framework\DirectoryMonitor.class
-edu\rosehulman\mpegdash\framework\Greeting.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$Columns.class
 edu\rosehulman\mpegdash\constants\Constants.class
 edu\rosehulman\mpegdash\framework\CommandLineArgs.class
@@ -11,7 +9,6 @@ edu\rosehulman\mpegdash\framework\ServerLauncher$1$1.class
 edu\rosehulman\mpegdash\framework\CommandLineInterface.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$2.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$3.class
-edu\rosehulman\mpegdash\framework\CommandLineInterface$1.class
 edu\rosehulman\mpegdash\framework\ServerLauncher.class
 edu\rosehulman\mpegdash\framework\Server.class
 edu\rosehulman\mpegdash\framework\DockerCommandLauncher.class

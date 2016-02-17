@@ -29,16 +29,6 @@
       <artifactId>commons-io</artifactId>
       <version>1.3.2</version>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <version>1.3.2.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-      <version>1.3.2.RELEASE</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -49,10 +39,6 @@
           <target>${maven.compiler.source}</target>
         </configuration>
         <version>${maven.compiler.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
