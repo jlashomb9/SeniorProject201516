@@ -23,6 +23,7 @@ var fs = require('fs');
 var http = require('http');
 var url_parser = require('url');
 
+
 var ipaddr = "127.0.0.1";
 var port = 8000;
 var logLevel = 0;
@@ -403,14 +404,22 @@ var onRequest = function(req, res) {
 		res.setHeader("Access-Control-Allow-Origin", "*");
 	}
 	if (req.method == "POST"){
-		var filePath = "/client/log.txt" ; 
+		var filePath = "client/log.txt" ;
+	if (fs.existsSync(filePath)){
 		fs.unlinkSync(filePath);
-		fs.writeFile("/client/log.txt", req.data ,function(err) 		{
+	}
+	var body = "";
+	req.on('data', function (data) {
+            body += data.toString();
+				fs.writeFile("client/log.txt", body ,function(err) 		{
     			if(err) {
         			return console.log(err);
     		}
     			console.log("The file was saved!");
 		});
+
+        });
+
 		res.statusCode = 200;
 		res.end();
 		return;
