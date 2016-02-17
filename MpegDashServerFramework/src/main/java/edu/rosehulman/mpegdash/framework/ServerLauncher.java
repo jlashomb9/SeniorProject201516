@@ -175,8 +175,9 @@ public class ServerLauncher {
         // .withString("videoFile", server.getVideoFile())
         // .withString("status", "DISABLED");
         // table.putItem(item);
+        server.shutdown();
         updateServerList();
-        return server.shutdown();
+        return null;
     }
 
     public Void restartServer(String serverName) {
