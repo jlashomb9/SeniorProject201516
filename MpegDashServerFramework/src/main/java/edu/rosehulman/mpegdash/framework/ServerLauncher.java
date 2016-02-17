@@ -306,6 +306,7 @@ public class ServerLauncher {
     }
 
     public void parseCommand(String command) {
+        System.out.println(command);
         if (command.equals("quit")) {
             System.exit(0);
         } else if (command.equals("feeds")) {
