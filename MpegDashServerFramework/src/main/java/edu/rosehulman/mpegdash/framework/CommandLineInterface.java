@@ -32,7 +32,7 @@ public class CommandLineInterface {
             return;
         }
         
-        ServerLauncher launcher = new ServerLauncher(params.getAutoLaunch(), params.getIP(), params.getDashcast());
+        ServerLauncher launcher = new ServerLauncher(params.getAutoLaunch(), params.getIP(), params.getDashcast(), params.getImageName());
         Scanner scanner = new Scanner(System.in);
         String line = null;
         printHelpMessage();

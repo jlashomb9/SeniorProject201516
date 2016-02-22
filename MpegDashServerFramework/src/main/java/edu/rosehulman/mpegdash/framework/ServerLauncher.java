@@ -37,12 +37,14 @@ public class ServerLauncher {
     private Thread nodeJSThread;
     private ServerFileLister lister;
     private boolean dashcast;
+    private String imageName;
 
-    public ServerLauncher(boolean autoLaunch, String ip, boolean dashcast) {
+    public ServerLauncher(boolean autoLaunch, String ip, boolean dashcast, String imageName) {
         addShutdownHook();
         Server server = new Server();
         new Thread(server).start();
         this.dashcast = dashcast;
+        this.imageName = imageName;
         
         this.autoLaunch = autoLaunch;
         servers = new HashMap<String, Server>();
@@ -204,7 +206,7 @@ public class ServerLauncher {
          "--profile on-demand --mpd_output " + videoTitle + ".mpd";
 
         // return null;
-        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, command, videoTitle, ip),
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, command, videoTitle, ip, imageName),
                 port, videoFile);
         return videoTitle;
     }
@@ -235,9 +237,9 @@ public class ServerLauncher {
         LOGGER.debug("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoFile " + videoFile
                 + "\ndashcastCommand: " + dashcastCommand);
 
-        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip));
+        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip, imageName));
         // return null;
-        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip),
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip, imageName),
                 port, videoFile);
         return videoTitle;
     }

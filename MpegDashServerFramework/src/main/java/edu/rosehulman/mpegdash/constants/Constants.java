@@ -18,10 +18,10 @@ public class Constants {
     public static final int WAITING_PERIOD_FOR_THREAD_TERMINATION_SECONDS = 10;
     public static final String SERVER_LIST_FILE_NAME = "serverlist.xml";
 
-    public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle, String ip) {
+    public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle, String ip, String imageName) {
         // return "ls -l | echo hi | echo hi | echo hi";
         return "sudo docker run -d -p " + port + ":" + port + " -v " + pathToServerConfigurations()
-                + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
+                + ":/home/SeniorProject201516 " + imageName + " /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
                 + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\" " + ip + "'";
     }
     

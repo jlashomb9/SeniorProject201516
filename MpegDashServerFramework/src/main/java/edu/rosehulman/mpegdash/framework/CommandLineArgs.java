@@ -22,13 +22,13 @@ public class CommandLineArgs {
     public boolean getSetup() {
         return setup;
     }
-//    
-//    public static final String SETUP_IMAGE_NAME = "-imagename";
-//    @Parameter(names = SETUP_IMAGE_NAME, description = "Name associated with docker image when initializing.")
-//    private String imageName;
-//    public String getImageName() {
-//        return imageName;
-//    }
+    
+    public static final String SETUP_IMAGE_NAME = "-imagename";
+    @Parameter(names = SETUP_IMAGE_NAME, description = "Name associated with docker image when initializing.")
+    private String imageName = "mpegdash/nodejs";
+    public String getImageName() {
+        return imageName;
+    }
     public static final String AUTO_LAUNCH = "-autolaunch";
     @Parameter(names = AUTO_LAUNCH, description = "default true, if set to false the program will launch with the videos DISABLED", arity = 1)
     private boolean autoLaunch = true;

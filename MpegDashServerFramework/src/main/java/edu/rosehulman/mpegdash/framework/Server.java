@@ -47,7 +47,7 @@ public class Server implements Runnable{
         this.outputFolder = "";
         this.ip = "";
         this.address = "";
-        this.launchCommand = Constants.getDashcastLaunchVideoCommand(port, "", "", "", "");
+        this.launchCommand = Constants.getDashcastLaunchVideoCommand(port, "", "", "", "", "mpegdash/nodejs");
     }
 
     public Server(String launchCommand, String name, int port, String videoFile, String ip) {
