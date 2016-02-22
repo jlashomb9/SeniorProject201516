@@ -2,11 +2,11 @@
 
 cd /home/SeniorProject201516/node-gpac-dash/
 
-#IPvar=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+IPvar=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
-#echo $IPvar
+echo $IPvar
 
-nodejs gpac-dash.js -cors -segment-marker eods -chunk-media-segments -ip $4 -port $2 &
+nodejs gpac-dash.js -cors -segment-marker eods -chunk-media-segments -ip $IPvar -port $2 &
 
 $3
 
