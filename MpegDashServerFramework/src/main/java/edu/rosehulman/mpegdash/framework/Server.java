@@ -87,27 +87,27 @@ public class Server implements Runnable{
         BufferedReader error = null;
         status = Status.ENABLED;
         System.out.println(this.launchCommand);
-//        String[] cmd = { "/bin/bash", "-c", this.launchCommand };
-//        try {
-//            ls = Runtime.getRuntime().exec(cmd);
-//            input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
-//            error = new BufferedReader(new InputStreamReader(ls.getErrorStream()));
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
-//            System.exit(1);
-//        }
-//        try {
-//            while ((line = input.readLine()) != null){
-//                System.out.println(line);
-//                imageID = line;
-//            }
-//
-//            while ((line = error.readLine()) != null)
-//                System.out.println(line);
-//
-//        } catch (IOException e1) {
-//            LOGGER.debug("process was shutdown");
-//        }
+        String[] cmd = { "/bin/bash", "-c", this.launchCommand };
+        try {
+            ls = Runtime.getRuntime().exec(cmd);
+            input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
+            error = new BufferedReader(new InputStreamReader(ls.getErrorStream()));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            System.exit(1);
+        }
+        try {
+            while ((line = input.readLine()) != null){
+                System.out.println(line);
+                imageID = line;
+            }
+
+            while ((line = error.readLine()) != null)
+                System.out.println(line);
+
+        } catch (IOException e1) {
+            LOGGER.debug("process was shutdown");
+        }
 
     }
 
