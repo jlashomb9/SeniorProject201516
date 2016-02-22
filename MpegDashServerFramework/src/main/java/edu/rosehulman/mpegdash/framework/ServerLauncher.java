@@ -206,7 +206,7 @@ public class ServerLauncher {
          "--profile on-demand --mpd_output " + videoTitle + ".mpd";
 
         // return null;
-        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, command, videoTitle, ip, imageName),
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, command, videoTitle, imageName),
                 port, videoFile);
         return videoTitle;
     }
@@ -237,9 +237,9 @@ public class ServerLauncher {
         LOGGER.debug("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoFile " + videoFile
                 + "\ndashcastCommand: " + dashcastCommand);
 
-        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip, imageName));
+        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, imageName));
         // return null;
-        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip, imageName),
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, imageName),
                 port, videoFile);
         return videoTitle;
     }
