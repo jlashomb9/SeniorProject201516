@@ -217,7 +217,7 @@ public class ServerLauncher {
         String videoFile = null;
         int port = 0;
         String videoTitle = null;
-        String dashcastCommand = "sudo DashCast -v ";
+        String dashcastCommand = "DashCast -v ";
         try {
             File inputFile = new File(filename);
             System.out.println(inputFile.toString());
