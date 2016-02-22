@@ -36,29 +36,19 @@ public class ServerLauncher {
     private Thread directoryThread;
     private Thread nodeJSThread;
     private ServerFileLister lister;
+    private boolean dashcast;
 
-    public ServerLauncher(boolean autoLaunch) {
+    public ServerLauncher(boolean autoLaunch, String ip, boolean dashcast) {
         addShutdownHook();
         Server server = new Server();
         new Thread(server).start();
+        this.dashcast = dashcast;
         
         this.autoLaunch = autoLaunch;
         servers = new HashMap<String, Server>();
         lister = new ServerFileLister();
         updateServerList();
-
-        // DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
-        // new DefaultAWSCredentialsProviderChain()));
-        // table = dynamoDB.getTable("mpegdash.csse.rose-hulman.edu");
-        BufferedReader in;
-        try {
-            URL whatismyip = new URL("http://checkip.amazonaws.com");
-            in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-            ip = in.readLine(); // you get the IP as a String
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        this.ip = ip;
 
         this.directoryMonitor = new DirectoryMonitor(this, autoLaunch);
 
@@ -185,9 +175,41 @@ public class ServerLauncher {
         shutdownServer(serverName);
         return launchServer(serverName);
     }
+    
+    protected String addServer(String filename){
+        if(dashcast){
+            return addServerDashcast(filename);
+        }
+        final File folder = new File("").getAbsoluteFile();
+        String srProjRoot = folder.getParentFile().getParentFile().getAbsolutePath();
+        String videoFile = null;
+        int port = 0;
+        String videoTitle = null;
+        try {
+            File inputFile = new File(filename);
+            System.out.println(inputFile.toString());
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            port = Integer.parseInt(doc.getElementsByTagName("Port").item(0).getTextContent());
+            videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
+            videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-    // NOT UP TO-DATE
-    protected String addServer(String filename) {
+        String command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=audio,output=" + videoTitle + "_audio.mp4" +
+         "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=video,output=" + videoTitle + "_video.mp4" +
+         "--profile on-demand --mpd_output " + videoTitle + ".mpd";
+
+        // return null;
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, command, videoTitle, ip),
+                port, videoFile);
+        return videoTitle;
+    }
+
+    protected String addServerDashcast(String filename) {
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getParentFile().getParentFile().getAbsolutePath();
         String videoFile = null;
@@ -213,9 +235,9 @@ public class ServerLauncher {
         LOGGER.debug("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoFile " + videoFile
                 + "\ndashcastCommand: " + dashcastCommand);
 
-        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle));
+        LOGGER.debug(Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip));
         // return null;
-        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle),
+        addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, dashcastCommand, videoTitle, ip),
                 port, videoFile);
         return videoTitle;
     }

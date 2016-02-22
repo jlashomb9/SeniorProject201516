@@ -27,12 +27,12 @@ public class CommandLineInterface {
         String imageName = "mpegdash/nodejs";
         if (params.getSetup()) {
 //            imageName = params.getImageName();
-            DockerCommandLauncher.setupImage(imageName);
+            DockerCommandLauncher.setupImage(imageName, params.getDashcast());
             System.exit(0);
             return;
         }
         
-        ServerLauncher launcher = new ServerLauncher(params.getAutoLaunch());
+        ServerLauncher launcher = new ServerLauncher(params.getAutoLaunch(), params.getIP(), params.getDashcast());
         Scanner scanner = new Scanner(System.in);
         String line = null;
         printHelpMessage();

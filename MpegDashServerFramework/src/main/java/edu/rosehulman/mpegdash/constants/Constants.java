@@ -18,11 +18,11 @@ public class Constants {
     public static final int WAITING_PERIOD_FOR_THREAD_TERMINATION_SECONDS = 10;
     public static final String SERVER_LIST_FILE_NAME = "serverlist.xml";
 
-    public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle) {
+    public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle, String ip) {
         // return "ls -l | echo hi | echo hi | echo hi";
         return "sudo docker run -d -p " + port + ":" + port + " -v " + pathToServerConfigurations()
                 + ":/home/SeniorProject201516 mpegdash/nodejs /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
-                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\"'";
+                + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\" " + ip + "'";
     }
     
     public static String pathToServerConfigurations(){
@@ -43,10 +43,13 @@ public class Constants {
         return srProjRoot += "MpegDashServerFramework/src/main/resources/";
     }
 
-    public static String getDashcastSetupCommand(String name) {
+    public static String getDashcastSetupCommand(String name, boolean dashcast) {
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
-        return "Docker build -f " + srProjRoot + "DockerFile" + (name != null ? " -t " + name : "") + " .";
+        if(dashcast){
+            return "Docker build -f " + srProjRoot + "DockerFile" + (name != null ? " -t " + name : "") + " .";
+        }
+        return "Docker build -f " + srProjRoot + "DockerFileEDash" + (name != null ? " -t " + name : "") + " .";
     }
     
     public static String absolutePathToWebService(){

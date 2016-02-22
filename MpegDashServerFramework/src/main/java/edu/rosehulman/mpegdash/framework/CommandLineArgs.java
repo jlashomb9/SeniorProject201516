@@ -35,4 +35,19 @@ public class CommandLineArgs {
     public boolean getAutoLaunch() {
         return autoLaunch;
     }
+    
+
+    public static final String IP = "-ip";
+    @Parameter(names = IP, description = "IP address of your server. Will be used to host videos on different ports.", required = true)
+    private String ip = null;
+    public String getIP() {
+        return ip;
+    }
+    
+    public static final String DASHCAST = "-dashcast";
+    @Parameter(names = DASHCAST, description = "default false, if set to true the program will use dashcast to encode videos instead of google's edash", arity = 1)
+    private boolean dashcast = false;
+    public boolean getDashcast() {
+        return dashcast;
+    }
 }

@@ -10,9 +10,9 @@ import edu.rosehulman.mpegdash.framework.Server.Status;
 public class DockerCommandLauncher {
 
     
-    public static final void setupImage(String name){
+    public static final void setupImage(String name, boolean dashcast){
         Process ls = null;
-        String[] cmd = { "/bin/bash", "-c", Constants.getDashcastSetupCommand(name)};
+        String[] cmd = { "/bin/bash", "-c", Constants.getDashcastSetupCommand(name, dashcast)};
 
         BufferedReader input = null;
         String line = null;
