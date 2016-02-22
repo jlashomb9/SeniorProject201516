@@ -25,11 +25,18 @@ This is where you will setup parameters for encoding the video into MPEG-DASH fo
 
 Running the server
 =======
+Go into the SeniorProject201516/node-gpac-dash folder and input the following command:
+```
+wget https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4
+```
+This will retrieve the sample video that the configuration examples are setup to use.
 
-Now that the docker image is setup, you can run the server with the following command:
+Now that the docker image is setup and you have the videofile, you can run the server with the following command:
 ```
-java -jar mpeg-dash-server-framework-1.0.0-shaded.jar
+java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -ip <insert your ip here>
 ```
+
+
 
 [optional parameter '-autolaunch false' -default true, if set to false the program will launch with the videos DISABLED]
 
