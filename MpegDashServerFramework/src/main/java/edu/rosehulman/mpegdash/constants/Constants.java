@@ -47,9 +47,9 @@ public class Constants {
         final File folder = new File("").getAbsoluteFile();
         String srProjRoot = folder.getAbsolutePath().substring(0, folder.getAbsolutePath().indexOf("MpegDashServerFramework"));
         if(dashcast){
-            return "Docker build -f " + srProjRoot + "DockerFile" + (name != null ? " -t " + name : "") + " .";
+            return "docker build -f " + srProjRoot + "DockerFile" + (name != null ? " -t " + name : "") + " .";
         }
-        return "Docker build -f " + srProjRoot + "DockerFileEDash" + (name != null ? " -t " + name : "") + " .";
+        return "docker build -f " + srProjRoot + "DockerFileEDash" + (name != null ? " -t " + name : "") + " .";
     }
     
     public static String absolutePathToWebService(){

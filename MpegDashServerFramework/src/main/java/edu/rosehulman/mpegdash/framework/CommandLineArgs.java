@@ -30,7 +30,7 @@ public class CommandLineArgs {
         return imageName;
     }
     public static final String AUTO_LAUNCH = "-autolaunch";
-    @Parameter(names = AUTO_LAUNCH, description = "default true, if set to false the program will launch with the videos DISABLED", arity = 1)
+    @Parameter(names = AUTO_LAUNCH, description = "default true, if set to false the program will launch with the videos DISABLED")
     private boolean autoLaunch = true;
     public boolean getAutoLaunch() {
         return autoLaunch;
@@ -45,7 +45,7 @@ public class CommandLineArgs {
     }
     
     public static final String DASHCAST = "-dashcast";
-    @Parameter(names = DASHCAST, description = "default false, if set to true the program will use dashcast to encode videos instead of google's edash", arity = 1)
+    @Parameter(names = DASHCAST, description = "default false, if set to true the program will use dashcast to encode videos instead of google's edash")
     private boolean dashcast = false;
     public boolean getDashcast() {
         return dashcast;
