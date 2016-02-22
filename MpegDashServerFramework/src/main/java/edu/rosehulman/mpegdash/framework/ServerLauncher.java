@@ -202,7 +202,7 @@ public class ServerLauncher {
         }
 
         String command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=audio,output=" + videoTitle + "_audio.mp4 " +
-         "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=video,output=" + videoTitle + "_video.mp4 " +
+         "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=video,output=" + videoTitle + "_video.mp4" +
          "--profile on-demand --mpd_output " + videoTitle + ".mpd";
 
         // return null;
