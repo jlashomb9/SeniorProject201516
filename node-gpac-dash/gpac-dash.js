@@ -402,6 +402,8 @@ var onRequest = function(req, res) {
 
 	if (allowCors) {
 		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Headers", "Range");
+		res.setHeader("Access-Control-Allow-Credentials", true);
 	}
 	if (req.method == "POST"){
 		var filePath = "client/log.txt" ;

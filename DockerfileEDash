@@ -9,7 +9,8 @@ RUN apt-get install -y \
             wget \
             git \
             python \
-            subversion
+            subversion \
+            nodejs
 
 # install depot_tools http://www.chromium.org/developers/how-tos/install-depot-tools
 RUN git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
