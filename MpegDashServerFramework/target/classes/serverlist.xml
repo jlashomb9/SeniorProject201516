@@ -1,2 +1,14 @@
 <Servers>
+<Server>
+<Name>video2</Name>
+<Address>http://0.1.2.3:8099/video2.mpd</Address>
+<VideoFile>sintel_trailer-480p.mp4</VideoFile>
+<Status>ENABLED</Status>
+</Server>
+<Server>
+<Name>video1</Name>
+<Address>http://0.1.2.3:8098/video1.mpd</Address>
+<VideoFile>sintel_trailer-480p.mp4</VideoFile>
+<Status>ENABLED</Status>
+</Server>
 </Servers>

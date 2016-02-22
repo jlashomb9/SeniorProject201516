@@ -40,7 +40,6 @@ public class ServerLauncher {
     private String imageName;
 
     public ServerLauncher(boolean autoLaunch, String ip, boolean dashcast, String imageName) {
-        addShutdownHook();
         Server server = new Server();
         new Thread(server).start();
         this.dashcast = dashcast;
@@ -60,6 +59,7 @@ public class ServerLauncher {
 
         nodeJSThread = new Thread(this.nodeJSCommunicator);
         nodeJSThread.start();
+        addShutdownHook();
     }
 
     private void addShutdownHook() {
@@ -202,7 +202,7 @@ public class ServerLauncher {
         }
 
         String command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=audio,output=" + videoTitle + "_audio.mp4 " +
-         "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=video,output=" + videoTitle + "_video.mp4" +
+         "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ".mp4,stream=video,output=" + videoTitle + "_video.mp4 " +
          "--profile on-demand --mpd_output " + videoTitle + ".mpd";
 
         // return null;
