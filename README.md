@@ -13,7 +13,7 @@ Setup
 ========
 Go into the folder MpegDashServerFramework/target and run the following command:
 ```
-java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -setup
+java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -setup -ip <insert your ip here>
 ```
 
 [this will setup the docker image for launching video feeds]
