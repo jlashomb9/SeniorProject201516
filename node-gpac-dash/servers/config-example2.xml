@@ -3,7 +3,7 @@
   <Server>
     <Name>video2</Name>
     <Port>8099</Port>
-    <VideoFile>SampleVideo_720x480_50mb.mp4</VideoFile>
+    <VideoFile>sintel_trailer-480p.mp4</VideoFile>
     <DashcastParameters>-seg-dur 1000 -frag-dur 200 -mpd-refresh 10000 -time-shift -1 -seg-marker eods -min-buffer 0.2 -pixf yuv420p -insert-utc -low-delay -no-loop</DashcastParameters>
   </Server>
 </Servers>
