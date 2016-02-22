@@ -21,7 +21,7 @@ public class Constants {
     public static String getDashcastLaunchVideoCommand(int port, String videoName, String dashcastCommand, String videoTitle, String imageName) {
         // return "ls -l | echo hi | echo hi | echo hi";
         return "sudo docker run -d -p " + port + ":" + port + " -v " + pathToServerConfigurations()
-                + ":/home/SeniorProject201516 " + imageName + " /bin/bash -c './home/SeniorProject201516/node-gpac-dash/encode.sh "
+                + ":/home/SeniorProject201516 " + imageName + " /bin/bash -c '/home/SeniorProject201516/node-gpac-dash/encode.sh "
                 + "/home/SeniorProject201516/node-gpac-dash/" + videoName + " " + port + " \"" + dashcastCommand + "\"'";
     }
     
