@@ -41,7 +41,7 @@ java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -ip <insert your ip here>
 [optional parameter '-autolaunch false' -default true, if set to false the program will launch with the videos DISABLED]
 
 Running the web client
-========
+--------------------
 
 	From the terminal go to the git rep folder.
 	Change directory to MPEGDashPlayer.
