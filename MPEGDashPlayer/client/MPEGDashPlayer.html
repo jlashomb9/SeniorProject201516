@@ -6,6 +6,7 @@
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="jquery.livequery.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" href="/resources/demos/style.css">
 
@@ -145,10 +146,13 @@
 	<div class="videoPlayerContainer2 ui-widget-content">
 		<div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
 			<video id="videoPlayer{{_id}}" width="560" height="336"></video></div>
+			<video id="recordedVideo{{_id}}" width="560" height="336" autoplay loop></video>
 			<div class="videoHeaderPanel" id="videoHeader{{_id}}">
 				<button class="delete">&times;</button>
 				<span id="span{{_id}}" class="text" style="color:white">{{host}}</span>
 				<a id="download{{_id}}" style="color:white">Download Snapshot</a>
+				<a id="record_clip{{_id}}" style="color:white">Record clip</a>
+				<a id="play_clip{{_id}}" style="color:white">Play clip</a>
 			</div>
 			<div class="buttonPanel" id="playerButtons{{_id}}"></div>
 			<div class="ui-resizable-handle ui-resizable-se" id="resizer{{_id}}"></div>

@@ -4,6 +4,54 @@ var top = 0;
 var left = 0;
 var bottomost = top;
 
+var recordedBlobs;
+
+function handleDataAvailable(event) {
+  if (event.data && event.data.size > 0) {
+    recordedBlobs.push(event.data);
+  }
+}
+
+function handleStop(event) {
+  console.log('Recorder stopped: ', event);
+}
+
+function startRecording() {
+  var options = {mimeType: 'video/webm, codecs=vp9'};
+  recordedBlobs = [];
+  try {
+    mediaRecorder = new MediaRecorder(window.stream, options);
+  } catch (e0) {
+    console.log('Unable to create MediaRecorder with options Object: ', e0);
+    try {
+      options = {mimeType: 'video/webm,codecs=vp9'};
+      mediaRecorder = new MediaRecorder(window.stream, options);
+    } catch (e1) {
+      console.log('Unable to create MediaRecorder with options Object: ', e1);
+      try {
+        options = 'video/vp8'; // Chrome 47
+        mediaRecorder = new MediaRecorder(window.stream, options);
+      } catch (e2) {
+        alert('MediaRecorder is not supported by this browser.\n\n' +
+            'Try Firefox 29 or later, or Chrome 47 or later, with Enable experimental Web Platform features enabled from chrome://flags.');
+        console.error('Exception while creating MediaRecorder:', e2);
+        return;
+      }
+    }
+  }
+  console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+  mediaRecorder.onstop = handleStop;
+  mediaRecorder.ondataavailable = handleDataAvailable;
+  mediaRecorder.start(10); // collect 10ms of data
+  console.log('MediaRecorder started', mediaRecorder);
+}
+
+function stopRecording() {
+  mediaRecorder.stop();
+  console.log('Recorded Blobs: ', recordedBlobs);
+}
+
+
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.listOfVideos.helpers({
   dashplayers: function() {
@@ -268,6 +316,12 @@ Template.dashplayer.onRendered(function () {
     var url = document.getElementById(span_id).innerText;  //$( span_id + ' span').text();
 
     var download_id = "download"+Template.parentData(0)._id;
+	
+	var recordedBlobs;
+	var sourceBuffer;
+	var recordedVideo = document.getElementById("recordedVideo"+Template.parentData(0)._id);
+	var record_clip_id = "record_clip" + Template.parentData(0)._id;
+	var play_clip_id = "play_clip" + Template.parentData(0)._id;
     
     // $("#videoPlayer"+Template.parentData(0)._id).ready(function() {
       var video = document.getElementById(video_id);
@@ -424,7 +478,28 @@ Template.dashplayer.onRendered(function () {
         document.getElementById(download_id).addEventListener('click', function() {
             var dataURL = CanvasHelper.getDataURL(video);
             CanvasHelper.downloadCanvas(this, dataURL, "image.png");
-        }, false);       
+        }, false);  
+
+		var notRecording = true;
+		var recordedBlobs;
+		document.getElementById(record_clip_id).addEventListener('click', function() {
+	
+			if (notRecording) {
+				startRecording();
+				notRecording = false;
+			} else {
+				stopRecording();
+				notRecording = true;
+				//recordButton.textContent = 'Start Recording';
+				//playButton.disabled = false;
+				//downloadButton.disabled = false;
+			}
+  
+		});
+		document.getElementById(record_clip_id).addEventListener('click', function() {
+			var superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+			recordedVideo.src = window.URL.createObjectURL(superBuffer);
+		});
 
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
         //Appending all buttons
