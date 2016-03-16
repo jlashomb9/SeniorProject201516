@@ -220,7 +220,6 @@ Template.AddVideo.events({
           var play = $(document.createElement('button'));
           play.addClass("btn btn-default");
           play.html("Play");
-          console.log(videoModalData[i].status);
           url = videoModalData[i].url;
           play.click(function() {
             Dashplayers.insert({
@@ -228,19 +227,30 @@ Template.AddVideo.events({
            });
             $("[data-dismiss=modal]").trigger({ type: "click" });
           });
-          var launch = $(document.createElement('button'));
-          launch.addClass("btn btn-default");
-          launch.html("Shutdown");
+
+          // var launch = document.createElement('button');
+          // launch.setAttribute("id", "launch" + i)
+          // var launchID launch.getAttribute("id");
+          // launch = $(launch);
+
           var type = "shutdown ".concat(videoModalData[i].name);
+          var name = "Shutdown" + i;
 
           // Handie if video is disabled.
           if(videoModalData[i].status == "DISABLED") {
             play.prop('disabled', true);
-            launch.html("Launch");
+            name = "Launch" + i;
             var type = "launch ".concat(videoModalData[i].name);
           }
-          launch.click(function(){
-              var x = type;
+
+          var launch = $('<button/>',
+          {
+            text: name,
+            id: 'launch' + i,
+            value: type,
+            click: function () {
+              console.log(this);
+              x = this.value;
               console.log(x);
               $.ajax({
                 type: "POST",
@@ -250,7 +260,12 @@ Template.AddVideo.events({
                   $("[data-dismiss=modal]").trigger({ type: "click" });
                 }
               });
-            });
+            }
+          });
+
+          launch.addClass("btn btn-default");
+          //launch.html("Shutdown");
+          
           play.appendTo(playButton);
           launch.appendTo(launchButton);
         }
