@@ -97,11 +97,11 @@ TilingHelper = {
 Template.tiling.events({
   'click #tile': function(){
 
-    $.ajax({
-      type: "POST",
-      url: "http://137.112.104.147:8088/",
-      data: x
-    });
+    // $.ajax({
+    //   type: "POST",
+    //   url: "http://137.112.104.147:8088/",
+    //   data: x
+    // });
 	
 	var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
 	top = 0;
