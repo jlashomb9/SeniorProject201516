@@ -17,18 +17,6 @@
 	<div class="header-cont">
 		<div class="center-controls">
 			<h1>MPEG Dash Video Player</h1>
-			<div>
-				<div style="display: inline-block;">
-					<a href="{{ pathFor 'videoManager'}}"> 
-						<li class="tag" role="presentation">Timesheet</li>
-					</a>
-				</div>
-				<div style="display: inline-block;">
-					<a href="{{ pathFor 'listOfVideos'}}"> 
-						<li class="tag" role="presentation">Video List</li>
-					</a>
-				</div>
-			</div>
 			<form class="new-feed">
 				<input type="text" name="text" placeholder="Add host" />
 			</form>
@@ -39,6 +27,7 @@
 	</div>
 	{{ > videoModal }}
 	{{ > launchModal }}
+	{{ > listOfVideos  }}
 </body>
 
 
