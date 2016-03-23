@@ -46,3 +46,7 @@ Running the web client
 	From the terminal go to the git rep folder.
 	Change directory to MPEGDashPlayer.
 	To deploy locally type "meteor".
+
+
+========
+Server's Docker container located at https://hub.docker.com/r/mpegdashrosehulman/v1/
