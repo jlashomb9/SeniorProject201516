@@ -4,6 +4,12 @@ var top = 0;
 var left = 0;
 var bottomost = top;
 
+
+function capture(video, scaleFactor) {
+   
+} 
+
+
 Dashplayers = new Mongo.Collection("dashplayers");
 Template.listOfVideos.helpers({
   dashplayers: function() {
@@ -440,6 +446,53 @@ Template.dashplayer.onRendered(function () {
             var dataURL = CanvasHelper.getDataURL(video);
             CanvasHelper.downloadCanvas(this, dataURL, "image.png");
         }, false);       
+		var record_id = "record"+Template.parentData(0)._id;
+		var scaleFactor = 0.25;
+		Session.set(record_id, 0);
+		document.getElementById(record_id).addEventListener('click', function() {
+			var bool = Session.get(record_id);
+			//var output = document.getElementById("output");
+			
+				//start recording
+				Session.set(record_id, bool++);
+			/**	var canvas = capture(video, scaleFactor);
+				canvas.onclick = function(){
+					window.open(this.toDataURL());
+				};
+				snapshots.unshift(canvas);
+				output.innerHTML = '';
+				for(var i=0; i<4; i++){
+					output.appendChild(snapshots[i]);
+				}**/
+			var worker;
+			var threadVal = Session.get("workerThread");
+			var videoVal;
+			var arr=[];
+			if(threadVal != null){
+				worker = threadVal;
+				videoVal = Session.get("recordingVideo");
+				arr = Session.get("arr");
+			}
+			var bool = Session.get("bool");
+			
+			if(!bool) { 
+				Session.set("recordingVideo", video);
+				Session.set("arr", arr);
+				worker = new Worker('caputuringCanvas.js');
+				Session.set("workerThread", worker);
+				worker.postMessage({'cmd': 'start'});
+			}else {
+				worker.postMessage({'cmd': 'stop'});
+				var encoder = new Whammy.Video(15);
+				var i =0;
+				for(i = 0; i < arr.length;i++){
+					encoder.add(arr[i]);
+				}
+				var output = encoder.compile();
+				return webkitURL.createObjectURL(output);
+			}
+
+		}, false);
 
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
         //Appending all buttons
