@@ -29,7 +29,6 @@ public class ServerLauncher {
     private HashMap<String, Server> servers;
     private DirectoryMonitor directoryMonitor;
     private NodeJSCommunicator nodeJSCommunicator;
-    // private Table table;
     private boolean autoLaunch;
     private String ip;
 
@@ -71,7 +70,6 @@ public class ServerLauncher {
                     Runnable run = new Runnable() {
                         public void run() {
                             Server server = servers.get(key);
-                            // table.deleteItem("name", server.getName());
                             server.shutdown();
                             updateServerList();
                         }
@@ -104,19 +102,6 @@ public class ServerLauncher {
         final Server server = new Server(command, videoTitle, port, videoFile, ip);
         servers.put(videoTitle, server);
 
-        // Item item = new Item()
-        // .withPrimaryKey("name", server.getName())
-        // .withString("launchCommand", server.getLaunchCommand())
-        // .withString("address", "http://" + ip + ":" + server.getPort() + "/"
-        // + server.getOutputFolder() + "/dashcast.mpd")
-        // .withString("videoFile", server.getVideoFile());
-        // if(autoLaunch){
-        // item = item.withString("status", "ENABLED");
-        //
-        // }else{
-        // item = item.withString("status", "DISABLED");
-        // }
-        // table.putItem(item);
         updateServerList();
         return null;
     }
@@ -135,16 +120,6 @@ public class ServerLauncher {
             public Void call() {
                 new Thread(server).start();
                 server.setStatus(Status.ENABLED);
-                // Item item = new Item()
-                // .withPrimaryKey("name", server.getName())
-                // .withString("launchCommand", server.getLaunchCommand())
-                // .withString("address", "http://" + ip + ":" +
-                // server.getPort() + "/" + server.getOutputFolder() +
-                // "/dashcast.mpd")
-                // .withString("videoFile", server.getVideoFile())
-                // .withString("status", "ENABLED");
-                //
-                // table.putItem(item);
                 updateServerList();
                 return null;
             }
@@ -161,13 +136,6 @@ public class ServerLauncher {
         if (server.getStatus() == Status.DISABLED) {
             return null;
         }
-        // Item item = new Item()
-        // .withPrimaryKey("name", server.getName())
-        // .withString("launchCommand", server.getLaunchCommand())
-        // .withNumber("port", server.getPort())
-        // .withString("videoFile", server.getVideoFile())
-        // .withString("status", "DISABLED");
-        // table.putItem(item);
         server.shutdown();
         updateServerList();
         return null;
@@ -198,6 +166,7 @@ public class ServerLauncher {
             videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
             videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
         } catch (Exception e) {
+            LOGGER.error("Could not launch edash video" + videoTitle + "\n" + e);
             e.printStackTrace();
         }
 
@@ -232,6 +201,7 @@ public class ServerLauncher {
 //            dashcastCommand += "-out " + videoTitle;
             dashcastCommand += doc.getElementsByTagName("DashcastParameters").item(0).getTextContent();
         } catch (Exception e) {
+            LOGGER.error("Could not launch dashcast video" + videoTitle + "\n" + e);
             e.printStackTrace();
         }
         LOGGER.debug("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoFile " + videoFile
