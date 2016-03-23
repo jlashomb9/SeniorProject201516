@@ -350,4 +350,30 @@ public class ServerLauncher {
         return;
     }
 
+    public void createServer(String result) {
+        //TODO parse strings from file sent, and load video from client.
+        String videoName = null;
+        String videoPort = null;
+        String videoFile = null;
+        String dashcastParameters = null;
+        File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName);
+        try {
+            PrintWriter writer = new PrintWriter(newConfigFile, "UTF-8");
+            writer.println("<Servers>");
+            for (String key : servers.keySet()) {
+                Server server = servers.get(key);
+                writer.println("<Server>");
+                writer.println("<Name>" + videoName + "</Name>");
+                writer.println("<Port>" + videoPort + "</Port>");
+                writer.println("<VideoFile>" + videoFile + "</VideoFile>");
+                writer.println("<DashcastParameters>" + dashcastParameters + "</DashcastParameters>");
+                writer.println("</Server>");
+            }
+            writer.println("</Servers>");
+            writer.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
