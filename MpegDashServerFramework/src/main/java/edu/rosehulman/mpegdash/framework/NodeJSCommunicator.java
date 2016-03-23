@@ -42,14 +42,14 @@ public class NodeJSCommunicator implements Runnable {
     public void run() {
         while (!Thread.interrupted()) {
             try {
-                WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
+                WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
                 for (WatchEvent<?> event : key.pollEvents()) {
                     WatchEvent.Kind<?> kind = event.kind();
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
                     Path filename = ev.context();
                     if (kind == StandardWatchEventKinds.OVERFLOW) {
                         continue;
-                    } else if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                    } else if (kind == StandardWatchEventKinds.ENTRY_CREATE || kind == StandardWatchEventKinds.ENTRY_MODIFY) {
                         String result = "";
                         try {
                             Thread.sleep(1000);
