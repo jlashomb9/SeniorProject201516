@@ -16,7 +16,6 @@ Template.body.events({
 
       // Get value from form element
       var text = event.target.text.value;
-      console.log(text);
       // Insert a task into the collection
       Dashplayers.insert({
         host: text
@@ -76,18 +75,16 @@ Template.tiling.events({
 			bottomost = top + currentHeight;
 		} else {
 			//video has space below it within this row, recursively fill it
-			console.log("RIGHT CASE");
+			
 			var tempTop = top;
 			var top = top + currentHeight;
 			while(true){
 				var tempval = bottomost - top;
-				console.log("parameters: " + currentWidth + "            " + tempval);
 				var index = TilingHelper.indexOfLargestVideo(videos, booleanArray, currentWidth, bottomost - top);
 				if (index == -1) {
 					
 					break;
 				}
-				console.log("FOUND ONE");
 				booleanArray[index] = false;
 				var recurWidth = parseInt($(videos[index]).css("width"), 10);
 				var recurHeight = parseInt($(videos[index]).css("height"), 10);
@@ -176,9 +173,7 @@ Template.AddVideo.events({
             id: 'launch' + i,
             value: type,
             click: function () {
-              console.log(this);
               x = this.value;
-              console.log(x);
               $.ajax({
                 type: "POST",
                 url: "http://137.112.104.147:8088/",
@@ -542,16 +537,17 @@ Template.dashplayer.onRendered(function () {
 
 
 Template.dashplayer.events({
-
   "click .toggle-checked": function () {
     Dashplayers.update(this._id, {
       $set: {checked: ! this.checked}
     });
   },
+  //removes a video player
   "click .delete": function () {
     Dashplayers.remove(this._id);
-    if(array.indexOf("#resizable"+Template.parentData(0)._id) > -1) {
-      videos.splice(array.indexOf("#resizable"+Template.parentData(0)._id));
+	var location = videos.indexOf("#draggable"+Template.parentData(0)._id);
+    if( location> -1) {
+      videos.splice(location,1);
     }
   },
 });
