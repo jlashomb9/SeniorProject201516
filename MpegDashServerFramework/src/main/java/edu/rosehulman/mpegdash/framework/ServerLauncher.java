@@ -179,10 +179,10 @@ public class ServerLauncher {
             String audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
             command = "packager ";
             String type = "audio";
-            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoFile + "-" + type + "-" + audioBandwidth + "-" + ".mp4,segment_template=" + videoFile + "-" + type + "-" + audioBandwidth + ".mp4,bandwidth=" + audioBandwidth + " ";
+            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoTitle + "-" + type + "-" + audioBandwidth + "-" + ".mp4,segment_template=" + videoTitle + "-" + type + "-" + audioBandwidth + ".mp4,bandwidth=" + audioBandwidth + " ";
             type = "video";
-            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoFile + "-" + type + "-" + videoBandwidth + "-" + ".mp4,segment_template=" + videoFile + "-" + type + "-" + videoBandwidth + ".mp4,bandwidth=" + videoBandwidth + " ";
-            command += "--profile live --mpd_output " + videoFile + ".mpd";
+            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoTitle + "-" + type + "-" + videoBandwidth + "-" + ".mp4,segment_template=" + videoTitle + "-" + type + "-" + videoBandwidth + ".mp4,bandwidth=" + videoBandwidth + " ";
+            command += "--profile live --mpd_output " + videoTitle + ".mpd";
         }else{
             command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=audio,output=" + videoTitle + "_audio.mp4 " +
                 "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=video,output=" + videoTitle + "_video.mp4 " +
