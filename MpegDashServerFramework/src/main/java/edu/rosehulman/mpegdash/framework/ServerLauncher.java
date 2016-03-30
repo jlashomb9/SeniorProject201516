@@ -155,6 +155,7 @@ public class ServerLauncher {
         String videoFile = null;
         int port = 0;
         String videoTitle = null;
+        String parameters = null;
         try {
             File inputFile = new File(filename);
             System.out.println(inputFile.toString());
@@ -165,14 +166,28 @@ public class ServerLauncher {
             port = Integer.parseInt(doc.getElementsByTagName("Port").item(0).getTextContent());
             videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
             videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
+            parameters += doc.getElementsByTagName("Parameters").item(0).getTextContent();
         } catch (Exception e) {
             LOGGER.error("Could not launch edash video" + videoTitle + "\n" + e);
             e.printStackTrace();
         }
-
-        String command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=audio,output=" + videoTitle + "_audio.mp4 " +
-         "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=video,output=" + videoTitle + "_video.mp4 " +
-         "--profile on-demand --mpd_output " + videoTitle + ".mpd";
+        
+        String command = null;
+        if(parameters.contains("-live")){
+            String[] parametersArray = parameters.split(" ");
+            String videoBandwidth = parametersArray[parameters.indexOf("--video_bandwidth")+1];
+            String audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
+            command = "packager ";
+            String type = "audio";
+            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoFile + "-" + type + "-" + audioBandwidth + "-" + ".mp4,segment_template=" + videoFile + "-" + type + "-" + audioBandwidth + ".mp4,bandwidth=" + audioBandwidth + " ";
+            type = "video";
+            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoFile + "-" + type + "-" + videoBandwidth + "-" + ".mp4,segment_template=" + videoFile + "-" + type + "-" + videoBandwidth + ".mp4,bandwidth=" + videoBandwidth + " ";
+            command += "--profile live --mpd_output " + videoFile + ".mpd";
+        }else{
+            command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=audio,output=" + videoTitle + "_audio.mp4 " +
+                "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=video,output=" + videoTitle + "_video.mp4 " +
+                "--profile on-demand --mpd_output " + videoTitle + ".mpd";
+        }
 
         // return null;
         addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, command, videoTitle, imageName),
@@ -199,7 +214,7 @@ public class ServerLauncher {
             videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
             dashcastCommand += videoFile + " ";
 //            dashcastCommand += "-out " + videoTitle;
-            dashcastCommand += doc.getElementsByTagName("DashcastParameters").item(0).getTextContent();
+            dashcastCommand += doc.getElementsByTagName("Parameters").item(0).getTextContent();
         } catch (Exception e) {
             LOGGER.error("Could not launch dashcast video" + videoTitle + "\n" + e);
             e.printStackTrace();
