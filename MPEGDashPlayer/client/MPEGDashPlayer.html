@@ -8,10 +8,6 @@
 	<script src="jquery.livequery.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" href="/resources/demos/style.css">
-
-
-
-
 </head>
 
 <!-- main body-- all the magic happens in here-->
@@ -29,38 +25,40 @@
 			{{> LaunchVideo}}
 		</div>
 	</div>
-	<!-- modal that allows user to see active and inactive feeds on server-->
 	{{ > videoModal }}
-	<!-- allows user to encode and view new video feeds on the server-->
 	{{ > launchModal }}
-	<!-- template that loads all video players that are enabled-->
 	{{ > listOfVideos  }}
 </body>
 
 
-
+<!-- template that loads all video players that are enabled-->
 <template name="listOfVideos">
 	<div id="display" class="displayScreen">
+	<!-- this "loop" renders each video player calling a sub template for each one-->
 		{{#each dashplayers}}
 		<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
 		{{/each}}
 	</div>
 </template>
 
+<!-- Tiling button -->
 <template name="tiling">
 	<button class="btn btn-default" id="tile">Tile Videos</button>
 </template>
 
+<!-- Add video button -->
 <template name="AddVideo">
 	<button class="btn btn-default" data-toggle="modal" data-target="#addVideoModal" id="addVideo">Add Video</button>
 </template>
 
+<!-- Launch video button -->
 <template name="LaunchVideo">
 	<button class="btn btn-default" data-toggle="modal" data-target="#launchVideoModal" id="launchVideo">Launch Video</button>
 </template>
 
 
 
+<!-- modal that allows user to see active and inactive feeds on server-->
 <template name="videoModal">
 	<div class="modal fade" id="addVideoModal" tabindex="-1" role="dialog" aria-labelledby="addVideosLabel"> <!-- data-backdrop="false"> -->
 		<div class="modal-dialog" role="document">
@@ -90,6 +88,8 @@
 	</div>
 </template>
 
+
+<!-- allows user to encode and view new video feeds on the server-->
 <template name="launchModal">
 	<div class="modal fade" id="launchVideoModal" tabindex="-1" role="dialog" aria-labelledby="launchLabel"> <!-- data-backdrop="false"> -->
 		<div class="modal-dialog" role="document">
@@ -137,8 +137,8 @@
 	</div>
 </template>
 
+<!-- This code renders a single video player-->
 <template name="dashplayer">
-	<div class="videoPlayerContainer2 ui-widget-content">
 		<div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
 			<video id="videoPlayer{{_id}}" width="560" height="336"></video></div>
 			<div class="videoHeaderPanel" id="videoHeader{{_id}}">
@@ -148,5 +148,4 @@
 			</div>
 			<div class="buttonPanel" id="playerButtons{{_id}}"></div>
 			<div class="ui-resizable-handle ui-resizable-se" id="resizer{{_id}}"></div>
-		</div>
 	</template>
