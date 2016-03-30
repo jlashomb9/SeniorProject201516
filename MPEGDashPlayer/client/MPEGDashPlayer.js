@@ -200,6 +200,36 @@ Template.AddVideo.events({
     };
   }
 });
+Template.LaunchVideo.events({
+  'click #launchVideo': function(){
+    $("#LaunchButton").click(function () {
+      var formData = new FormData($('form')[0]);
+      // console.log(this);
+      // x = $("#videoFile").value;
+      // console.log(x);
+      $.ajax({
+        type: "POST",
+        url: "http://137.112.104.147:8088/",
+        xhr: function() {
+          var myXhr = $.ajaxSettings.xhr();
+            if(myXhr.upload) { // Check if upload property exists
+                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+              }
+              return myXhr;
+          },
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+
+        success: function() {
+          $("[data-dismiss=modal]").trigger({ type: "click" });
+        }
+
+      });
+    });
+  }
+});
 Template.dashplayer.onRendered(function () {
   var span_id = "span"+Template.parentData(0)._id;
   var video_id = "videoPlayer"+Template.parentData(0)._id;
