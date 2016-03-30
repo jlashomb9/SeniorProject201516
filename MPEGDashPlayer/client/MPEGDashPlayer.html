@@ -98,9 +98,13 @@
 							<input type="url" class="form-control" id="urlInput" placeholder="Enter video url here.">
 						</div>
 						<div class="form-group">
+
 						<label for="videoFile">Video File</label>
-							<input type="file" id="videoFile" disabled>
+							<form enctype="multipart/form-data">
+								<input type="file" id="videoFile">
+							</form>
 							<p class="help-block">Enter a URL or upload a video file.</p>
+							<progress></progress>
 						</div>
 						<div class="form-group">
 							<label for="vidName">Video Name</label>
@@ -119,7 +123,8 @@
 						<div class="form-group">
 							<input type="text" class="form-control" disabled id="parameters" placeholder="-seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -low-delay">
 						</div>
-						<button type="submit" class="btn btn-default">Launch</button>
+						<button id="LaunchButton" class="btn btn-default">Launch</button>
+						<!--<button type="submit" id="LaunchButton" class="btn btn-default">Launch</button>-->
 					</form>
 				</div>
 				<div class="modal-footer">
