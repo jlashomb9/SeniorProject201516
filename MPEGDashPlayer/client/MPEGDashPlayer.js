@@ -439,7 +439,50 @@ Template.dashplayer.onRendered(function () {
         document.getElementById(download_id).addEventListener('click', function() {
             var dataURL = CanvasHelper.getDataURL(video);
             CanvasHelper.downloadCanvas(this, dataURL, "image.png");
-        }, false);       
+        }, false);
+
+        var recordTag = document.getElementById("record"+Template.parentData(0)._id);
+        var startTime_id = "startTime"+ Template.parentData(0)._id;
+        var clipUrl;
+        //var newVid = document.getElementById("newRecordVid" + Template.parentData(0)._id);
+        recordTag.addEventListener('click', function () {
+          var recordTagText = recordTag.innerHTML;
+          if(recordTagText === "Record"){
+            $(recordTag).text("Stop Recording");
+            Session.set(startTime_id, video.getCurrentTime);
+            console.log("start time" + video.currentTime);
+          }else if (recordTagText === "Stop Recording"){
+            $(recordTag).text("Record");
+            var start = Session.get(startTime_id);
+            var data = start + ", " + video.getCurrentTime;
+            // clipUrl = "http://dashas.castlabs.com/videos/files/bbb/Manifest.mpd";
+             $.ajax({
+                type: "POST",
+                url: "http://137.112.104.147:8088/",
+                data: data,
+                success: function() {
+                  $(recordTag).trigger({ type: "click" });
+                }
+              });
+            console.log("end time" + video.currentTime);
+        // wait and send a get request for the clip url for download.
+        window.setTimeout(function() {
+           var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "http://137.112.104.147:8088/videoClip.xml?=".concat(new Date().dateString), true);
+            xhttp.send();
+            xhttp.onreadystatechange = function() {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                  var xmlDoc = xhttp.responseXML;
+                  clipUrl = xmlDoc.getElementsByTagName("Name")[0].childNodes.nodeValue;
+                }
+              }
+            }, 1000);
+            
+            CanvasHelper.downloadCanvas(recordTag, clipUrl, "videoClip.mp4");
+          }
+
+        }, false);   
+       
 
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
         //Appending all buttons
