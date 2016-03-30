@@ -37,10 +37,11 @@ public class ServerLauncher {
     private ServerFileLister lister;
     private boolean dashcast;
     private String imageName;
+    private Server serverListerServer;
 
     public ServerLauncher(boolean autoLaunch, String ip, boolean dashcast, String imageName) {
-        Server server = new Server();
-        new Thread(server).start();
+        serverListerServer = new Server();
+        new Thread(serverListerServer).start();
         this.dashcast = dashcast;
         this.imageName = imageName;
         
@@ -66,8 +67,14 @@ public class ServerLauncher {
             public void run() {
                 directoryThread.interrupt();
                 ExecutorService es = Executors.newCachedThreadPool();
+                Runnable run = new Runnable() {
+                    public void run() {
+                        serverListerServer.shutdown();
+                    }
+                };
+                es.execute(run);
                 for (final String key : servers.keySet()) {
-                    Runnable run = new Runnable() {
+                    run = new Runnable() {
                         public void run() {
                             Server server = servers.get(key);
                             server.shutdown();
@@ -338,23 +345,29 @@ public class ServerLauncher {
     public void createServer(String result) {
         //TODO parse strings from file sent, and load video from client.
         String videoName = null;
-        String videoPort = null;
+        int maxPort = 0;
+        for (String key : servers.keySet()) {
+            Server server = servers.get(key);
+            int port = server.getPort();
+            if(port > maxPort){
+                maxPort = port;
+            }
+        }
+        String videoPort = "" + (maxPort + 1);
         String videoFile = null;
         String dashcastParameters = null;
+        String toWrite = "<Server>\n";
+        toWrite += "<Server>\n";
+        toWrite += "<Name>" + videoName + "</Name>\n";
+        toWrite += "<Port>" + videoPort + "</Port>\n";
+        toWrite += "<VideoFile>" + videoFile + "</VideoFile>\n";
+        toWrite += "<DashcastParameters>" + dashcastParameters + "</DashcastParameters>\n";
+        toWrite += "</Server>\n";
+        toWrite += "</Servers>\n";
         File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName);
         try {
             PrintWriter writer = new PrintWriter(newConfigFile, "UTF-8");
-            writer.println("<Servers>");
-            for (String key : servers.keySet()) {
-                Server server = servers.get(key);
-                writer.println("<Server>");
-                writer.println("<Name>" + videoName + "</Name>");
-                writer.println("<Port>" + videoPort + "</Port>");
-                writer.println("<VideoFile>" + videoFile + "</VideoFile>");
-                writer.println("<DashcastParameters>" + dashcastParameters + "</DashcastParameters>");
-                writer.println("</Server>");
-            }
-            writer.println("</Servers>");
+            writer.print(toWrite);
             writer.close();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
