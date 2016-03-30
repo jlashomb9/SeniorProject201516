@@ -13,20 +13,27 @@
 
 
 </head>
+
+<!-- main body-- all the magic happens in here-->
 <body>
 	<div class="header-cont">
 		<div class="center-controls">
 			<h1>MPEG Dash Video Player</h1>
+			<!-- manually add feeds from url, accepts from other servers as well-->
 			<form class="new-feed">
 				<input type="text" name="text" placeholder="Add host" />
 			</form>
+			<!-- add all ui buttons: tiling, adding, launching, etc-->
 			{{> tiling}}
 			{{> AddVideo}}
 			{{> LaunchVideo}}
 		</div>
 	</div>
+	<!-- modal that allows user to see active and inactive feeds on server-->
 	{{ > videoModal }}
+	<!-- allows user to encode and view new video feeds on the server-->
 	{{ > launchModal }}
+	<!-- template that loads all video players that are enabled-->
 	{{ > listOfVideos  }}
 </body>
 
@@ -143,36 +150,3 @@
 			<div class="ui-resizable-handle ui-resizable-se" id="resizer{{_id}}"></div>
 		</div>
 	</template>
-
-<template name="videoFeedSelector">
-	<div class="col-xs-2">
-		<div id="videoFeed"><h3>Active Feeds</h3></div>
-	</div>
-	<div class="col-xs-2">
-		<button class="btn btn-default" id="newFeed">Add New Feed</button>
-	</div>
-</template>
-
-
-<template name="videoFeedModal">
-	<div class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Add a New Feed</h4>
-				</div>
-				<div class="modal-body">
-					<form>
-						Feed Name: <input type="text" id="feedName" name="feedName"><br>
-						Feed Host: <input type="text" id="hostName" name="hostName"><br>
-					</form>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" id="addingFeed" data-dismiss="modal">Add</button>
-				</div>
-
-			</div>
-		</div>
-	</div>
-</template>
