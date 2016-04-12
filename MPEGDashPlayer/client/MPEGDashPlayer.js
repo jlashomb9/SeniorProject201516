@@ -410,7 +410,7 @@ Template.dashplayer.onRendered(function () {
 				for(var i=0; i<4; i++){
 					output.appendChild(snapshots[i]);
 				}**/
-			var worker;
+			/**var worker;
 			var threadVal = Session.get("workerThread");
 			var videoVal;
 			var arr=[];
@@ -437,7 +437,25 @@ Template.dashplayer.onRendered(function () {
 				var output = encoder.compile();
 				return webkitURL.createObjectURL(output);
 			}
-
+			**/
+			var arr=[];
+			var scaleFactor = .5;
+			var w = video.videoWidth * scaleFactor;
+			var h = video.videoHeight * scaleFactor;
+			var canvas = document.createElement('canvas');
+				canvas.width = w;
+				canvas.height = h;
+			var ctx = canvas.getContext('2d');
+				ctx.drawImage(video, 0, 0, w, h);
+			arr.push(canvas);
+			var encoder = new Whammy.Video(15);
+				var i =0;
+				for(i = 0; i < arr.length;i++){
+					encoder.add(arr[i]);
+				}
+				var output = encoder.compile();
+				var consoleOutput = webkitURL.createObjectURL(output);
+				return consoleOutput;
 		}, false);
 
         var buttonList = document.getElementById("playerButtons"+Template.parentData(0)._id);
