@@ -3,6 +3,7 @@ edu\rosehulman\mpegdash\framework\ServerLauncher$Columns.class
 edu\rosehulman\mpegdash\constants\Constants.class
 edu\rosehulman\mpegdash\framework\CommandLineArgs.class
 edu\rosehulman\mpegdash\framework\NodeJSCommunicator.class
+edu\rosehulman\mpegdash\framework\ServerLauncher$1$2.class
 edu\rosehulman\mpegdash\framework\ServerFileLister.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$1.class
 edu\rosehulman\mpegdash\framework\Server$Status.class

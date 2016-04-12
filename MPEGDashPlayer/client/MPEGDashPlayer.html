@@ -9,20 +9,20 @@
 	<script src="whammy.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" href="/resources/demos/style.css">
-
-
-
-
 </head>
+
+<!-- main body-- all the magic happens in here-->
 <body>
 	<div class="header-cont">
 	
 	<div id="output" style="display: inline-block; top: 4px; position: relative ;border: dotted 1px #ccc; padding: 2px;"></div>
 		<div class="center-controls">
 			<h1>MPEG Dash Video Player</h1>
+			<!-- manually add feeds from url, accepts from other servers as well-->
 			<form class="new-feed">
 				<input type="text" name="text" placeholder="Add host" />
 			</form>
+			<!-- add all ui buttons: tiling, adding, launching, etc-->
 			{{> tiling}}
 			{{> AddVideo}}
 			{{> LaunchVideo}}
@@ -34,29 +34,34 @@
 </body>
 
 
-
+<!-- template that loads all video players that are enabled-->
 <template name="listOfVideos">
 	<div id="display" class="displayScreen">
+	<!-- this "loop" renders each video player calling a sub template for each one-->
 		{{#each dashplayers}}
 		<div class="videoPlayerContainer1" id="draggable{{_id}}" display="inline-block">{{> dashplayer}}</div>
 		{{/each}}
 	</div>
 </template>
 
+<!-- Tiling button -->
 <template name="tiling">
 	<button class="btn btn-default" id="tile">Tile Videos</button>
 </template>
 
+<!-- Add video button -->
 <template name="AddVideo">
 	<button class="btn btn-default" data-toggle="modal" data-target="#addVideoModal" id="addVideo">Add Video</button>
 </template>
 
+<!-- Launch video button -->
 <template name="LaunchVideo">
 	<button class="btn btn-default" data-toggle="modal" data-target="#launchVideoModal" id="launchVideo">Launch Video</button>
 </template>
 
 
 
+<!-- modal that allows user to see active and inactive feeds on server-->
 <template name="videoModal">
 	<div class="modal fade" id="addVideoModal" tabindex="-1" role="dialog" aria-labelledby="addVideosLabel"> <!-- data-backdrop="false"> -->
 		<div class="modal-dialog" role="document">
@@ -86,6 +91,8 @@
 	</div>
 </template>
 
+
+<!-- allows user to encode and view new video feeds on the server-->
 <template name="launchModal">
 	<div class="modal fade" id="launchVideoModal" tabindex="-1" role="dialog" aria-labelledby="launchLabel"> <!-- data-backdrop="false"> -->
 		<div class="modal-dialog" role="document">
@@ -101,9 +108,13 @@
 							<input type="url" class="form-control" id="urlInput" placeholder="Enter video url here.">
 						</div>
 						<div class="form-group">
+
 						<label for="videoFile">Video File</label>
-							<input type="file" id="videoFile" disabled>
+							<form enctype="multipart/form-data">
+								<input type="file" id="videoFile">
+							</form>
 							<p class="help-block">Enter a URL or upload a video file.</p>
+							<progress></progress>
 						</div>
 						<div class="form-group">
 							<label for="vidName">Video Name</label>
@@ -122,7 +133,8 @@
 						<div class="form-group">
 							<input type="text" class="form-control" disabled id="parameters" placeholder="-seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -low-delay">
 						</div>
-						<button type="submit" class="btn btn-default">Launch</button>
+						<button id="LaunchButton" class="btn btn-default">Launch</button>
+						<!--<button type="submit" id="LaunchButton" class="btn btn-default">Launch</button>-->
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -133,8 +145,8 @@
 	</div>
 </template>
 
+<!-- This code renders a single video player-->
 <template name="dashplayer">
-	<div class="videoPlayerContainer2 ui-widget-content">
 		<div class="videoPlayerContainer3 ui-widget-content" id="resizable{{_id}}">
 			<video id="videoPlayer{{_id}}" width="560" height="336"></video></div>
 			<div class="videoHeaderPanel" id="videoHeader{{_id}}">
@@ -145,38 +157,4 @@
 			</div>
 			<div class="buttonPanel" id="playerButtons{{_id}}"></div>
 			<div class="ui-resizable-handle ui-resizable-se" id="resizer{{_id}}"></div>
-		</div>
 	</template>
-
-<template name="videoFeedSelector">
-	<div class="col-xs-2">
-		<div id="videoFeed"><h3>Active Feeds</h3></div>
-	</div>
-	<div class="col-xs-2">
-		<button class="btn btn-default" id="newFeed">Add New Feed</button>
-	</div>
-</template>
-
-
-<template name="videoFeedModal">
-	<div class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Add a New Feed</h4>
-				</div>
-				<div class="modal-body">
-					<form>
-						Feed Name: <input type="text" id="feedName" name="feedName"><br>
-						Feed Host: <input type="text" id="hostName" name="hostName"><br>
-					</form>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" id="addingFeed" data-dismiss="modal">Add</button>
-				</div>
-
-			</div>
-		</div>
-	</div>
-</template>

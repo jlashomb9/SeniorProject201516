@@ -426,6 +426,29 @@ var onRequest = function(req, res) {
 		res.end();
 		return;
 	}
+	if (req.method == "PUT"){
+
+		var filePath = filename ;
+	if (fs.existsSync(filePath)){
+		fs.unlinkSync(filePath);
+	}
+	var body = "";
+	req.on('data', function (data) {
+            body += data.toString();
+				fs.writeFile(filename, body ,function(err) 		{
+    			if(err) {
+        			return console.log(err);
+    		}
+    			console.log("The file was saved!");
+		});
+
+        });
+
+		res.statusCode = 200;
+		res.end();
+		return;
+	}
+
 
 	// we send the files as they come, except for segments for which we send fragment by fragment
 	if (!fs.existsSync(filename)) {

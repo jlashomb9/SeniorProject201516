@@ -29,7 +29,6 @@ public class ServerLauncher {
     private HashMap<String, Server> servers;
     private DirectoryMonitor directoryMonitor;
     private NodeJSCommunicator nodeJSCommunicator;
-    // private Table table;
     private boolean autoLaunch;
     private String ip;
 
@@ -38,10 +37,11 @@ public class ServerLauncher {
     private ServerFileLister lister;
     private boolean dashcast;
     private String imageName;
+    private Server serverListerServer;
 
     public ServerLauncher(boolean autoLaunch, String ip, boolean dashcast, String imageName) {
-        Server server = new Server();
-        new Thread(server).start();
+        serverListerServer = new Server();
+        new Thread(serverListerServer).start();
         this.dashcast = dashcast;
         this.imageName = imageName;
         
@@ -67,11 +67,16 @@ public class ServerLauncher {
             public void run() {
                 directoryThread.interrupt();
                 ExecutorService es = Executors.newCachedThreadPool();
+                Runnable run = new Runnable() {
+                    public void run() {
+                        serverListerServer.shutdown();
+                    }
+                };
+                es.execute(run);
                 for (final String key : servers.keySet()) {
-                    Runnable run = new Runnable() {
+                    run = new Runnable() {
                         public void run() {
                             Server server = servers.get(key);
-                            // table.deleteItem("name", server.getName());
                             server.shutdown();
                             updateServerList();
                         }
@@ -104,19 +109,6 @@ public class ServerLauncher {
         final Server server = new Server(command, videoTitle, port, videoFile, ip);
         servers.put(videoTitle, server);
 
-        // Item item = new Item()
-        // .withPrimaryKey("name", server.getName())
-        // .withString("launchCommand", server.getLaunchCommand())
-        // .withString("address", "http://" + ip + ":" + server.getPort() + "/"
-        // + server.getOutputFolder() + "/dashcast.mpd")
-        // .withString("videoFile", server.getVideoFile());
-        // if(autoLaunch){
-        // item = item.withString("status", "ENABLED");
-        //
-        // }else{
-        // item = item.withString("status", "DISABLED");
-        // }
-        // table.putItem(item);
         updateServerList();
         return null;
     }
@@ -135,16 +127,6 @@ public class ServerLauncher {
             public Void call() {
                 new Thread(server).start();
                 server.setStatus(Status.ENABLED);
-                // Item item = new Item()
-                // .withPrimaryKey("name", server.getName())
-                // .withString("launchCommand", server.getLaunchCommand())
-                // .withString("address", "http://" + ip + ":" +
-                // server.getPort() + "/" + server.getOutputFolder() +
-                // "/dashcast.mpd")
-                // .withString("videoFile", server.getVideoFile())
-                // .withString("status", "ENABLED");
-                //
-                // table.putItem(item);
                 updateServerList();
                 return null;
             }
@@ -161,13 +143,6 @@ public class ServerLauncher {
         if (server.getStatus() == Status.DISABLED) {
             return null;
         }
-        // Item item = new Item()
-        // .withPrimaryKey("name", server.getName())
-        // .withString("launchCommand", server.getLaunchCommand())
-        // .withNumber("port", server.getPort())
-        // .withString("videoFile", server.getVideoFile())
-        // .withString("status", "DISABLED");
-        // table.putItem(item);
         server.shutdown();
         updateServerList();
         return null;
@@ -187,6 +162,7 @@ public class ServerLauncher {
         String videoFile = null;
         int port = 0;
         String videoTitle = null;
+        String parameters = null;
         try {
             File inputFile = new File(filename);
             System.out.println(inputFile.toString());
@@ -197,13 +173,28 @@ public class ServerLauncher {
             port = Integer.parseInt(doc.getElementsByTagName("Port").item(0).getTextContent());
             videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
             videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
+            parameters += doc.getElementsByTagName("Parameters").item(0).getTextContent();
         } catch (Exception e) {
+            LOGGER.error("Could not launch edash video" + videoTitle + "\n" + e);
             e.printStackTrace();
         }
-
-        String command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=audio,output=" + videoTitle + "_audio.mp4 " +
-         "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=video,output=" + videoTitle + "_video.mp4 " +
-         "--profile on-demand --mpd_output " + videoTitle + ".mpd";
+        
+        String command = null;
+        if(parameters.contains("-live")){
+            String[] parametersArray = parameters.split(" ");
+            String videoBandwidth = parametersArray[parameters.indexOf("--video_bandwidth")+1];
+            String audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
+            command = "packager ";
+            String type = "audio";
+            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoTitle + "-" + type + "-" + audioBandwidth + "-" + ".mp4,segment_template=" + videoTitle + "-" + type + "-" + audioBandwidth + ".mp4,bandwidth=" + audioBandwidth + " ";
+            type = "video";
+            command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoTitle + "-" + type + "-" + videoBandwidth + "-" + ".mp4,segment_template=" + videoTitle + "-" + type + "-" + videoBandwidth + ".mp4,bandwidth=" + videoBandwidth + " ";
+            command += "--profile live --mpd_output " + videoTitle + ".mpd";
+        }else{
+            command = "packager input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=audio,output=" + videoTitle + "_audio.mp4 " +
+                "input=/home/SeniorProject201516/node-gpac-dash/" + videoFile + ",stream=video,output=" + videoTitle + "_video.mp4 " +
+                "--profile on-demand --mpd_output " + videoTitle + ".mpd";
+        }
 
         // return null;
         addServer(videoTitle, Constants.getDashcastLaunchVideoCommand(port, videoFile, command, videoTitle, imageName),
@@ -230,8 +221,9 @@ public class ServerLauncher {
             videoFile = doc.getElementsByTagName("VideoFile").item(0).getTextContent();
             dashcastCommand += videoFile + " ";
 //            dashcastCommand += "-out " + videoTitle;
-            dashcastCommand += doc.getElementsByTagName("DashcastParameters").item(0).getTextContent();
+            dashcastCommand += doc.getElementsByTagName("Parameters").item(0).getTextContent();
         } catch (Exception e) {
+            LOGGER.error("Could not launch dashcast video" + videoTitle + "\n" + e);
             e.printStackTrace();
         }
         LOGGER.debug("port : " + port + "\nvideoTitle: " + videoTitle + "\nvideoFile " + videoFile
@@ -348,6 +340,38 @@ public class ServerLauncher {
             this.restartServer(command.substring(8, command.length()));
         }
         return;
+    }
+
+    public void createServer(String result) {
+        //TODO parse strings from file sent, and load video from client.
+        String videoName = null;
+        int maxPort = 0;
+        for (String key : servers.keySet()) {
+            Server server = servers.get(key);
+            int port = server.getPort();
+            if(port > maxPort){
+                maxPort = port;
+            }
+        }
+        String videoPort = "" + (maxPort + 1);
+        String videoFile = null;
+        String dashcastParameters = null;
+        String toWrite = "<Server>\n";
+        toWrite += "<Server>\n";
+        toWrite += "<Name>" + videoName + "</Name>\n";
+        toWrite += "<Port>" + videoPort + "</Port>\n";
+        toWrite += "<VideoFile>" + videoFile + "</VideoFile>\n";
+        toWrite += "<DashcastParameters>" + dashcastParameters + "</DashcastParameters>\n";
+        toWrite += "</Server>\n";
+        toWrite += "</Servers>\n";
+        File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName);
+        try {
+            PrintWriter writer = new PrintWriter(newConfigFile, "UTF-8");
+            writer.print(toWrite);
+            writer.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 }

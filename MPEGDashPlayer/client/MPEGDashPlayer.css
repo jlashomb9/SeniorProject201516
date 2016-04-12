@@ -51,6 +51,8 @@ video {
     position:absolute;
     display:inline-block;
 	z-index:1;
+	background-color:#ABC;
+	border: 0px solid transparent;
 }
 
 #table-scroll {
@@ -58,16 +60,6 @@ video {
     overflow-y:scroll;
 }
 
-.videoPlayerContainer2 {
-	min-width: 100%;
-    min-height: 100%;
-	overflow: hidden;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	margin: 0;
-}
 
 .videoPlayerContainer3 {
 	width: 600px; 
@@ -81,6 +73,8 @@ video {
 	left: 0;
 	right: 0;
 	margin:0;
+	background-color:#ABC;
+	border: 0px solid transparent;
 }
 
 .displayScreen {
@@ -123,4 +117,3 @@ button {
 .modal-backdrop { 
     z-index: auto;
 }
-/*.modal { background: rgba(000, 000, 000, 0.8); min-height:1000000px; }*/

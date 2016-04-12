@@ -1,17 +1,3 @@
-ButtonHelper = {
-	resetButton : function(){
-		var toggleRunning = document.getElementById('toggleRunning');
-		var shrinkExpand = document.getElementById('expand');
-		console.log(toggleRunning.innerHTML + "" + shrinkExpand.innerHTML);
-		if(toggleRunning.innerHTML === "Play"){
-			toggleRunning.innerHTML = "Pause";
-		}
-		if(shrinkExpand.innerHTML === "Shrink"){
-			shrinkExpand.innerHTML = "Expand";
-		}
-
-	}
-}
 VideoPlayBackHelper = {
 	createVideo: function(video,hostName){
 		var context = new Dash.di.DashContext();
@@ -29,6 +15,53 @@ VideoPlayBackHelper = {
 		}, 500 );
 		
 	}
+
+}
+
+TilingHelper = {
+
+  //finds the largest video that hasnt been used yet (marked true in array) under a maximum width (or no max indicated by -1)
+  indexOfLargestVideo: function(videoArray, booleanArray, maximum_width, maximum_height) {
+	//height vs width to keep track of doesnt matter because all aspect ratios are the same
+	var largest_width = 0;
+	var indexOfMax = -1;
+	for(var i = 0; i < videoArray.length; i ++ ) {
+		if (booleanArray[i]) {
+		console.log("booleanarray");
+			var currentWidth = parseInt($(videoArray[i]).css("width"), 10);
+			var currentHeight = parseInt($(videoArray[i]).css("height"), 10);
+			if(maximum_width == -1 && currentWidth > largest_width) {
+			console.log("first");
+				if(maximum_height == -1 || maximum_height > currentHeight) {
+					largest_width = currentWidth;
+					indexOfMax = i;
+					console.log("made it " + indexOfMax);
+				}
+				
+			}
+			else if(maximum_width > currentWidth && currentWidth > largest_width) {
+			console.log("second");
+				if(maximum_height == -1 || maximum_height > currentHeight) {
+					largest_width = currentWidth;
+					indexOfMax = i;
+					console.log("made it " + indexOfMax);
+				}
+			}
+			
+		}
+	}
+	return indexOfMax;
+  },
+  //stores parent data for dashplayer
+  addingParentData: function(parentData,url){  
+    var player = Dashplayers.findOne({_id: parentData});
+    Dashplayers.update({_id: parentData},
+    {
+      host: url,
+      parentData: parentData
+    });
+    console.log(player);
+  }
 
 }
 
