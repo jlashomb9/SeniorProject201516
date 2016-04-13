@@ -186,8 +186,15 @@ public class ServerLauncher {
                 LOGGER.error("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
                 return videoTitle;
             }
-            String videoBandwidth = parametersArray[parameters.indexOf("--video_bandwidth")+1];
-            String audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
+            String videoBandwidth = null;
+            String audioBandwidth = null;
+            try{
+                videoBandwidth = parametersArray[parameters.indexOf("--video_bandwidth")+1];
+                audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
+            } catch (Exception e) {
+                LOGGER.error("Could not parse live edash fvideo configuration\n" + e);
+                return videoTitle;
+            }
             command = "packager ";
             String type = "audio";
             command += "input=" + videoFile + ",stream=" + type + ",init_segment=" + videoTitle + "-" + type + "-" + audioBandwidth + "-" + ".mp4,segment_template=" + videoTitle + "-" + type + "-" + audioBandwidth + ".mp4,bandwidth=" + audioBandwidth + " ";

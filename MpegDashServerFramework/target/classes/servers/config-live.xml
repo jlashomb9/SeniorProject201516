@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Servers>
+  <Server>
+    <Name>video1</Name>
+    <Port>8098</Port>
+    <VideoFile>http://199.116.245.209:8080/</VideoFile>
+    <Parameters>-live --video_bandwidth 200000 --audio_bandwidth 130000</Parameters>
+  </Server>
+</Servers>
