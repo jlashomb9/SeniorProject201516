@@ -50,6 +50,7 @@ public class ServerLauncher {
         lister = new ServerFileLister();
         updateServerList();
         this.ip = ip;
+        addShutdownHook();
 
         this.directoryMonitor = new DirectoryMonitor(this, autoLaunch);
 
@@ -59,7 +60,6 @@ public class ServerLauncher {
 
         nodeJSThread = new Thread(this.nodeJSCommunicator);
         nodeJSThread.start();
-        addShutdownHook();
     }
 
     private void addShutdownHook() {
