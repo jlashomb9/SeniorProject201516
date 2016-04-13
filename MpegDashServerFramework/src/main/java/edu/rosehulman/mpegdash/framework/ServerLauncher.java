@@ -183,7 +183,7 @@ public class ServerLauncher {
         if(parameters.contains("-live")){
             String[] parametersArray = parameters.split(" ");
             if(!parameters.contains("--video_bandwidth") || !parameters.contains("--audio_bandwidth")){
-                LOGGER.error("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
+                System.out.println("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
                 return videoTitle;
             }
             String videoBandwidth = null;
@@ -192,7 +192,7 @@ public class ServerLauncher {
                 videoBandwidth = parametersArray[parameters.indexOf("--video_bandwidth")+1];
                 audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
             } catch (Exception e) {
-                LOGGER.error("Could not parse live edash fvideo configuration\n" + e);
+                System.out.println("Could not parse live edash fvideo configuration\n" + e);
                 return videoTitle;
             }
             command = "packager ";
