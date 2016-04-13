@@ -189,10 +189,16 @@ public class ServerLauncher {
             String videoBandwidth = null;
             String audioBandwidth = null;
             try{
-                videoBandwidth = parametersArray[parameters.indexOf("--video_bandwidth")+1];
-                audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
+                for(int i = 0; i < parametersArray.length; i++){
+                    if(parametersArray[i].equals("--video_bandwidth")){
+                        videoBandwidth = parametersArray[i+1];
+                    }
+                    if(parametersArray[i].equals("--audio_bandiwdth")){
+                        audioBandwidth = parametersArray[i+1];
+                    }
+                }
             } catch (Exception e) {
-                System.out.println("Could not parse live edash fvideo configuration\n" + e);
+                System.out.println("Could not parse live edash video configuration\n" + e);
                 return videoTitle;
             }
             command = "packager ";
