@@ -182,6 +182,10 @@ public class ServerLauncher {
         String command = null;
         if(parameters.contains("-live")){
             String[] parametersArray = parameters.split(" ");
+            if(!parameters.contains("--video_bandwidth") || !parameters.contains("--audio_bandwidth")){
+                LOGGER.error("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
+                return videoTitle;
+            }
             String videoBandwidth = parametersArray[parameters.indexOf("--video_bandwidth")+1];
             String audioBandwidth = parametersArray[parameters.indexOf("--audio_bandwidth")+1];
             command = "packager ";
