@@ -242,6 +242,7 @@ ButtonHelper = {
         seekBar.style.display="inline-block";
         // $("#seekbar"+Template.parentData(0)._id).css({"max-width": "360px"});
         // Event listener for the seek bar
+		var playpauseButton = document.getElementById("play-pause"+Template.parentData(0)._id);
         seekBar.addEventListener("change", function() {
           // Calculate the new time
           var time = video.duration * (seekBar.value / 100);
@@ -263,11 +264,13 @@ ButtonHelper = {
         // Pause the video when the seek handle is being dragged
         seekBar.addEventListener("mousedown", function() {
           video.pause();
-        });
+		  playButton.innerHTML = "ll";	  
+		});
 
         // Play the video when the seek handle is dropped
         seekBar.addEventListener("mouseup", function() {
           video.play();
+          playButton.innerHTML = "►";	
         });
 
         return seekBar;
