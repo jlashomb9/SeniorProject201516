@@ -218,10 +218,19 @@ Template.LaunchVideo.events({
         processData: false,
 
         success: function() {
-          $("[data-dismiss=modal]").trigger({ type: "click" });
-        }
+          console.log(this);
+          x = this.value;
+          console.log(x);
+          $.ajax({
+            type: "POST",
+            url: "http://137.112.104.147:8088/",
+            data: x,
+            success: function() {
+              $("[data-dismiss=modal]").trigger({ type: "click" });
+            }
+        });
 
-      });
+      }});
     });
   }
 });
