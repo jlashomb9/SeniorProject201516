@@ -1,0 +1,12 @@
+mpegdashplayer:
+  build: .
+  links:
+    - "mongo:mongo"
+  environment:
+    MONGO_URL: mongodb://mongo:27017/mpegdashplayer
+    METEOR_SETTINGS: {"VARIABLE_NAME":"value"}
+
+mongo:
+  image: mongo:3.0
+  volumes:
+  - /hostdir/mongo/data/db:/data/db
