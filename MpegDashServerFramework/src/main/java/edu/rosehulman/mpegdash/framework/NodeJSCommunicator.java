@@ -61,7 +61,7 @@ public class NodeJSCommunicator implements Runnable {
                         while(myScanner.hasNextLine()){
                             result += myScanner.nextLine();
                         }
-                        if (result.startsWith("add")){
+                        if (result.startsWith("AddConfig")){
                             serverLauncher.createServer(result);
                         }else{
                             serverLauncher.parseCommand(result);
