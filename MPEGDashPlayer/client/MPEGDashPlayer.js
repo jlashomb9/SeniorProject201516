@@ -230,15 +230,31 @@ Template.LaunchVideo.events({
 
     // For videos
 
+    var formData = new FormData(),
+    myFile = document.getElementById("videoFile").files[0];
+
+    formData.append('file', myFile);
+    var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
+
     // var form = document.forms.namedItem("vidFileForm");
 
     // var oOutput = document.querySelector("div"), oData = new FormData(form);
     // oData.append("CustomField", "This is some extra data");
 
     // var oReq = new XMLHttpRequest();
+    // oReq.open("POST", "http://137.112.104.147:8088/" + filename, true);
+    // oReq.onload = function(oEvent) {
+    //   if(oReq.status == 200) {
+    //     alert("Uploaded!")
+    //   } else {
+    //     alert("Error")
+    //   }
+    // };
 
-    var formData = new FormData($('#vidFileForm'));
-    var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
+    // oReq.send(oData);
+    //ev.preventDefault();
+
+
     //console.log($('#vidFileForm')[0])
     $.ajax({
       type: "POST",
