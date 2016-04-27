@@ -52,6 +52,7 @@ public class DirectoryMonitor implements Runnable {
                     WatchEvent.Kind<?> kind = event.kind();
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
                     Path filename = ev.context();
+                    System.out.println("received file");
                     if (!filename.toUri().toString().endsWith(".xml")) {
                         continue;
                     }
