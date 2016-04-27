@@ -257,6 +257,7 @@ public class ServerLauncher {
 
     protected void removeServer(String filename) {
         final Server server = servers.get(filename);
+        server.shutdown();
         servers.remove(filename);
         Server.runWithBackoff(3, new Callable<Void>() {
             public Void call() {
@@ -388,7 +389,7 @@ public class ServerLauncher {
         toWrite += "<Name>" + videoName + "</Name>\n";
         toWrite += "<Port>" + videoPort + "</Port>\n";
         toWrite += "<VideoFile>" + videoFile + "</VideoFile>\n";
-        toWrite += "<DashcastParameters>" + dashcastParameters + "</DashcastParameters>\n";
+        toWrite += "<Parameters>" + dashcastParameters + "</Parameters>\n";
         toWrite += "</Server>\n";
         toWrite += "</Servers>\n";
         File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName + ".xml");

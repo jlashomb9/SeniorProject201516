@@ -59,10 +59,12 @@ public class DirectoryMonitor implements Runnable {
                     if (kind == StandardWatchEventKinds.OVERFLOW) {
                         continue;
                     } else if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
-                        System.out.println("created directory, adding server.");
                         serverLauncher.addServer(dir + File.separator + filename.toString());
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
-                        serverLauncher.removeServer(filename.toString());
+                        serverLauncher.removeServer(dir + File.separator + filename.toString());
+                    } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                        serverLauncher.removeServer(dir + File.separator + filename.toString());
+                        serverLauncher.addServer(dir + File.separator + filename.toString());
                     }
                 }
             } catch (IOException x) {
