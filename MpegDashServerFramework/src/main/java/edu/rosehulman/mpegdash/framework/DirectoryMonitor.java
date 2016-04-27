@@ -52,12 +52,14 @@ public class DirectoryMonitor implements Runnable {
                     WatchEvent.Kind<?> kind = event.kind();
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
                     Path filename = ev.context();
+                    System.out.println("something happened");
                     if (!filename.toUri().toString().endsWith(".xml")) {
                         continue;
                     }
                     if (kind == StandardWatchEventKinds.OVERFLOW) {
                         continue;
                     } else if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                        System.out.println("created directory");
                         serverLauncher.addServer(dir + File.separator + filename.toString());
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
                         serverLauncher.removeServer(filename.toString());

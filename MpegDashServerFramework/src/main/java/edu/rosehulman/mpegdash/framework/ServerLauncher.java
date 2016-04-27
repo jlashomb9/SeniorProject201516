@@ -15,6 +15,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -360,8 +362,17 @@ public class ServerLauncher {
     }
 
     public void createServer(String result) {
-        //TODO parse strings from file sent, and load video from client.
-        String videoName = null;
+        List<String> list = new ArrayList<String>();
+        Matcher m = Pattern.compile("([^']\\S*|'.+?')\\s*").matcher(result);
+        while (m.find())
+            list.add(m.group(1).replace("'", ""));
+
+        System.out.println(list);
+        
+        String videoFile = list.get(1);
+        String videoName = list.get(2);
+        String dashcastParameters = list.get(3);
+        
         int maxPort = 0;
         for (String key : servers.keySet()) {
             Server server = servers.get(key);
@@ -371,9 +382,8 @@ public class ServerLauncher {
             }
         }
         String videoPort = "" + (maxPort + 1);
-        String videoFile = null;
-        String dashcastParameters = null;
-        String toWrite = "<Server>\n";
+        String toWrite = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+        toWrite = "<Server>\n";
         toWrite += "<Server>\n";
         toWrite += "<Name>" + videoName + "</Name>\n";
         toWrite += "<Port>" + videoPort + "</Port>\n";

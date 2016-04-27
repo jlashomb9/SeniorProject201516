@@ -198,30 +198,84 @@ Template.AddVideo.events({
 Template.LaunchVideo.events({
   'click #launchVideo': function(){
     $("#LaunchButton").click(function () {
-      var formData = new FormData($('form')[0]);
-      // console.log(this);
-      // x = $("#videoFile").value;
-      // console.log(x);
-      $.ajax({
-        type: "POST",
-        url: "http://137.112.104.147:8088/",
-        xhr: function() {
-          var myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload) { // Check if upload property exists
-                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-              }
-              return myXhr;
-          },
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
+      
 
-        success: function() {
-          $("[data-dismiss=modal]").trigger({ type: "click" });
-        }
+      // For URLs
+      // vidURL = $("#urlInput").val()
+      // vidName = $("#vidName").val()
+      // parameters = $("#parameters").val()
 
-      });
+      // dataString = "AddConfig '" + vidURL +"' '" + vidName + "' '" + parameters + "'"
+
+
+      // $.ajax({
+      //   type: "POST",
+      //   url: "http://137.112.104.147:8088/",
+
+      //   // xhr: function() {
+      //   //   var myXhr = $.ajaxSettings.xhr();
+      //   //     if(myXhr.upload) { // Check if upload property exists
+      //   //         myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+      //   //       }
+      //   //       return myXhr;
+      //   //   },
+
+      //   data: dataString,
+      //   cache: false,
+      //   contentType: false,
+      //   processData: false
+
+
+      // });
+
+    // For videos
+
+    var formData = new FormData(),
+    myFile = document.getElementById("videoFile").files[0];
+
+    formData.append('file', myFile);
+    var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
+
+    // var form = document.forms.namedItem("vidFileForm");
+
+    // var oOutput = document.querySelector("div"), oData = new FormData(form);
+    // oData.append("CustomField", "This is some extra data");
+
+    // var oReq = new XMLHttpRequest();
+    // oReq.open("POST", "http://137.112.104.147:8088/" + filename, true);
+    // oReq.onload = function(oEvent) {
+    //   if(oReq.status == 200) {
+    //     alert("Uploaded!")
+    //   } else {
+    //     alert("Error")
+    //   }
+    // };
+
+    // oReq.send(oData);
+    //ev.preventDefault();
+
+
+    //console.log($('#vidFileForm')[0])
+    $.ajax({
+      type: "POST",
+      url: "http://137.112.104.147:8088/" + filename,
+      // xhr: function() {
+      //     var myXhr = $.ajaxSettings.xhr();
+      //     if(myXhr.upload) { // Check if upload property exists
+      //       myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+      //     }
+      //     return myXhr;
+      // },
+      enctype: "multipart/form-data",
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function() {
+        console.log("HEYHEYHEY")
+      }
+
+    })
     });
   }
 });
