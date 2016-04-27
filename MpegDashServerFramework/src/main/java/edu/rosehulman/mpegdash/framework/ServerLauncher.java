@@ -105,7 +105,7 @@ public class ServerLauncher {
 
     protected Void addServer(String videoTitle, String command, int port, String videoFile) {
         if (servers.containsKey(videoFile)) {
-            System.out.println("Server with that name already exists.");
+            LOGGER.debug("Server with that name already exists.");
             return null;
         }
         final Server server = new Server(command, videoTitle, port, videoFile, ip);
@@ -120,10 +120,10 @@ public class ServerLauncher {
     }
 
     protected Void launchServer(String serverName) {
-        System.out.println("launching server: " + serverName);
+        LOGGER.debug("launching server: " + serverName);
         final Server server = servers.get(serverName);
         if (!servers.containsKey(serverName)) {
-            System.out.println("Server: [" + serverName + "] does not exist");
+            LOGGER.debug("Server: [" + serverName + "] does not exist");
             return null;
         }
         if (server.getStatus() == Status.ENABLED) {
@@ -140,9 +140,9 @@ public class ServerLauncher {
     }
 
     public Void shutdownServer(String serverName) {
-        System.out.println("shutting down server: " + serverName);
+        LOGGER.debug("shutting down server: " + serverName);
         if (!servers.containsKey(serverName)) {
-            System.out.println("Server: [" + serverName + "] does not exist");
+            LOGGER.debug("Server: [" + serverName + "] does not exist");
             return null;
         }
         final Server server = servers.get(serverName);
@@ -171,7 +171,7 @@ public class ServerLauncher {
         String parameters = null;
         try {
             File inputFile = new File(filename);
-            System.out.println(inputFile.toString());
+            LOGGER.debug(inputFile.toString());
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
@@ -189,7 +189,7 @@ public class ServerLauncher {
         if(parameters.contains("-live")){
             String[] parametersArray = parameters.split(" ");
             if(!parameters.contains("--video_bandwidth") || !parameters.contains("--audio_bandwidth")){
-                System.out.println("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
+                LOGGER.debug("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
                 return videoTitle;
             }
             String videoBandwidth = null;
@@ -204,7 +204,7 @@ public class ServerLauncher {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Could not parse live edash video configuration\n" + e);
+                LOGGER.debug("Could not parse live edash video configuration\n" + e);
                 return videoTitle;
             }
             command = "packager ";
@@ -234,7 +234,7 @@ public class ServerLauncher {
         String dashcastCommand = "DashCast -v ";
         try {
             File inputFile = new File(filename);
-            System.out.println(inputFile.toString());
+            LOGGER.debug(inputFile.toString());
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
@@ -363,7 +363,7 @@ public class ServerLauncher {
     }
 
     public void parseCommand(String command) {
-        System.out.println(command);
+        LOGGER.debug(command);
         if (command.equals("quit")) {
             System.exit(0);
         } else if (command.equals("feeds")) {
@@ -384,7 +384,7 @@ public class ServerLauncher {
         while (m.find())
             list.add(m.group(1).replace("'", ""));
 
-        System.out.println(list);
+        LOGGER.debug(list);
         
         String videoFile = list.get(1);
         String videoName = list.get(2);
