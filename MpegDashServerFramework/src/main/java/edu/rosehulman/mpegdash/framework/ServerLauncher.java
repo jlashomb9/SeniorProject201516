@@ -385,6 +385,7 @@ public class ServerLauncher {
             list.add(m.group(1).replace("'", ""));
 
         LOGGER.debug(list);
+        System.out.println("server created");
         
         String videoFile = list.get(1);
         String videoName = list.get(2);
