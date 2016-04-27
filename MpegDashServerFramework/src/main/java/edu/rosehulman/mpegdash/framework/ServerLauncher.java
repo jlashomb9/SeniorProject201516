@@ -383,7 +383,7 @@ public class ServerLauncher {
         }
         String videoPort = "" + (maxPort + 1);
         String toWrite = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
-        toWrite = "<Server>\n";
+        toWrite = "<Servers>\n";
         toWrite += "<Server>\n";
         toWrite += "<Name>" + videoName + "</Name>\n";
         toWrite += "<Port>" + videoPort + "</Port>\n";
@@ -391,7 +391,7 @@ public class ServerLauncher {
         toWrite += "<DashcastParameters>" + dashcastParameters + "</DashcastParameters>\n";
         toWrite += "</Server>\n";
         toWrite += "</Servers>\n";
-        File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName);
+        File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName + ".xml");
         try {
             PrintWriter writer = new PrintWriter(newConfigFile, "UTF-8");
             writer.print(toWrite);
