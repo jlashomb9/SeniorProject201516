@@ -54,7 +54,7 @@ public class ServerLauncher {
         this.ip = ip;
         addShutdownHook();
 
-        this.directoryMonitor = new DirectoryMonitor(this, autoLaunch);
+        this.directoryMonitor = new DirectoryMonitor(this);
 
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();
@@ -110,8 +110,12 @@ public class ServerLauncher {
         }
         final Server server = new Server(command, videoTitle, port, videoFile, ip);
         servers.put(videoTitle, server);
+        if (autoLaunch) {
+            launchServer(videoTitle);
+        }
 
         updateServerList();
+        
         return null;
     }
 
