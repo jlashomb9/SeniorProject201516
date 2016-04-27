@@ -99,7 +99,7 @@
 					<h4 class="modal-title" id="launchLabel">Launch a video feed or .MP4</h4>
 				</div>
 				<div class="modal-body">
-					<form>
+					<form id="outerform">
 						<div class="form-group">
 							<label for="urlInput">URL</label>
 							<input type="url" class="form-control" id="urlInput" placeholder="Enter video url here.">
@@ -107,7 +107,7 @@
 						<div class="form-group">
 
 						<label for="videoFile">Video File</label>
-							<form enctype="multipart/form-data">
+							<form id = "vidFileForm" enctype="multipart/form-data">
 								<input type="file" id="videoFile">
 							</form>
 							<p class="help-block">Enter a URL or upload a video file.</p>
@@ -128,7 +128,7 @@
 							</label>
 						</div>
 						<div class="form-group">
-							<input type="text" class="form-control" disabled id="parameters" placeholder="-seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -low-delay">
+							<input type="text" class="form-control" id="parameters" value="-seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -low-delay">
 						</div>
 						<button id="LaunchButton" class="btn btn-default">Launch</button>
 						<!--<button type="submit" id="LaunchButton" class="btn btn-default">Launch</button>-->

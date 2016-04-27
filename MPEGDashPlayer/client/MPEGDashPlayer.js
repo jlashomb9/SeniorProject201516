@@ -198,39 +198,68 @@ Template.AddVideo.events({
 Template.LaunchVideo.events({
   'click #launchVideo': function(){
     $("#LaunchButton").click(function () {
-      var formData = new FormData($('form')[0]);
-      // console.log(this);
-      // x = $("#videoFile").value;
-      // console.log(x);
-      $.ajax({
-        type: "POST",
-        url: "http://137.112.104.147:8088/",
-        xhr: function() {
-          var myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload) { // Check if upload property exists
-                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-              }
-              return myXhr;
-          },
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
+      
 
-        success: function() {
-          console.log(this);
-          x = this.value;
-          console.log(x);
-          $.ajax({
-            type: "POST",
-            url: "http://137.112.104.147:8088/",
-            data: x,
-            success: function() {
-              $("[data-dismiss=modal]").trigger({ type: "click" });
-            }
-        });
+      // For URLs
+      // vidURL = $("#urlInput").val()
+      // vidName = $("#vidName").val()
+      // parameters = $("#parameters").val()
 
-      }});
+      // dataString = "AddConfig '" + vidURL +"' '" + vidName + "' '" + parameters + "'"
+
+
+      // $.ajax({
+      //   type: "POST",
+      //   url: "http://137.112.104.147:8088/",
+
+      //   // xhr: function() {
+      //   //   var myXhr = $.ajaxSettings.xhr();
+      //   //     if(myXhr.upload) { // Check if upload property exists
+      //   //         myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+      //   //       }
+      //   //       return myXhr;
+      //   //   },
+
+      //   data: dataString,
+      //   cache: false,
+      //   contentType: false,
+      //   processData: false
+
+
+      // });
+
+    // For videos
+
+    // var form = document.forms.namedItem("vidFileForm");
+
+    // var oOutput = document.querySelector("div"), oData = new FormData(form);
+    // oData.append("CustomField", "This is some extra data");
+
+    // var oReq = new XMLHttpRequest();
+
+    var formData = new FormData($('#vidFileForm'));
+    var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
+    //console.log($('#vidFileForm')[0])
+    $.ajax({
+      type: "POST",
+      url: "http://137.112.104.147:8088/" + filename,
+      // xhr: function() {
+      //     var myXhr = $.ajaxSettings.xhr();
+      //     if(myXhr.upload) { // Check if upload property exists
+      //       myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+      //     }
+      //     return myXhr;
+      // },
+      enctype: "multipart/form-data",
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function() {
+        console.log("HEYHEYHEY")
+      }
+
+    })
     });
   }
 });
