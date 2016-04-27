@@ -382,7 +382,8 @@ public class ServerLauncher {
             }
         }
         String videoPort = "" + (maxPort + 1);
-        String toWrite = "<Server>\n";
+        String toWrite = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+        toWrite = "<Server>\n";
         toWrite += "<Server>\n";
         toWrite += "<Name>" + videoName + "</Name>\n";
         toWrite += "<Port>" + videoPort + "</Port>\n";
