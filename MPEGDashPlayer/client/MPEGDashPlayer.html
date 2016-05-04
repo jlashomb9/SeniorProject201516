@@ -100,31 +100,39 @@
 				</div>
 				<div class="modal-body">
 					<form id="outerform">
-						<div class="form-group">
-							<label for="urlInput">URL</label>
-							<input type="url" class="form-control" id="urlInput" placeholder="Enter video url here.">
-						</div>
-						<div class="form-group">
-
-						<label for="videoFile">Video File</label>
-							<form id = "vidFileForm" enctype="multipart/form-data">
-								<input type="file" id="videoFile">
-							</form>
-							<p class="help-block">Enter a URL or upload a video file.</p>
-							<progress></progress>
-						</div>
-						<div class="form-group">
-							<label for="vidName">Video Name</label>
-							<input type="text" class="form-control" id="vidName" placeholder="">
-						</div>
 						<div class="radio">
 							<label>
-								<input name="radioParams" type="radio" checked="checked"> Default
+								<input name="uploadType" type="radio" value="Stream" checked="checked"> UDP Stream
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<input name="radioParams" type="radio"> Custom
+								<input name="uploadType" value="File" type="radio"> .MP4 File
+							</label>
+						</div>
+						<div class="form-group" id="StreamDiv">
+							<label for="urlInput">URL</label>
+							<input type="url" class="form-control" id="urlInput" placeholder="Enter video url here.">
+						</div>
+						<div class="form-group" id="FileDiv" style="display: none">
+							<label for="videoFile">Video File</label>
+							<form id = "vidFileForm" enctype="multipart/form-data">
+								<input type="file" id="videoFile">
+							</form>
+							<p class="help-block">Enter a URL or upload a video file.</p>
+						</div>
+						<div class="form-group">
+							<label for="vidName">Name</label>
+							<input type="text" class="form-control" id="vidName" placeholder="">
+						</div>
+						<div class="radio">
+							<label>
+								<input name="radioParams" type="radio" value="eDash"> eDash Packager
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+								<input name="radioParams" value="GPAC" checked type="radio"> GPAC
 							</label>
 						</div>
 						<div class="form-group">

@@ -24,7 +24,7 @@ public class DirectoryMonitor implements Runnable {
     public String currentDir;
     public ServerLauncher serverLauncher;
 
-    public DirectoryMonitor(ServerLauncher serverLauncher, boolean autoLaunch) {
+    public DirectoryMonitor(ServerLauncher serverLauncher) {
         try {
             watcher = FileSystems.getDefault().newWatchService();
         } catch (IOException e) {
@@ -35,10 +35,7 @@ public class DirectoryMonitor implements Runnable {
         final File folder = new File(absPath);
         dir = folder.toPath();
         for (final File fileEntry : folder.listFiles()) {
-            String videoTitle = serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
-            if (autoLaunch) {
-                serverLauncher.launchServer(videoTitle);
-            }
+            serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
         }
         this.serverLauncher = serverLauncher;
     }
@@ -52,17 +49,19 @@ public class DirectoryMonitor implements Runnable {
                     WatchEvent.Kind<?> kind = event.kind();
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
                     Path filename = ev.context();
-                    System.out.println("something happened");
+                    LOGGER.debug("received file");
                     if (!filename.toUri().toString().endsWith(".xml")) {
                         continue;
                     }
                     if (kind == StandardWatchEventKinds.OVERFLOW) {
                         continue;
                     } else if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
-                        System.out.println("created directory");
                         serverLauncher.addServer(dir + File.separator + filename.toString());
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
-                        serverLauncher.removeServer(filename.toString());
+                        serverLauncher.removeServer(dir + File.separator + filename.toString());
+                    } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                        serverLauncher.removeServer(dir + File.separator + filename.toString());
+                        serverLauncher.addServer(dir + File.separator + filename.toString());
                     }
                 }
             } catch (IOException x) {

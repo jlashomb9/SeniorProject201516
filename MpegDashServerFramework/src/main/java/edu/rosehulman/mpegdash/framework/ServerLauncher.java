@@ -54,7 +54,7 @@ public class ServerLauncher {
         this.ip = ip;
         addShutdownHook();
 
-        this.directoryMonitor = new DirectoryMonitor(this, autoLaunch);
+        this.directoryMonitor = new DirectoryMonitor(this);
 
         directoryThread = new Thread(this.directoryMonitor);
         directoryThread.start();
@@ -105,21 +105,25 @@ public class ServerLauncher {
 
     protected Void addServer(String videoTitle, String command, int port, String videoFile) {
         if (servers.containsKey(videoFile)) {
-            System.out.println("Server with that name already exists.");
+            LOGGER.debug("Server with that name already exists.");
             return null;
         }
         final Server server = new Server(command, videoTitle, port, videoFile, ip);
         servers.put(videoTitle, server);
+        if (autoLaunch) {
+            launchServer(videoTitle);
+        }
 
         updateServerList();
+        
         return null;
     }
 
     protected Void launchServer(String serverName) {
-        System.out.println("launching server: " + serverName);
+        LOGGER.debug("launching server: " + serverName);
         final Server server = servers.get(serverName);
         if (!servers.containsKey(serverName)) {
-            System.out.println("Server: [" + serverName + "] does not exist");
+            LOGGER.debug("Server: [" + serverName + "] does not exist");
             return null;
         }
         if (server.getStatus() == Status.ENABLED) {
@@ -136,9 +140,9 @@ public class ServerLauncher {
     }
 
     public Void shutdownServer(String serverName) {
-        System.out.println("shutting down server: " + serverName);
+        LOGGER.debug("shutting down server: " + serverName);
         if (!servers.containsKey(serverName)) {
-            System.out.println("Server: [" + serverName + "] does not exist");
+            LOGGER.debug("Server: [" + serverName + "] does not exist");
             return null;
         }
         final Server server = servers.get(serverName);
@@ -167,7 +171,7 @@ public class ServerLauncher {
         String parameters = null;
         try {
             File inputFile = new File(filename);
-            System.out.println(inputFile.toString());
+            LOGGER.debug(inputFile.toString());
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
@@ -185,7 +189,7 @@ public class ServerLauncher {
         if(parameters.contains("-live")){
             String[] parametersArray = parameters.split(" ");
             if(!parameters.contains("--video_bandwidth") || !parameters.contains("--audio_bandwidth")){
-                System.out.println("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
+                LOGGER.debug("configuration must contain (--video_bandwidth <x> and --audio_bandwidth <x> parameters.");
                 return videoTitle;
             }
             String videoBandwidth = null;
@@ -200,7 +204,7 @@ public class ServerLauncher {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Could not parse live edash video configuration\n" + e);
+                LOGGER.debug("Could not parse live edash video configuration\n" + e);
                 return videoTitle;
             }
             command = "packager ";
@@ -230,7 +234,7 @@ public class ServerLauncher {
         String dashcastCommand = "DashCast -v ";
         try {
             File inputFile = new File(filename);
-            System.out.println(inputFile.toString());
+            LOGGER.debug(inputFile.toString());
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
@@ -256,8 +260,21 @@ public class ServerLauncher {
     }
 
     protected void removeServer(String filename) {
-        final Server server = servers.get(filename);
-        servers.remove(filename);
+        String videoTitle = null;
+        try{
+            File inputFile = new File(filename);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
+        } catch (Exception e) {
+            LOGGER.error("Could not remove " + videoTitle + "\n" + e);
+            e.printStackTrace();
+        }
+        final Server server = servers.get(videoTitle);
+        server.shutdown();
+        servers.remove(videoTitle);
         Server.runWithBackoff(3, new Callable<Void>() {
             public Void call() {
                 return server.shutdown();
@@ -346,7 +363,7 @@ public class ServerLauncher {
     }
 
     public void parseCommand(String command) {
-        System.out.println(command);
+        LOGGER.debug(command);
         if (command.equals("quit")) {
             System.exit(0);
         } else if (command.equals("feeds")) {
@@ -367,7 +384,8 @@ public class ServerLauncher {
         while (m.find())
             list.add(m.group(1).replace("'", ""));
 
-        System.out.println(list);
+        LOGGER.debug(list);
+        System.out.println("server created");
         
         String videoFile = list.get(1);
         String videoName = list.get(2);
@@ -383,15 +401,15 @@ public class ServerLauncher {
         }
         String videoPort = "" + (maxPort + 1);
         String toWrite = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
-        toWrite = "<Server>\n";
+        toWrite = "<Servers>\n";
         toWrite += "<Server>\n";
         toWrite += "<Name>" + videoName + "</Name>\n";
         toWrite += "<Port>" + videoPort + "</Port>\n";
         toWrite += "<VideoFile>" + videoFile + "</VideoFile>\n";
-        toWrite += "<DashcastParameters>" + dashcastParameters + "</DashcastParameters>\n";
+        toWrite += "<Parameters>" + dashcastParameters + "</Parameters>\n";
         toWrite += "</Server>\n";
         toWrite += "</Servers>\n";
-        File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName);
+        File newConfigFile = new File(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName + ".xml");
         try {
             PrintWriter writer = new PrintWriter(newConfigFile, "UTF-8");
             writer.print(toWrite);

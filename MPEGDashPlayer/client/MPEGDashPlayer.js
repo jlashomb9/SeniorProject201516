@@ -31,25 +31,25 @@ Template.tiling.events({
 	//this function is called while the "tile videos" button is clicked,
 	//it tries to recursively lay out videos to lower the amount of blank space on screen
   'click #tile': function(){
-	
-	var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
-	top = 0;
-	left = 0;
-	bottomost = top;
-	var booleanArray = [];
-	for (var i = 0; i < videos.length; i++) booleanArray[i] = true;
-	
+
+   var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
+   top = 0;
+   left = 0;
+   bottomost = top;
+   var booleanArray = [];
+   for (var i = 0; i < videos.length; i++) booleanArray[i] = true;
+
     for(var i = 0; i < videos.length; i++) {
-	  if(booleanArray[i] == false) {
-		continue;
-	 }
-	  booleanArray[i] = false;
-	  var currentWidth = parseInt($(videos[i]).css("width"), 10);
-	  var currentHeight = parseInt($(videos[i]).css("height"), 10);
-	  
-	  
-	  
-	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
+     if(booleanArray[i] == false) {
+      continue;
+    }
+    booleanArray[i] = false;
+    var currentWidth = parseInt($(videos[i]).css("width"), 10);
+    var currentHeight = parseInt($(videos[i]).css("height"), 10);
+
+
+
+    if ( (left + currentWidth) > DISPLAY_WIDTH ) {
 		//video cannot fit on the end of row, recursively fit the largest videos that will fit
 		while(true){
 			var index = TilingHelper.indexOfLargestVideo(videos, booleanArray, DISPLAY_WIDTH - left, bottomost - top);
@@ -63,17 +63,17 @@ Template.tiling.events({
 				'top': top,
 				'left':left
 			});
-	  
+
 			left = left + recurWidth;
 		}
-	  
+
 		left = 0;
 		top = bottomost;
 		bottomost = top + currentHeight;
-	  } else {
-		if ( (top  + currentHeight) > bottomost ) {
-			bottomost = top + currentHeight;
-		} else {
+ } else {
+  if ( (top  + currentHeight) > bottomost ) {
+   bottomost = top + currentHeight;
+ } else {
 			//video has space below it within this row, recursively fill it
 			
 			var tempTop = top;
@@ -97,17 +97,17 @@ Template.tiling.events({
 			}
 			top = tempTop;
 		}
-	  }
-	  
-	  
-      $(videos[i]).css({
-        'top': top,
-        'left':left
-      });
-	  
-	  left = left + currentWidth;
-    }
-  }
+ }
+
+
+ $(videos[i]).css({
+  'top': top,
+  'left':left
+});
+
+ left = left + currentWidth;
+}
+}
 });
 
 Template.AddVideo.events({
@@ -128,6 +128,7 @@ Template.AddVideo.events({
           var address = xmlDoc.getElementsByTagName("Address")[i].childNodes[0].nodeValue;
           var videoFile = xmlDoc.getElementsByTagName("VideoFile")[i].childNodes[0].nodeValue;
           var status = xmlDoc.getElementsByTagName("Status")[i].childNodes[0].nodeValue;
+          //console.log(address);
           videoModalData.push({name: name, url: address, file: videoFile, status: status});
         }
         var table = document.getElementById("videoTable");
@@ -145,7 +146,9 @@ Template.AddVideo.events({
           play.addClass("btn btn-default");
           play.html("Play");
           url = videoModalData[i].url;
+          console.log(url);
           play.click(function() {
+            console.log(url);
             Dashplayers.insert({
              host: url
            });
@@ -198,100 +201,121 @@ Template.AddVideo.events({
 Template.LaunchVideo.events({
   'click #launchVideo': function(){
     $("#LaunchButton").click(function () {
-      
+
+      var val = $("input:radio[name=uploadType]:checked").val();
 
       // For URLs
-      // vidURL = $("#urlInput").val()
-      // vidName = $("#vidName").val()
-      // parameters = $("#parameters").val()
-
-      // dataString = "AddConfig '" + vidURL +"' '" + vidName + "' '" + parameters + "'"
-
-
-      // $.ajax({
-      //   type: "POST",
-      //   url: "http://137.112.104.147:8088/",
-
-      //   // xhr: function() {
-      //   //   var myXhr = $.ajaxSettings.xhr();
-      //   //     if(myXhr.upload) { // Check if upload property exists
-      //   //         myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-      //   //       }
-      //   //       return myXhr;
-      //   //   },
-
-      //   data: dataString,
-      //   cache: false,
-      //   contentType: false,
-      //   processData: false
+      if(val == "Stream") {
+        vidURL = $("#urlInput").val();
+        vidName = $("#vidName").val();
+        parameters = $("#parameters").val();
+        if(vidURL == "" || vidName == "") {
+          alert("Not all required fields have been filled out.");
+          return
+        }
+        dataString = "AddConfig '" + vidURL +"' '" + vidName + "' '" + parameters + "'"
 
 
-      // });
+        $.ajax({
+          type: "POST",
+          url: "http://137.112.104.147:8088/",
 
-    // For videos
-
-    var formData = new FormData(),
-    myFile = document.getElementById("videoFile").files[0];
-
-    formData.append('file', myFile);
-    var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
-
-    // var form = document.forms.namedItem("vidFileForm");
-
-    // var oOutput = document.querySelector("div"), oData = new FormData(form);
-    // oData.append("CustomField", "This is some extra data");
-
-    // var oReq = new XMLHttpRequest();
-    // oReq.open("POST", "http://137.112.104.147:8088/" + filename, true);
-    // oReq.onload = function(oEvent) {
-    //   if(oReq.status == 200) {
-    //     alert("Uploaded!")
-    //   } else {
-    //     alert("Error")
-    //   }
-    // };
-
-    // oReq.send(oData);
-    //ev.preventDefault();
-
-
-    //console.log($('#vidFileForm')[0])
-    $.ajax({
-      type: "POST",
-      url: "http://137.112.104.147:8088/" + filename,
-      // xhr: function() {
-      //     var myXhr = $.ajaxSettings.xhr();
-      //     if(myXhr.upload) { // Check if upload property exists
-      //       myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-      //     }
-      //     return myXhr;
-      // },
-      enctype: "multipart/form-data",
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function() {
-        console.log("HEYHEYHEY")
+          data: dataString,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function() {
+            $("[data-dismiss=modal]").trigger({ type: "click" });
+          },
+          error: function(xhr, status, err) {
+            alert("Upload failed.");
+          }
+        });
       }
 
-    })
-    });
+
+    // For videos
+    else if(val == "File") {
+
+      var formData = new FormData(),
+      myFile = document.getElementById("videoFile").files[0];
+
+      formData.append('file', myFile);
+      var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
+      vidName = $("#vidName").val();
+      parameters = $("#parameters").val();
+
+      if(filename == "" || vidName == "") {
+        alert("Not all required fields have been filled out.");
+        return
+      }
+
+      var dataString = "AddConfig '" + filename +"' '" + vidName + "' '" + parameters + "'"
+      
+      $.ajax({
+        type: "POST",
+        url: "http://137.112.104.147:8088/" + filename,
+        enctype: "multipart/form-data",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function() {
+          $.ajax({
+            type: "POST",
+            url: "http://137.112.104.147:8088/",
+
+            data: dataString,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function() {
+              $("[data-dismiss=modal]").trigger({ type: "click" });
+            },
+            error: function(xhr, status, err) {
+              alert("Upload failed.");
+            }
+          });
+        },
+        error: function(xhr, status, err) {
+          alert("Upload failed.")
+        }
+      });
+    }
+  });
+$("input:radio[name=uploadType]").on("change", function() {
+  var val = $("input:radio[name=uploadType]:checked").val();
+  if(val == "Stream") {
+    $("#FileDiv").css("display", "none");
+    $("#StreamDiv").css("display", "block");
+  } else if(val == "File") {
+    $("#FileDiv").css("display", "block");
+    $("#StreamDiv").css("display", "none");
   }
+});
+$("input:radio[name=radioParams]").on("change", function() {
+  var val = $("input:radio[name=radioParams]:checked").val();
+  if(val == "eDash") {
+    $("#parameters").val("");
+  } else if(val == "GPAC") {
+    $("#parameters").val("-seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -low-delay");
+  }
+});
+}
 });
 Template.dashplayer.onRendered(function () {
   var span_id = "span"+Template.parentData(0)._id;
   var video_id = "videoPlayer"+Template.parentData(0)._id;
   var url = document.getElementById(span_id).innerText;  //$( span_id + ' span').text();
 
-    var download_id = "download"+Template.parentData(0)._id;
-    
+  var download_id = "download"+Template.parentData(0)._id;
+
     // $("#videoPlayer"+Template.parentData(0)._id).ready(function() {
       var video = document.getElementById(video_id);
       var id = Template.parentData(0)._id;
       // ButtonHelper.setUpVideo(id);
       //play-pause
-        var playButton = ButtonHelper.addPlayPause(video);
+      var playButton = ButtonHelper.addPlayPause(video);
         //rewind
         var rewindButton = ButtonHelper.addRewindButton(video);
         //skip backwards
@@ -308,8 +332,8 @@ Template.dashplayer.onRendered(function () {
         var volumeBar = ButtonHelper.addVolumeBar(video);
 
         document.getElementById(download_id).addEventListener('click', function() {
-            var dataURL = CanvasHelper.getDataURL(video);
-            CanvasHelper.downloadCanvas(this, dataURL, "image.png");
+          var dataURL = CanvasHelper.getDataURL(video);
+          CanvasHelper.downloadCanvas(this, dataURL, "image.png");
         }, false);       
 
         var buttonList = document.getElementById("playerButtons"+id);
@@ -324,11 +348,11 @@ Template.dashplayer.onRendered(function () {
         buttonList.appendChild(volumeBar);
         
 	     	//adding something visible to the resizer
-    		var resizeId = "resizer"+id;
-    		var resizerBox = document.getElementById(resizeId);
-            
+        var resizeId = "resizer"+id;
+        var resizerBox = document.getElementById(resizeId);
+
         ButtonHelper.addButtonHover(id);
-    		ButtonHelper.addTitleHover(id);
+        ButtonHelper.addTitleHover(id);
         ButtonHelper.addResizeable(id);
 
         var jqueryVideo = $("#draggable"+id);
@@ -340,15 +364,15 @@ Template.dashplayer.onRendered(function () {
         VideoPlayBackHelper.createVideo(video, url);
         VideoPlayBackHelper.videoStartup(video);
 
-	  var resize_ref = document.getElementById("draggable"+Template.parentData(0)._id);
-		$("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
-		$("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:336, minWidth: 560, handles: {'se': resizerBox},start: function( event, ui ) 
-			{
-				var z = $(resize_ref).css("z-index");
-				$(resize_ref).css({"z-index": z+1});
-			}
-		});
-		$("#resizable"+Template.parentData(0)._id).css({"font-size":0,'background-color':'#ABC','border': '0px solid transparent'});
+        var resize_ref = document.getElementById("draggable"+Template.parentData(0)._id);
+        $("#draggable"+Template.parentData(0)._id).draggable({stack: "div", distance:0, containment:"parent"});
+        $("#resizable"+Template.parentData(0)._id).resizable({aspectRatio:true, minHeight:336, minWidth: 560, handles: {'se': resizerBox},start: function( event, ui ) 
+        {
+          var z = $(resize_ref).css("z-index");
+          $(resize_ref).css({"z-index": z+1});
+        }
+      });
+        $("#resizable"+Template.parentData(0)._id).css({"font-size":0,'background-color':'#ABC','border': '0px solid transparent'});
 
 	  //////////positioning the video//////////////
 	  var DISPLAY_WIDTH = parseInt($("#display").css("width"), 10);
@@ -357,25 +381,25 @@ Template.dashplayer.onRendered(function () {
 	  
 	  
 	  if ( (left + currentWidth) > DISPLAY_WIDTH ) {
-		left = 0;
-		top = bottomost;
-		bottomost = top + currentHeight;
-	  } else {
-		if ( (top  + currentHeight) > bottomost ) {
-			bottomost = top + currentHeight;
-		}
-	  }
-	  
-      $("#draggable"+Template.parentData(0)._id).css({
-        'top': top,
-        'left':left,
-		'background-color':'#ABC',
-		'border': '0px solid transparent'
-      });
-	  
-	  left = left + currentWidth;
-	  
-	  
+      left = 0;
+      top = bottomost;
+      bottomost = top + currentHeight;
+    } else {
+      if ( (top  + currentHeight) > bottomost ) {
+       bottomost = top + currentHeight;
+     }
+   }
+
+   $("#draggable"+Template.parentData(0)._id).css({
+    'top': top,
+    'left':left,
+    'background-color':'#ABC',
+    'border': '0px solid transparent'
+  });
+
+   left = left + currentWidth;
+
+
     //adding id to the mongodb entry
     TilingHelper.addingParentData(Template.parentData(0)._id, url);
     videos.push("#draggable"+Template.parentData(0)._id);
@@ -392,7 +416,7 @@ Template.dashplayer.events({
   //removes a video player
   "click .delete": function () {
     Dashplayers.remove(this._id);
-	var location = videos.indexOf("#draggable"+Template.parentData(0)._id);
+    var location = videos.indexOf("#draggable"+Template.parentData(0)._id);
     if( location> -1) {
       videos.splice(location,1);
     }
