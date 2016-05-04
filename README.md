@@ -50,3 +50,12 @@ Running the web client
 
 ========
 Server's Docker container located at https://hub.docker.com/r/mpegdashrosehulman/v1/
+
+Updating the Docker Container
+========
+
+When adding new features to the client or server docker images and you would like to host the new docker image on docker hub, follow this guide
+for committing and pushing the image to a docker hub account repository:
+
+https://docs.docker.com/engine/userguide/containers/dockerrepos/
+
