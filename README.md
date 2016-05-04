@@ -48,6 +48,7 @@ Running the web client
 	To deploy locally type "meteor".
 
 
+Docker Location
 ========
 Server's Docker container located at https://hub.docker.com/r/mpegdashrosehulman/v1/
 
