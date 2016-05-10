@@ -268,18 +268,13 @@ public class ServerLauncher {
             Document doc = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
             videoTitle = doc.getElementsByTagName("Name").item(0).getTextContent();
+            final Server server = servers.get(videoTitle);
+            server.shutdown();
+            servers.remove(videoTitle);
         } catch (Exception e) {
             LOGGER.error("Could not remove " + videoTitle + "\n" + e);
             e.printStackTrace();
         }
-        final Server server = servers.get(videoTitle);
-        server.shutdown();
-        servers.remove(videoTitle);
-        Server.runWithBackoff(3, new Callable<Void>() {
-            public Void call() {
-                return server.shutdown();
-            }
-        });
     }
 
     private void updateServerList() {

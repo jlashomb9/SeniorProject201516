@@ -10,7 +10,6 @@ edu\rosehulman\mpegdash\framework\Server$Status.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$1$1.class
 edu\rosehulman\mpegdash\framework\CommandLineInterface.class
 edu\rosehulman\mpegdash\framework\ServerLauncher$2.class
-edu\rosehulman\mpegdash\framework\ServerLauncher$3.class
 edu\rosehulman\mpegdash\framework\ServerLauncher.class
 edu\rosehulman\mpegdash\framework\Server.class
 edu\rosehulman\mpegdash\framework\DockerCommandLauncher.class
