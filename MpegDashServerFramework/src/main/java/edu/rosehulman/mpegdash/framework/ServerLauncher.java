@@ -132,7 +132,6 @@ public class ServerLauncher {
         return Server.runWithBackoff(3, new Callable<Void>() {
             public Void call() {
                 new Thread(server).start();
-                server.setStatus(Status.ENABLED);
                 updateServerList();
                 return null;
             }
@@ -382,10 +381,6 @@ public class ServerLauncher {
         LOGGER.debug(list);
         System.out.println("server created");
         
-        String videoFile = list.get(1);
-        String videoName = list.get(2);
-        String dashcastParameters = list.get(3);
-        
         int maxPort = 0;
         for (String key : servers.keySet()) {
             Server server = servers.get(key);
@@ -394,6 +389,17 @@ public class ServerLauncher {
                 maxPort = port;
             }
         }
+
+        String videoFile = "videoFile_" + maxPort;
+        String videoName = "videoName_" + maxPort;
+        String dashcastParameters = "";
+        
+        if(list.size() > 2){
+            videoFile = list.get(1);
+            videoName = list.get(2);
+            dashcastParameters = list.get(3);
+        }
+        
         String videoPort = "" + (maxPort + 1);
         String toWrite = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
         toWrite = "<Servers>\n";

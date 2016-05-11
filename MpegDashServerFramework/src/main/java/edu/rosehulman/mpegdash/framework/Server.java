@@ -88,6 +88,7 @@ public class Server implements Runnable{
         status = Status.ENABLED;
         System.out.println(this.launchCommand);
         String[] cmd = { "/bin/bash", "-c", this.launchCommand };
+        System.out.println(this.launchCommand);
         try {
             ls = Runtime.getRuntime().exec(cmd);
             input = new BufferedReader(new InputStreamReader(ls.getInputStream()));
