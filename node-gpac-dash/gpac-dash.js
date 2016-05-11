@@ -405,7 +405,7 @@ var onRequest = function(req, res) {
 		res.setHeader("Access-Control-Allow-Headers", "Range");
 		res.setHeader("Access-Control-Allow-Credentials", true);
 	}
-	if (req.method == "POST"){
+	if (filename.length == 0 && req.method == "POST"){
 		var filePath = "client/log.txt" ;
 	if (fs.existsSync(filePath)){
 		fs.unlinkSync(filePath);
@@ -426,7 +426,7 @@ var onRequest = function(req, res) {
 		res.end();
 		return;
 	}
-	if (req.method == "PUT"){
+	else if(req.method == "POST"){
 
 		var filePath = filename ;
 	if (fs.existsSync(filePath)){
