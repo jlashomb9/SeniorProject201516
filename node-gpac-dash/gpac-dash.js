@@ -22,7 +22,7 @@ function usage() {
 var fs = require('fs');
 var http = require('http');
 var url_parser = require('url');
-
+var querystring = require('querystring');
 
 var ipaddr = "127.0.0.1";
 var port = 8000;
@@ -432,39 +432,72 @@ var onRequest = function(req, res) {
 	if (fs.existsSync(filePath)){
 		fs.unlinkSync(filePath);
 	}
-	var body = "";
-	req.on('data', function (data) {
-            body += data.toString();
-				fs.writeFile(filename, body ,function(err) 		{
-    			if(err) {
-        			return console.log(err);
-    		}
-    			console.log("The file was saved!");
-		});
+	req.setEncoding('binary'); 
 
-        });
+var body = ''
+var binaryEnd; //gets the string that indicates the location of the end of the binary file
+var first = true;
+req.on('data', function(data) {
+    if(first)
+        binaryEnd = data.toString().substring(0, data.toString().indexOf('\n')-1);
+    first = false;
+    body += data
+});
+req.on('end', function() {      
 
-		res.statusCode = 200;
-		res.end();
-		return;
-	}
+		var note = querystring.parse(body, '\r\n', ':'); 
+		var fileInfo = note['Content-Disposition'].split('; ');
+		for (value in fileInfo){
+		if (fileInfo[value].indexOf("filename=") != -1){
+		fileName = fileInfo[value].substring(10, fileInfo[value].length-1); 
+
+		if (fileName.indexOf('\\') != -1)
+		fileName = fileName.substring(fileName.lastIndexOf('\\')+1);
+		console.log("My filename: " + fileName); 
+		}   
+		}
+
+		//Get the type of the image (eg. image/gif or image/png)
+		var entireData = body.toString();
+		contentType = note['Content-Type'].substring(1); 
+
+		//Get the location of the start of the binary file, 
+		//which happens to be where contentType ends
+		var upperBoundary = entireData.indexOf(contentType) + contentType.length; 
+		var shorterData = entireData.substring(upperBoundary); 
+
+		//replace trailing and starting spaces 
+		var binaryDataAlmost = shorterData.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+
+		//Cut the extra things at the end of the data (Webkit stuff)
+		var binaryData = binaryDataAlmost.substring(0, binaryDataAlmost.indexOf(binaryEnd));        
+
+		//Write to a file 
+		fs.writeFile(fileName  , binaryData, 'binary', function(err)
+				{
+				res.statusCode = 200;
+				res.end();
+				});
+});
+return;
+}
 
 
-	// we send the files as they come, except for segments for which we send fragment by fragment
-	if (!fs.existsSync(filename)) {
-		reportMessage(logLevels.INFO, "Request for non existing file: " + filename + " at UTC " + time);
-		res.statusCode = 404;
-		res.end();
-		return;
-	}
+// we send the files as they come, except for segments for which we send fragment by fragment
+if (!fs.existsSync(filename)) {
+	reportMessage(logLevels.INFO, "Request for non existing file: " + filename + " at UTC " + time);
+	res.statusCode = 404;
+	res.end();
+	return;
+}
 
-	reportMessage(logLevels.INFO, "Request for file: " + filename + " at UTC " + time) ;
+reportMessage(logLevels.INFO, "Request for file: " + filename + " at UTC " + time) ;
 
-	var ext = parsed_url.pathname.slice(-3);
+var ext = parsed_url.pathname.slice(-3);
 
-	if (ext === "mpd" || ext === "mp4" || ext === "m4s") {
-		res.statusCode = 200;
-		res.setHeader("Content-Type", mime_types[ext]);
+if (ext === "mpd" || ext === "mp4" || ext === "m4s") {
+	res.statusCode = 200;
+	res.setHeader("Content-Type", mime_types[ext]);
 		res.setHeader("Server-UTC", time);
 		// TODO: Check if we should send MP4 files as fragmented files or not
 		if (ext === "mp4" && sendInitSegmentsFragmented || ext === "m4s" && sendMediaSegmentsFragmented) {
