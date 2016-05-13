@@ -16,7 +16,7 @@ Go into the folder MpegDashServerFramework/target and run the following command:
 java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -setup -ip <insert your ip here>
 ```
 
-[this will setup the docker image for launching video feeds]
+[this will setup the docker image for launching video feeds, only run once after installation]
 		
 There is an example configuration file located in MpegDashServerFramework/src/main/resources/servers
 This is where you will setup parameters for encoding the video into MPEG-DASH format, as well as specifying the video name, port, and 
@@ -25,13 +25,8 @@ This is where you will setup parameters for encoding the video into MPEG-DASH fo
 
 Running the server
 =======
-Go into the SeniorProject201516/node-gpac-dash folder and input the following command:
-```
-wget https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4
-```
-This will retrieve the sample video that the configuration examples are setup to use.
 
-Now that the docker image is setup and you have the videofile, you can run the server with the following command:
+Now that the docker image is setup, go into the MpegDashServerFramework/target folder and run the server with the following command:
 ```
 java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -ip <insert your ip here>
 ```
@@ -47,6 +42,14 @@ Running the web client
 	Change directory to MPEGDashPlayer.
 	To deploy locally type "meteor".
 
+Download a sample mp4 file located here:
+https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4
+
+then click Launch video, fill out the form with the uploaded video and click 'launch'.
+
+The video will take a few seconds to upload, and then the window should disappear when the upload is finished.
+
+Then click the add Video button and play the newly launched video.
 
 Docker Location
 ========
