@@ -1,4 +1,5 @@
 var videos = [];
+var videoURLS = [];
 //important for positioning videos
 var top = 0;
 var left = 0;
@@ -117,8 +118,9 @@ Template.AddVideo.events({
     // Remove existing rows and repopulate.
     $("#videoTable").find("tr:gt(0)").remove();
     var videoModalData = [];
+    for(var j = 0; j < videoURLS.length; j++){
     var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "http://137.112.104.147:8088/serverlist.xml?=".concat(new Date().dateString), true);
+    xhttp.open("GET", "http://" + videoURLS[j] + ":8088/serverlist.xml?=".concat(new Date().dateString), true);
     xhttp.send();
     xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -156,6 +158,7 @@ Template.AddVideo.events({
           launchButton.style.width = "90px"
           launchButton.setAttribute("class", "btn btn-default");
           launchButton.setAttribute("id", "launch_" + i);
+          launchButton.setAttribute("url", videoModalData[i].url);
           launchButton.innerHTML = "Shutdown"
           launchButton.setAttribute("value", "shutdown ".concat(videoModalData[i].name));
 
@@ -177,14 +180,19 @@ Template.AddVideo.events({
         }
       }
     };
+}
   }
 });
 // Handles launch/shutdown event.
 function handleLaunchClick(button) {
   var command = button[0].value;
+  var url = button[0].getAttribute("url");
+  console.log(url);
+  var l = document.createElement("a");
+  l.href = url;
   $.ajax({
     type: "POST",
-    url: "http://137.112.104.147:8088/",
+    url: "http://" + l.hostname + ":8088/",
     data: command,
     success: function() {
       $("[data-dismiss=modal]").trigger({ type: "click" });
@@ -208,6 +216,7 @@ Template.LaunchVideo.events({
 
       // For URLs
       if(val == "Stream") {
+      	serverURL = $("#serverUrlInput").val();
         vidURL = $("#urlInput").val();
         vidName = $("#vidName").val();
         parameters = $("#parameters").val();
@@ -220,7 +229,7 @@ Template.LaunchVideo.events({
 
         $.ajax({
           type: "POST",
-          url: "http://137.112.104.147:8088/",
+          url: "http://" + serverURL + ":8088/",
 
           data: dataString,
           cache: false,
@@ -242,6 +251,7 @@ Template.LaunchVideo.events({
       var formData = new FormData(),
       myFile = document.getElementById("videoFile").files[0];
 
+      serverURL = $("#serverUrlInput").val();
       formData.append('file', myFile);
       var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
       vidName = $("#vidName").val();
@@ -256,7 +266,7 @@ Template.LaunchVideo.events({
       
       $.ajax({
         type: "POST",
-        url: "http://137.112.104.147:8088/" + filename,
+        url: "http://" + serverURL + ":8088/" + filename,
         enctype: "multipart/form-data",
         data: formData,
         cache: false,
@@ -265,7 +275,7 @@ Template.LaunchVideo.events({
         success: function() {
           $.ajax({
             type: "POST",
-            url: "http://137.112.104.147:8088/",
+            url: "http://" + serverURL + ":8088/",
 
             data: dataString,
             cache: false,
@@ -298,7 +308,7 @@ $("input:radio[name=uploadType]").on("change", function() {
 $("input:radio[name=radioParams]").on("change", function() {
   var val = $("input:radio[name=radioParams]:checked").val();
   if(val == "eDash") {
-    $("#parameters").val("");
+    $("#parameters").val(" ");
   } else if(val == "GPAC") {
     $("#parameters").val("-seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -low-delay");
   }
@@ -404,6 +414,10 @@ Template.dashplayer.onRendered(function () {
 
     //adding id to the mongodb entry
     TilingHelper.addingParentData(Template.parentData(0)._id, url);
+    var l = document.createElement("a");
+    l.href = url;
+    console.log(l.hostname);
+    videoURLS.push(l.hostname);
     videos.push("#draggable"+Template.parentData(0)._id);
   },
   );
