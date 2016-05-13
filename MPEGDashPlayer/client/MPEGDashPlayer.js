@@ -136,68 +136,70 @@ Template.AddVideo.events({
           var row = table.insertRow(-1);
           var name = row.insertCell(0);
           var status = row.insertCell(1);
-          var launchButton = row.insertCell(2);
-          var playButton = row.insertCell(3);
+          var launchCell = row.insertCell(2);
+          var playCell = row.insertCell(3);
 
           name.innerHTML = videoModalData[i].name;
           status.innerHTML = videoModalData[i].status;
 
-          var play = $(document.createElement('button'));
-          play.addClass("btn btn-default");
-          play.html("Play");
-          url = videoModalData[i].url;
-          console.log(url);
-          play.click(function() {
-            console.log(url);
-            Dashplayers.insert({
-             host: url
-           });
-            $("[data-dismiss=modal]").trigger({ type: "click" });
-          });
+          // Create play button.
+          var playButton = document.createElement("BUTTON");
+          playButton.setAttribute("class", "btn btn-default");
+          playButton.innerHTML = "Play"
+          playButton.setAttribute("value", videoModalData[i].url);
+          playButton.onclick = function() {
+            handlePlay($(this));
+          }
 
-          // var launch = document.createElement('button');
-          // launch.setAttribute("id", "launch" + i)
-          // var launchID launch.getAttribute("id");
-          // launch = $(launch);
-
-          var type = "shutdown ".concat(videoModalData[i].name);
-          var name = "Shutdown" + i;
+          // Set up the button.
+          var launchButton = document.createElement("BUTTON");
+          launchButton.style.width = "90px"
+          launchButton.setAttribute("class", "btn btn-default");
+          launchButton.setAttribute("id", "launch_" + i);
+          launchButton.innerHTML = "Shutdown"
+          launchButton.setAttribute("value", "shutdown ".concat(videoModalData[i].name));
 
           // Handie if video is disabled.
           if(videoModalData[i].status == "DISABLED") {
-            play.prop('disabled', true);
-            name = "Launch" + i;
-            var type = "launch ".concat(videoModalData[i].name);
+            //launchButton.setAttribute('disabled', true);
+            launchButton.setAttribute("value", "launch ".concat(videoModalData[i].name));
+            launchButton.innerHTML = "Launch"
+            playButton.setAttribute("disabled", true);
           }
 
-          var launch = $('<button/>',
-          {
-            text: name,
-            id: 'launch' + i,
-            value: type,
-            click: function () {
-              x = this.value;
-              $.ajax({
-                type: "POST",
-                url: "http://137.112.104.147:8088/",
-                data: x,
-                success: function() {
-                  $("[data-dismiss=modal]").trigger({ type: "click" });
-                }
-              });
-            }
-          });
-
-          launch.addClass("btn btn-default");
-          //launch.html("Shutdown");
+          launchButton.onclick = function() {
+            handleLaunchClick($(this));
+          }
           
-          play.appendTo(playButton);
-          launch.appendTo(launchButton);
+          playCell.appendChild(playButton);
+          launchCell.appendChild(launchButton);
+
         }
       }
     };
   }
 });
+// Handles launch/shutdown event.
+function handleLaunchClick(button) {
+  var command = button[0].value;
+  $.ajax({
+    type: "POST",
+    url: "http://137.112.104.147:8088/",
+    data: command,
+    success: function() {
+      $("[data-dismiss=modal]").trigger({ type: "click" });
+    }
+  });
+}
+// Handles play event.
+function handlePlay(button) {
+  var url = button[0].value;
+  Dashplayers.insert({
+    host: url
+  });
+  $("[data-dismiss=modal]").trigger({ type: "click" });
+}
+
 Template.LaunchVideo.events({
   'click #launchVideo': function(){
     $("#LaunchButton").click(function () {
