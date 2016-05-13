@@ -217,6 +217,9 @@ Template.LaunchVideo.events({
       // For URLs
       if(val == "Stream") {
       	serverURL = $("#serverUrlInput").val();
+      	if(videoURLS.indexOf(serverURL) == -1) {
+      		videoURLS.push(serverURL);
+    	}
         vidURL = $("#urlInput").val();
         vidName = $("#vidName").val();
         parameters = $("#parameters").val();
@@ -252,6 +255,9 @@ Template.LaunchVideo.events({
       myFile = document.getElementById("videoFile").files[0];
 
       serverURL = $("#serverUrlInput").val();
+      if(videoURLS.indexOf(serverURL) == -1) {
+      		videoURLS.push(serverURL);
+    	}
       formData.append('file', myFile);
       var filename = $('#videoFile').val().split('\\').pop().split(' ').join('_');
       vidName = $("#vidName").val();
@@ -417,7 +423,9 @@ Template.dashplayer.onRendered(function () {
     var l = document.createElement("a");
     l.href = url;
     console.log(l.hostname);
-    videoURLS.push(l.hostname);
+    if(videoURLS.indexOf(l.hostname) == -1) {
+      	videoURLS.push(l.hostname);
+    }
     videos.push("#draggable"+Template.parentData(0)._id);
   },
   );
