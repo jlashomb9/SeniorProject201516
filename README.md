@@ -55,6 +55,12 @@ Docker Location
 ========
 Server's Docker container located at https://hub.docker.com/r/mpegdashrosehulman/v1/
 
+This contains all of the necessary libraries and this github project in it's home directory.
+
+All you need is to run -setup and then you should be able to launch the jar.
+
+(NOTE: start the docker daemon before running setup using 'service docker start' or else you will get an error saying the docker daemon is not running)
+
 Updating the Docker Container
 ========
 
