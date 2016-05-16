@@ -40,38 +40,65 @@ public class NodeJSCommunicator implements Runnable {
     }
 
     public void run() {
-        while (!Thread.interrupted()) {
-            try {
-                WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    WatchEvent.Kind<?> kind = event.kind();
-                    WatchEvent<Path> ev = (WatchEvent<Path>) event;
-                    Path filename = ev.context();
-                    if (kind == StandardWatchEventKinds.OVERFLOW) {
-                        continue;
-                    } else if (kind == StandardWatchEventKinds.ENTRY_CREATE || kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-                        String result = "";
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        System.out.println(dir + File.separator + filename.toString());
-                        Scanner myScanner = new Scanner(new File(dir + File.separator + filename.toString()));
-                        while(myScanner.hasNextLine()){
-                            result += myScanner.nextLine();
-                        }
-                        if (result.startsWith("AddConfig")){
-                            serverLauncher.createServer(result);
-                        }else{
-                            serverLauncher.parseCommand(result);
-                        }
+        String previousCommand = "";
+        while(true){
+            try{
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String result = "";
+                Scanner myScanner = new Scanner(new File(dir + File.separator + "log.txt"));
+                while(myScanner.hasNextLine()){
+                    result += myScanner.nextLine();
+                }
+                if(!result.equals(previousCommand)){
+                    if (result.startsWith("AddConfig")){
+                        serverLauncher.createServer(result);
+                    }else{
+                        serverLauncher.parseCommand(result);
                     }
                 }
-            } catch (IOException x) {
-                LOGGER.error("Error retrieving server configurations " + x);
+                previousCommand = result;
+            }catch (Exception e) {
+                LOGGER.error("Error retrieving nodejs command\n" + e);
             }
         }
+        
+//        while (!Thread.interrupted()) {
+//            try {
+//                WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
+//                for (WatchEvent<?> event : key.pollEvents()) {
+//                    WatchEvent.Kind<?> kind = event.kind();
+//                    WatchEvent<Path> ev = (WatchEvent<Path>) event;
+//                    Path filename = ev.context();
+//                    if (kind == StandardWatchEventKinds.OVERFLOW) {
+//                        continue;
+//                    } else if (kind == StandardWatchEventKinds.ENTRY_CREATE || kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+//                        String result = "";
+//                        try {
+//                            Thread.sleep(1000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        System.out.println(dir + File.separator + filename.toString());
+//                        Scanner myScanner = new Scanner(new File(dir + File.separator + filename.toString()));
+//                        while(myScanner.hasNextLine()){
+//                            result += myScanner.nextLine();
+//                        }
+//                        System.out.println(result);
+//                        if (result.startsWith("AddConfig")){
+//                            serverLauncher.createServer(result);
+//                        }else{
+//                            serverLauncher.parseCommand(result);
+//                        }
+//                    }
+//                }
+//            } catch (IOException x) {
+//                LOGGER.error("Error retrieving server configurations " + x);
+//            }
+//        }
     }
 
 }

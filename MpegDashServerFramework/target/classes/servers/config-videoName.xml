@@ -1,0 +1,8 @@
+<Servers>
+<Server>
+<Name>videoName</Name>
+<Port>8103</Port>
+<VideoFile>videoFile_8102</VideoFile>
+<Parameters></Parameters>
+</Server>
+</Servers>

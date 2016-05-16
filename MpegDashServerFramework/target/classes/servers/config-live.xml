@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<Servers>
-  <Server>
-    <Name>video3</Name>
-    <Port>8100</Port>
-    <VideoFile>sintel_trailer-480p.mp4</VideoFile>
-    <Parameters>-live --video_bandwidth 200000 --audio_bandwidth 130000</Parameters>
-  </Server>
-</Servers>

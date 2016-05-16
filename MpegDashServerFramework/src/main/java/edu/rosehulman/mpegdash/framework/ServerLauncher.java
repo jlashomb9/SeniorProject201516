@@ -392,7 +392,7 @@ public class ServerLauncher {
         }
 
         String videoFile = "videoFile_" + maxPort;
-        String videoName = "videoName_" + maxPort;
+        String videoName = "videoName";
         String dashcastParameters = "";
         
         if(list.size() > 2){
