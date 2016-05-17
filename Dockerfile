@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:15.10
 MAINTAINER MPEG-DASH Rose-SR-Project-Team <rose-sr-project@lists.scientiallc.com>
 
 #get packages
