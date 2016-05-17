@@ -9,11 +9,19 @@ Download docker by following the instructions here:
 
 Download a copy of this code library from github.
 
+Download and install maven.
+
 Setup
 ========
-Go into the folder MpegDashServerFramework/target and run the following command:
+Go into the MpegDashServerFramework folder and run the following 2 commands:
 ```
-java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -setup -ip <insert your ip here>
+mvn clean
+mvn install
+```
+
+Now go into the folder MpegDashServerFramework/target and run the following command:
+```
+java -jar mpeg-dash-server-framework-1.0.0.jar -setup -ip <insert your ip here>
 ```
 
 [this will setup the docker image for launching video feeds, only run once after installation]
@@ -28,7 +36,7 @@ Running the server
 
 Now that the docker image is setup, go into the MpegDashServerFramework/target folder and run the server with the following command:
 ```
-java -jar mpeg-dash-server-framework-1.0.0-shaded.jar -ip <insert your ip here>
+java -jar mpeg-dash-server-framework-1.0.0.jar -ip <insert your ip here>
 ```
 
 
