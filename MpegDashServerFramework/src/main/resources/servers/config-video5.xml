@@ -1,8 +1,0 @@
-<Servers>
-<Server>
-<Name>video5</Name>
-<Port>8100</Port>
-<VideoFile>testVideo.mp4</VideoFile>
-<Parameters>-seg-dur 1000 -frag-dur 200 -mpd-refresh 1 -low-delay</Parameters>
-</Server>
-</Servers>
