@@ -380,9 +380,8 @@ public class ServerLauncher {
             list.add(m.group(1).replace("'", ""));
 
         LOGGER.debug(list);
-        System.out.println("server created");
         
-        int maxPort = 0;
+        int maxPort = 8088;
         for (String key : servers.keySet()) {
             Server server = servers.get(key);
             int port = server.getPort();
@@ -419,6 +418,8 @@ public class ServerLauncher {
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        System.out.println("server created");
+        addServer(Constants.absolutePathToResources() + "//servers//" + "config-" + videoName + ".xml");
     }
 
 }
