@@ -35,7 +35,9 @@ public class DirectoryMonitor implements Runnable {
         final File folder = new File(absPath);
         dir = folder.toPath();
         for (final File fileEntry : folder.listFiles()) {
-            serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
+            if(fileEntry.getAbsolutePath().toString().endsWith(".xml")){
+                serverLauncher.addServer(fileEntry.getAbsolutePath().toString());
+            }
         }
         this.serverLauncher = serverLauncher;
     }
